@@ -954,7 +954,7 @@ body {
 #gitment ul,#gitment ol {
   padding: 0;
 }
-#gitment .gitment-comment-avatar-img {
+#gitment .gitment-comment-avatar-img, #gitment .gitment-editor-avatar {
   cursor: pointer;
   margin: auto;
 }
