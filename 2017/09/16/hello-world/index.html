@@ -173,6 +173,21 @@
 
                 <hr>
 
+                <div id="gitment"></div>
+                <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+                <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+                <script>
+                  var gitment = new Gitment({
+                      owner: 'littlesqx',
+                      repo: 'Littlesqx.github.io',
+                      oauth: {
+                        client_id: 'd4026099a50841ea3513',
+                        client_secret: '56b15436e7ce879ba65036524d27bf21f24e02c4',
+                      },
+                  })
+                  gitment.render('gitment')
+                </script>
+
                 
 
 
@@ -225,21 +240,6 @@
         </div>
     </div>
 </article>
-
-<div id="gitment" class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"></div>
-<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
-<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
-<script>
-  var gitment = new Gitment({
-      owner: 'littlesqx',
-      repo: 'Littlesqx.github.io',
-      oauth: {
-        client_id: 'd4026099a50841ea3513',
-        client_secret: '56b15436e7ce879ba65036524d27bf21f24e02c4',
-      },
-  })
-  gitment.render('gitment')
-</script>
 
 
 
