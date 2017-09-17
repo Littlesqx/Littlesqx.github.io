@@ -45,7 +45,7 @@
 
     <!-- ga & ba script hoook -->
     
-    <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+    <link rel="stylesheet" href="/css/gitment.min.css">
     
     <script></script>
 </head>
@@ -234,7 +234,7 @@
 
 
 <!-- gitment start-->
-<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script src="/js/gitment.browser.min.js"></script>
 <script type="text/javascript">
 
   var owner = 'littlesqx'
@@ -243,6 +243,7 @@
   var client_secret = '56b15436e7ce879ba65036524d27bf21f24e02c4'
 
   var gitment = new Gitment({
+      id: window.location.pathname,
       owner,
       repo,
       oauth: {
