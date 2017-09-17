@@ -244,11 +244,11 @@
 
   var gitment = new Gitment({
       id: window.location.pathname,
-      owner,
-      repo,
+      owner: owner,
+      repo: repo,
       oauth: {
-        client_id,
-        client_secret,
+        client_id: client_id,
+        client_secret: client_secret,
       },
   })
   gitment.render('gitment')
