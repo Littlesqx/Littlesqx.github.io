@@ -5,9 +5,120 @@
     <description>littlesqx's blog</description>
     <link>https://littlesqx.github.io/</link>
     <atom:link href="https://littlesqx.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sun, 24 Sep 2017 16:46:46 +0800</pubDate>
-    <lastBuildDate>Sun, 24 Sep 2017 16:46:46 +0800</lastBuildDate>
+    <pubDate>Sun, 08 Oct 2017 21:28:48 +0800</pubDate>
+    <lastBuildDate>Sun, 08 Oct 2017 21:28:48 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
+    
+      <item>
+        <title>MySQL定时备份，要不利用SAE Storage吧</title>
+        <description>&lt;blockquote&gt;
+  &lt;p&gt;这个题目，我挺满意的哈哈。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;前言&quot;&gt;前言&lt;/h3&gt;
+
+&lt;p&gt;其实是很久以前的一个想法了，为什么一直没有实行，大概离不开懒吧。我两年前帮学校社团（我们是卖旧书的，有一个管理书本售卖情况的需要）开发了一个小站，挂在SAE上，那时候免费，比现在良心多了，现在数据库需要收费。当然了，就是那么巧，腾讯云开始了校园宣传，云+校园学生一元主机。对，没办法，我们穷啊，就发展到SAE上挂代码，腾讯云挂数据库的形式。每月的费用也就5块左右吧。为什么不都移到腾讯云上，不就每月1块了吗？因为有考虑到腾讯云服务器是我私人的，带宽也只有1m，SAE上也有挺多实用的辅助功能和工具，所以还是使用SAE。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h3 id=&quot;正文&quot;&gt;正文&lt;/h3&gt;
+
+&lt;h4 id=&quot;怎么备份&quot;&gt;怎么备份&lt;/h4&gt;
+
+&lt;p&gt;前面提到了数据库在腾讯云服务器上，系统是CentOS，那很容易想到使用crontab执行计划定时执行备份脚本，就可以导出到服务器上，其实这就已经达到了备份效果，但是腾讯云这一元主机虽说是在校四年期间，都是每月一元。但是需要每月续费，代金券原来的自动发放，最后也变成了需要主动领取，万一我哪天忘了，或者出意外了（咳咳，怎么可能嘛~），这数据也就完蛋了。我想需要一个第三方可靠的存储，邮箱不错啊，一般邮箱都有几个g的空间，每次导出来都往备份邮箱发送就好了。但是管理不是很方便，邮箱迟早也会满。后来选择了SAE的Storage服务，一是还是在SAE上，项目成员可以一起管理。二，根据&lt;a href=&quot;https://www.sinacloud.com/doc/sae/php/storage.html#swift-ming-ling-xing-gong-ju&quot;&gt;Storage文档&lt;/a&gt;，linux上可以使用swift管理，这样，定时脚本的实现，技术上是没有问题了。&lt;/p&gt;
+
+&lt;p&gt;pic# 我画了个图
+&lt;img src=&quot;/img/in-post/sae-storage.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;开始动手&quot;&gt;开始动手&lt;/h4&gt;
+
+&lt;p&gt;1# 安装Swift客户端&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;yum install python-pip
+pip install python-swiftclient
+
+# test
+swift --version
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;2# SAE Storage 创建一个Bucket&lt;/p&gt;
+
+&lt;p&gt;目标SAE应用 &amp;gt; 存储与CDN服务 &amp;gt; Storage &amp;gt; 新建 Bucket
+&lt;img src=&quot;/img/in-post/201710081.png&quot; alt=&quot;img&quot; /&gt;
+务必修改访问权限为私有
+&lt;img src=&quot;/img/in-post/201710082.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;3# 编写Shell脚本&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;vim db_backup.sh
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;pre&gt;&lt;code class=&quot;language-Shell&quot;&gt;#!/bin/sh
+
+# job setting
+INTERVAL=30 # 保留最近三十天的备份数据
+TODAY=$(date '+%Y%m%d')
+DROPDAY=$(date -d &quot;$INTERVAL days ago&quot; +%Y%m%d)
+
+# db setting
+DB_USER=''
+DB_PASSWD=''
+DB_NAME=''
+
+# sae storage
+ST_AUTH='https://auth.sinas3.com/v1.0'
+ST_USER=''
+ST_KEY=''
+ST_BUCKET='' # 需要先创建
+
+# path
+PATH=&quot;data/$DB_NAME/&quot; # 服务器需要先手动创建该目录，SAE Storage 上传时会自动创建
+
+# 导出数据到服务器
+/usr/bin/mysqldump -u$DB_USER -p$DB_PASSWD $DB_NAME &amp;gt; /$PATH$DB_NAME$TODAY.sql
+
+# 上传当天备份的文件和更新日志
+/usr/bin/swift -A$ST_AUTH -U$ST_USER -K$ST_KEY upload $ST_BUCKET /$PATH$DB_NAME$TODAY.sql --insecure &amp;gt;&amp;gt; /data/$DB_NAME/backup_logs.log
+/usr/bin/swift -A$ST_AUTH -U$ST_USER -K$ST_KEY upload $ST_BUCKET /${PATH}backup_logs.log --insecure
+
+# 删除${INTERVAL}天以前的旧数据
+
+/usr/bin/rm /$PATH$DB_NAME$DROPDAY.sql
+/usr/bin/swift -A$ST_AUTH -U$ST_USER -K$ST_KEY delete $ST_BUCKET $PATH$DB_NAME$DROPDAY.sql --insecure
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;4# crontab 执行计划&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;crontab -e
+# 加入下面的计划，每晚11点30分执行一次，或者其他更加合适的时间
+30 23 * * * /usr/bin/sh /data/db_backup.sh
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;h3 id=&quot;结尾&quot;&gt;结尾&lt;/h3&gt;
+&lt;p&gt;这样，一个完整的备份流程也就结束了，还可以更完善，比如日志更加友好，每次备份邮件通知结果，或者还有其他更加优雅的办法吧。总之，心累有木有!!&lt;/p&gt;
+&lt;h4 id=&quot;参考文章&quot;&gt;参考文章&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://blog.csdn.net/u014494705/article/details/38321923&quot;&gt;SAE storage linux管理 - 霹雳书生&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Sat, 23 Sep 2017 16:26:01 +0800</pubDate>
+        <link>https://littlesqx.github.io/2017/09/23/mysql-backup-to-sae-storage/</link>
+        <guid isPermaLink="true">https://littlesqx.github.io/2017/09/23/mysql-backup-to-sae-storage/</guid>
+        
+        <category>crontab</category>
+        
+        <category>MySQL</category>
+        
+        <category>SAE</category>
+        
+        <category>Swift</category>
+        
+        
+      </item>
     
       <item>
         <title>在CentOS 7 上配置 LNMP 环境</title>
@@ -143,7 +254,7 @@ systemctl restart php-fpm
 
 &lt;p&gt;PHP7刚出来时就以性能为主打，确实惊艳了不少PHPer。除了php7本身，鸟哥在自己博客分享了其他的几个技巧&lt;/p&gt;
 
-&lt;p&gt;1# 启用Zend Opcache&lt;/p&gt;
+&lt;p&gt;1# 启用Zend Opcache （貌似7.1是默认开启）&lt;/p&gt;
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;vi /etc/php.ini
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;

@@ -10,9 +10,9 @@
     <meta name="keyword"  content="git php mysql laravel littlesqx">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>Hello World! - Littlesqx Blog</title>
+    <title>MySQL定时备份，要不利用SAE Storage吧 - Littlesqx Blog</title>
 
-    <link rel="canonical" href="https://littlesqx.github.io/2017/09/16/hello-world/">
+    <link rel="canonical" href="https://littlesqx.github.io/2017/09/23/mysql-backup-to-sae-storage/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -143,15 +143,21 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#博客" title="博客">博客</a>
+                        <a class="tag" href="/tags/#crontab" title="crontab">crontab</a>
+                        
+                        <a class="tag" href="/tags/#MySQL" title="MySQL">MySQL</a>
+                        
+                        <a class="tag" href="/tags/#SAE" title="SAE">SAE</a>
+                        
+                        <a class="tag" href="/tags/#Swift" title="Swift">Swift</a>
                         
                     </div>
-                    <h1>Hello World!</h1>
+                    <h1>MySQL定时备份，要不利用SAE Storage吧</h1>
                     
                     
-                    <h2 class="subheading">it's never too late to start studing anything</h2>
+                    <h2 class="subheading"></h2>
                     
-                    <span class="meta">Posted by Littlesqx on September 16, 2017</span>
+                    <span class="meta">Posted by Littlesqx on September 23, 2017</span>
                 </div>
             </div>
         </div>
@@ -170,8 +176,98 @@
                 post-container">
 
 				<blockquote>
-  <p>keep!</p>
+  <p>这个题目，我挺满意的哈哈。</p>
 </blockquote>
+
+<h3 id="前言">前言</h3>
+
+<p>其实是很久以前的一个想法了，为什么一直没有实行，大概离不开懒吧。我两年前帮学校社团（我们是卖旧书的，有一个管理书本售卖情况的需要）开发了一个小站，挂在SAE上，那时候免费，比现在良心多了，现在数据库需要收费。当然了，就是那么巧，腾讯云开始了校园宣传，云+校园学生一元主机。对，没办法，我们穷啊，就发展到SAE上挂代码，腾讯云挂数据库的形式。每月的费用也就5块左右吧。为什么不都移到腾讯云上，不就每月1块了吗？因为有考虑到腾讯云服务器是我私人的，带宽也只有1m，SAE上也有挺多实用的辅助功能和工具，所以还是使用SAE。</p>
+
+<hr />
+
+<h3 id="正文">正文</h3>
+
+<h4 id="怎么备份">怎么备份</h4>
+
+<p>前面提到了数据库在腾讯云服务器上，系统是CentOS，那很容易想到使用crontab执行计划定时执行备份脚本，就可以导出到服务器上，其实这就已经达到了备份效果，但是腾讯云这一元主机虽说是在校四年期间，都是每月一元。但是需要每月续费，代金券原来的自动发放，最后也变成了需要主动领取，万一我哪天忘了，或者出意外了（咳咳，怎么可能嘛~），这数据也就完蛋了。我想需要一个第三方可靠的存储，邮箱不错啊，一般邮箱都有几个g的空间，每次导出来都往备份邮箱发送就好了。但是管理不是很方便，邮箱迟早也会满。后来选择了SAE的Storage服务，一是还是在SAE上，项目成员可以一起管理。二，根据<a href="https://www.sinacloud.com/doc/sae/php/storage.html#swift-ming-ling-xing-gong-ju">Storage文档</a>，linux上可以使用swift管理，这样，定时脚本的实现，技术上是没有问题了。</p>
+
+<p>pic# 我画了个图
+<img src="/img/in-post/sae-storage.png" alt="img" /></p>
+
+<h4 id="开始动手">开始动手</h4>
+
+<p>1# 安装Swift客户端</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>yum install python-pip
+pip install python-swiftclient
+
+# test
+swift --version
+</code></pre>
+</div>
+
+<p>2# SAE Storage 创建一个Bucket</p>
+
+<p>目标SAE应用 &gt; 存储与CDN服务 &gt; Storage &gt; 新建 Bucket
+<img src="/img/in-post/201710081.png" alt="img" />
+务必修改访问权限为私有
+<img src="/img/in-post/201710082.png" alt="img" /></p>
+
+<p>3# 编写Shell脚本</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>vim db_backup.sh
+</code></pre>
+</div>
+<pre><code class="language-Shell">#!/bin/sh
+
+# job setting
+INTERVAL=30 # 保留最近三十天的备份数据
+TODAY=$(date '+%Y%m%d')
+DROPDAY=$(date -d "$INTERVAL days ago" +%Y%m%d)
+
+# db setting
+DB_USER=''
+DB_PASSWD=''
+DB_NAME=''
+
+# sae storage
+ST_AUTH='https://auth.sinas3.com/v1.0'
+ST_USER=''
+ST_KEY=''
+ST_BUCKET='' # 需要先创建
+
+# path
+PATH="data/$DB_NAME/" # 服务器需要先手动创建该目录，SAE Storage 上传时会自动创建
+
+# 导出数据到服务器
+/usr/bin/mysqldump -u$DB_USER -p$DB_PASSWD $DB_NAME &gt; /$PATH$DB_NAME$TODAY.sql
+
+# 上传当天备份的文件和更新日志
+/usr/bin/swift -A$ST_AUTH -U$ST_USER -K$ST_KEY upload $ST_BUCKET /$PATH$DB_NAME$TODAY.sql --insecure &gt;&gt; /data/$DB_NAME/backup_logs.log
+/usr/bin/swift -A$ST_AUTH -U$ST_USER -K$ST_KEY upload $ST_BUCKET /${PATH}backup_logs.log --insecure
+
+# 删除${INTERVAL}天以前的旧数据
+
+/usr/bin/rm /$PATH$DB_NAME$DROPDAY.sql
+/usr/bin/swift -A$ST_AUTH -U$ST_USER -K$ST_KEY delete $ST_BUCKET $PATH$DB_NAME$DROPDAY.sql --insecure
+
+</code></pre>
+
+<p>4# crontab 执行计划</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>crontab -e
+# 加入下面的计划，每晚11点30分执行一次，或者其他更加合适的时间
+30 23 * * * /usr/bin/sh /data/db_backup.sh
+</code></pre>
+</div>
+
+<hr />
+
+<h3 id="结尾">结尾</h3>
+<p>这样，一个完整的备份流程也就结束了，还可以更完善，比如日志更加友好，每次备份邮件通知结果，或者还有其他更加优雅的办法吧。总之，心累有木有!!</p>
+<h4 id="参考文章">参考文章</h4>
+<ul>
+  <li><a href="http://blog.csdn.net/u014494705/article/details/38321923">SAE storage linux管理 - 霹雳书生</a></li>
+</ul>
 
 
                 <hr>
@@ -184,10 +280,10 @@
 
                 <ul class="pager">
                     
-                    
-                    <li class="next">
-                        <a href="/2017/09/23/centos7-lnmp/" data-toggle="tooltip" data-placement="top" title="在CentOS 7 上配置 LNMP 环境">Next Post &rarr;</a>
+                    <li class="previous">
+                        <a href="/2017/09/23/centos7-lnmp/" data-toggle="tooltip" data-placement="top" title="在CentOS 7 上配置 LNMP 环境">&larr; Previous Post</a>
                     </li>
+                    
                     
                 </ul>
 
