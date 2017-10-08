@@ -246,7 +246,6 @@ PATH="data/$DB_NAME/" # 服务器需要先手动创建该目录，SAE Storage �
 /usr/bin/swift -A$ST_AUTH -U$ST_USER -K$ST_KEY upload $ST_BUCKET /${PATH}backup_logs.log --insecure
 
 # 删除${INTERVAL}天以前的旧数据
-
 /usr/bin/rm /$PATH$DB_NAME$DROPDAY.sql
 /usr/bin/swift -A$ST_AUTH -U$ST_USER -K$ST_KEY delete $ST_BUCKET $PATH$DB_NAME$DROPDAY.sql --insecure
 
