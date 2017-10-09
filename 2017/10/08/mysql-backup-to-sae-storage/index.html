@@ -205,11 +205,11 @@
 <h4 id="开始动手">开始动手</h4>
 
 <p>1# 安装Swift客户端</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>yum install python-pip
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>yum install python-pip
 pip install python-swiftclient
 
-# test
-swift --version
+<span class="c"># test</span>
+swift <span class="nt">--version</span>
 </code></pre></div></div>
 
 <p>2# SAE Storage 创建一个Bucket</p>
@@ -221,47 +221,47 @@ swift --version
 
 <p>3# 编写Shell脚本</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vim db_backup.sh
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vim db_backup.sh
 </code></pre></div></div>
-<pre><code class="language-Shell">#!/bin/sh
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/sh</span>
 
-# job setting
-INTERVAL=30 # 保留最近三十天的备份数据
-TODAY=$(date '+%Y%m%d')
-DROPDAY=$(date -d "$INTERVAL days ago" +%Y%m%d)
+<span class="c"># job setting</span>
+<span class="nv">INTERVAL</span><span class="o">=</span>30 <span class="c"># 保留最近三十天的备份数据</span>
+<span class="nv">TODAY</span><span class="o">=</span><span class="k">$(</span>date <span class="s1">'+%Y%m%d'</span><span class="k">)</span>
+<span class="nv">DROPDAY</span><span class="o">=</span><span class="k">$(</span>date <span class="nt">-d</span> <span class="s2">"</span><span class="nv">$INTERVAL</span><span class="s2"> days ago"</span> +%Y%m%d<span class="k">)</span>
 
-# db setting
-DB_USER=''
-DB_PASSWD=''
-DB_NAME=''
+<span class="c"># db setting</span>
+<span class="nv">DB_USER</span><span class="o">=</span><span class="s1">''</span>
+<span class="nv">DB_PASSWD</span><span class="o">=</span><span class="s1">''</span>
+<span class="nv">DB_NAME</span><span class="o">=</span><span class="s1">''</span>
 
-# sae storage
-ST_AUTH='https://auth.sinas3.com/v1.0'
-ST_USER=''
-ST_KEY=''
-ST_BUCKET='' # 需要先创建
+<span class="c"># sae storage</span>
+<span class="nv">ST_AUTH</span><span class="o">=</span><span class="s1">'https://auth.sinas3.com/v1.0'</span>
+<span class="nv">ST_USER</span><span class="o">=</span><span class="s1">''</span>
+<span class="nv">ST_KEY</span><span class="o">=</span><span class="s1">''</span>
+<span class="nv">ST_BUCKET</span><span class="o">=</span><span class="s1">''</span> <span class="c"># 需要先创建</span>
 
-# path
-PATH="data/$DB_NAME/" # 服务器需要先手动创建该目录，SAE Storage 上传时会自动创建
+<span class="c"># path</span>
+<span class="nv">PATH</span><span class="o">=</span><span class="s2">"data/</span><span class="nv">$DB_NAME</span><span class="s2">/"</span> <span class="c"># 服务器需要先手动创建该目录，SAE Storage 上传时会自动创建</span>
 
-# 导出数据到服务器
-/usr/bin/mysqldump -u$DB_USER -p$DB_PASSWD $DB_NAME &gt; /$PATH$DB_NAME$TODAY.sql
+<span class="c"># 导出数据到服务器</span>
+/usr/bin/mysqldump <span class="nt">-u</span><span class="nv">$DB_USER</span> <span class="nt">-p</span><span class="nv">$DB_PASSWD</span> <span class="nv">$DB_NAME</span> <span class="o">&gt;</span> /<span class="nv">$PATH$DB_NAME$TODAY</span>.sql
 
-# 上传当天备份的文件和更新日志
-/usr/bin/swift -A$ST_AUTH -U$ST_USER -K$ST_KEY upload $ST_BUCKET /$PATH$DB_NAME$TODAY.sql --insecure &gt;&gt; /data/$DB_NAME/backup_logs.log
-/usr/bin/swift -A$ST_AUTH -U$ST_USER -K$ST_KEY upload $ST_BUCKET /${PATH}backup_logs.log --insecure
+<span class="c"># 上传当天备份的文件和更新日志</span>
+/usr/bin/swift <span class="nt">-A</span><span class="nv">$ST_AUTH</span> <span class="nt">-U</span><span class="nv">$ST_USER</span> <span class="nt">-K</span><span class="nv">$ST_KEY</span> upload <span class="nv">$ST_BUCKET</span> /<span class="nv">$PATH$DB_NAME$TODAY</span>.sql <span class="nt">--insecure</span> <span class="o">&gt;&gt;</span> /data/<span class="nv">$DB_NAME</span>/backup_logs.log
+/usr/bin/swift <span class="nt">-A</span><span class="nv">$ST_AUTH</span> <span class="nt">-U</span><span class="nv">$ST_USER</span> <span class="nt">-K</span><span class="nv">$ST_KEY</span> upload <span class="nv">$ST_BUCKET</span> /<span class="k">${</span><span class="nv">PATH</span><span class="k">}</span>backup_logs.log <span class="nt">--insecure</span>
 
-# 删除${INTERVAL}天以前的旧数据
-/usr/bin/rm /$PATH$DB_NAME$DROPDAY.sql
-/usr/bin/swift -A$ST_AUTH -U$ST_USER -K$ST_KEY delete $ST_BUCKET $PATH$DB_NAME$DROPDAY.sql --insecure
+<span class="c"># 删除${INTERVAL}天以前的旧数据</span>
+/usr/bin/rm /<span class="nv">$PATH$DB_NAME$DROPDAY</span>.sql
+/usr/bin/swift <span class="nt">-A</span><span class="nv">$ST_AUTH</span> <span class="nt">-U</span><span class="nv">$ST_USER</span> <span class="nt">-K</span><span class="nv">$ST_KEY</span> delete <span class="nv">$ST_BUCKET</span> <span class="nv">$PATH$DB_NAME$DROPDAY</span>.sql <span class="nt">--insecure</span>
 
-</code></pre>
+</code></pre></div></div>
 
 <p>4# crontab 执行计划</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>crontab -e
-# 加入下面的计划，每晚11点30分执行一次，或者其他更加合适的时间
-30 23 * * * /usr/bin/sh /data/db_backup.sh
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>crontab <span class="nt">-e</span>
+<span class="c"># 加入下面的计划，每晚11点30分执行一次，或者其他更加合适的时间</span>
+30 23 <span class="k">*</span> <span class="k">*</span> <span class="k">*</span> /usr/bin/sh /data/db_backup.sh
 </code></pre></div></div>
 
 <hr />
