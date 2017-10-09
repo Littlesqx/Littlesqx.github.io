@@ -12,7 +12,7 @@
 
     <title>MySQL定时备份，要不利用SAE Storage吧 - Littlesqx Blog</title>
 
-    <link rel="canonical" href="https://littlesqx.github.io/2017/09/23/mysql-backup-to-sae-storage/">
+    <link rel="canonical" href="https://littlesqx.github.io/2017/10/08/mysql-backup-to-sae-storage/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -157,7 +157,7 @@
                     
                     <h2 class="subheading"></h2>
                     
-                    <span class="meta">Posted by Littlesqx on September 23, 2017</span>
+                    <span class="meta">Posted by Littlesqx on October 8, 2017</span>
                 </div>
             </div>
         </div>
@@ -197,13 +197,12 @@
 <h4 id="开始动手">开始动手</h4>
 
 <p>1# 安装Swift客户端</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>yum install python-pip
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>yum install python-pip
 pip install python-swiftclient
 
 # test
 swift --version
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>2# SAE Storage 创建一个Bucket</p>
 
@@ -214,9 +213,8 @@ swift --version
 
 <p>3# 编写Shell脚本</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>vim db_backup.sh
-</code></pre>
-</div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vim db_backup.sh
+</code></pre></div></div>
 <pre><code class="language-Shell">#!/bin/sh
 
 # job setting
@@ -253,11 +251,10 @@ PATH="data/$DB_NAME/" # 服务器需要先手动创建该目录，SAE Storage �
 
 <p>4# crontab 执行计划</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>crontab -e
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>crontab -e
 # 加入下面的计划，每晚11点30分执行一次，或者其他更加合适的时间
 30 23 * * * /usr/bin/sh /data/db_backup.sh
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <hr />
 
