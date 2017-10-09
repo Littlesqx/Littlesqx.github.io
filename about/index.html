@@ -14,6 +14,14 @@
 
     <link rel="canonical" href="https://littlesqx.github.io/about/">
 
+    <!-- nprogress CSS -->
+    <link href="https://cdn.bootcss.com/nprogress/0.2.0/nprogress.min.css" rel="stylesheet">
+    <style media="screen">
+      #nprogress .bar {
+        height: 3px;
+      }
+    </style>
+
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
 
@@ -339,6 +347,9 @@
 <!-- Custom Theme JavaScript -->
 <script src="/js/hux-blog.min.js "></script>
 
+<!-- nprogress JavaScript -->
+<script src="https://cdn.bootcss.com/nprogress/0.2.0/nprogress.min.js"></script>
+
 
 <!-- async load function -->
 <script>
@@ -400,6 +411,17 @@
 
 <!-- Baidu Tongji -->
 
+
+<!-- nprogress -->
+<script>
+  $(function(){
+    NProgress.configure({ showSpinner: false, speed: 300 });
+    NProgress.start();
+  })
+  $( window ).load(function() {
+    NProgress.done();
+  });
+</script>
 
 
 
