@@ -5,8 +5,8 @@
     <description>littlesqx's blog</description>
     <link>https://littlesqx.github.io/</link>
     <atom:link href="https://littlesqx.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Mon, 09 Oct 2017 21:05:00 +0800</pubDate>
-    <lastBuildDate>Mon, 09 Oct 2017 21:05:00 +0800</lastBuildDate>
+    <pubDate>Wed, 11 Oct 2017 18:18:32 +0800</pubDate>
+    <lastBuildDate>Wed, 11 Oct 2017 18:18:32 +0800</lastBuildDate>
     <generator>Jekyll v3.6.0</generator>
     
       <item>
@@ -25,7 +25,7 @@
 
 &lt;h4 id=&quot;怎么备份&quot;&gt;怎么备份&lt;/h4&gt;
 
-&lt;p&gt;前面提到了数据库在腾讯云服务器上，系统是CentOS，那很容易想到使用crontab执行计划定时执行备份脚本，就可以导出到服务器上，其实这就已经达到了备份效果，但是腾讯云这一元主机虽说是在校四年期间，都是每月一元。但是需要每月续费，代金券原来的自动发放，最后也变成了需要主动领取，万一我哪天忘了，或者出意外了（咳咳，怎么可能嘛~），这数据也就完蛋了。我想需要一个第三方可靠的存储，邮箱不错啊，一般邮箱都有几个g的空间，每次导出来都往备份邮箱发送就好了。但是管理不是很方便，邮箱迟早也会满。后来选择了SAE的Storage服务，一是还是在SAE上，项目成员可以一起管理。二，根据&lt;a href=&quot;https://www.sinacloud.com/doc/sae/php/storage.html#swift-ming-ling-xing-gong-ju&quot;&gt;Storage文档&lt;/a&gt;，linux上可以使用swift管理，这样，定时脚本的实现，技术上是没有问题了。&lt;/p&gt;
+&lt;p&gt;前面提到了数据库在腾讯云服务器上，系统是CentOS，那很容易想到使用crontab执行计划定时执行备份脚本，就可以导出到服务器上，其实这就已经达到了备份效果，但是腾讯云这一元主机是需要每月续费的，代金券原来的每月自动发放，最后也变成了需要主动领取，万一我哪天忘了，或者出意外了（咳咳，怎么可能嘛~），这数据也就完蛋了。我想需要一个第三方可靠的存储，邮箱不错啊，一般邮箱都有几个g的空间，每次导出来都往备份邮箱发送就好了。但是管理不是很方便，邮箱迟早也会满。后来选择了SAE的Storage服务，一是还是在SAE上，项目成员可以一起管理。二，根据&lt;a href=&quot;https://www.sinacloud.com/doc/sae/php/storage.html#swift-ming-ling-xing-gong-ju&quot;&gt;Storage文档&lt;/a&gt;，linux上可以使用swift管理，这样，定时脚本的实现，技术上是没有问题了。&lt;/p&gt;
 
 &lt;p&gt;pic# 我画了个图
 &lt;img src=&quot;/img/in-post/sae-storage.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
