@@ -8,20 +8,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="littlesqx's blog">
     <meta name="keyword"  content="git php mysql laravel littlesqx">
-    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link rel="shortcut icon" href="https://littlesqx-github-io.b0.upaiyun.com/img/favicon.ico">
 
     <title>Hello World! - Littlesqx Blog</title>
 
     <link rel="canonical" href="https://littlesqx.github.io/2017/09/16/hello-world/">
 
+    <!-- nprogress CSS -->
+    <link href="https://cdn.bootcss.com/nprogress/0.2.0/nprogress.min.css" rel="stylesheet">
+    <style media="screen">
+      #nprogress .bar {
+        height: 3px;
+      }
+    </style>
+
     <!-- Bootstrap Core CSS -->
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://littlesqx-github-io.b0.upaiyun.com/css/bootstrap.min.css">
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="/css/hux-blog.min.css">
+    <link rel="stylesheet" href="https://littlesqx-github-io.b0.upaiyun.com/css/hux-blog.min.css">
 
     <!-- Pygments Github CSS -->
-    <link rel="stylesheet" href="/css/syntax.css">
+    <link rel="stylesheet" href="https://littlesqx-github-io.b0.upaiyun.com/css/syntax.css">
 
     <!-- Custom Fonts -->
     <!-- <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
@@ -45,7 +53,7 @@
 
     <!-- ga & ba script hoook -->
     
-    <link rel="stylesheet" href="/css/gitment.min.css">
+    <link rel="stylesheet" href="https://littlesqx-github-io.b0.upaiyun.com/css/gitment.min.css">
     
     <script></script>
 </head>
@@ -133,7 +141,7 @@
 <!-- Post Header -->
 <style type="text/css">
     header.intro-header{
-        background-image: url('/img/bg.png')
+        background-image: url('https://littlesqx-github-io.b0.upaiyun.com/img/bg.png')
     }
 </style>
 <header class="intro-header" >
@@ -378,6 +386,11 @@
                         </a>
                     </li>
                     
+                    <li>
+                        <a target="_blank" href="https://www.upyun.com">
+                            <img src="https://littlesqx-github-io.b0.upaiyun.com/img/upyun_logo.png" style="width: 140px; cursor: pointer;">
+                        </a>
+                    </li>
                 </ul>
                 <p class="copyright text-muted">
                     Copyright &copy; Littlesqx Blog 2017
@@ -395,13 +408,16 @@
 </footer>
 
 <!-- jQuery -->
-<script src="/js/jquery.min.js "></script>
+<script src="https://littlesqx-github-io.b0.upaiyun.com/js/jquery.min.js "></script>
 
 <!-- Bootstrap Core JavaScript -->
-<script src="/js/bootstrap.min.js "></script>
+<script src="https://littlesqx-github-io.b0.upaiyun.com/js/bootstrap.min.js "></script>
 
 <!-- Custom Theme JavaScript -->
-<script src="/js/hux-blog.min.js "></script>
+<script src="https://littlesqx-github-io.b0.upaiyun.com/js/hux-blog.min.js "></script>
+
+<!-- nprogress JavaScript -->
+<script src="https://cdn.bootcss.com/nprogress/0.2.0/nprogress.min.js"></script>
 
 
 <!-- async load function -->
@@ -439,7 +455,7 @@
 <script>
     // only load tagcloud.js in tag.html
     if($('#tag_cloud').length !== 0){
-        async("/js/jquery.tagcloud.js",function(){
+        async("https://littlesqx-github-io.b0.upaiyun.com/js/jquery.tagcloud.js",function(){
             $.fn.tagcloud.defaults = {
                 //size: {start: 1, end: 1, unit: 'em'},
                 color: {start: '#bbbbee', end: '#0085a1'},
@@ -464,6 +480,17 @@
 
 <!-- Baidu Tongji -->
 
+
+<!-- nprogress -->
+<script>
+  $(function(){
+    NProgress.configure({ showSpinner: false, speed: 300 });
+    NProgress.start();
+  })
+  $( window ).load(function() {
+    NProgress.done();
+  });
+</script>
 
 
 
