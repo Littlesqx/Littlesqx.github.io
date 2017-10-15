@@ -5,9 +5,195 @@
     <description>littlesqx's blog</description>
     <link>https://littlesqx.github.io/</link>
     <atom:link href="https://littlesqx.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sun, 15 Oct 2017 12:39:17 +0800</pubDate>
-    <lastBuildDate>Sun, 15 Oct 2017 12:39:17 +0800</lastBuildDate>
+    <pubDate>Mon, 16 Oct 2017 00:21:40 +0800</pubDate>
+    <lastBuildDate>Mon, 16 Oct 2017 00:21:40 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
+    
+      <item>
+        <title>写一篇介绍和对比文章，关于 LAMP LNMP LANMP，还有...</title>
+        <description>&lt;blockquote&gt;
+  &lt;p&gt;LAMP = Linux Apache MySQL PHP&lt;/p&gt;
+
+  &lt;p&gt;LNMP = Linux Nginx MySQL PHP&lt;/p&gt;
+
+  &lt;p&gt;LANMP = Linux Apache Nginx MySQL PHP&lt;/p&gt;
+
+  &lt;p&gt;LNSMP = Linux Nginx Swoole MySQL PHP （这是我乱起的缩写）&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;前言&quot;&gt;前言&lt;/h3&gt;
+&lt;p&gt;在第一篇文章《&lt;a href=&quot;https://littlesqx.github.io/2017/09/23/centos7-lnmp/&quot;&gt;在CentOS 7 上配置 LNMP 环境
+&lt;/a&gt;》提到过，有时间对比一下LAMP
+和LNMP的区别，现在把php可能的web运行环境都做一次说明，也就是加上了LANMP和LNSMP，前者好说，
+后者是有关于重新定义PHP的&lt;a href=&quot;https://www.swoole.com/&quot;&gt;Swoole&lt;/a&gt;，其实我还没学过哈哈哈。&lt;/p&gt;
+
+&lt;h3 id=&quot;正文&quot;&gt;正文&lt;/h3&gt;
+
+&lt;h4 id=&quot;lamp-和-lnmp&quot;&gt;LAMP 和 LNMP&lt;/h4&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;LAMP = Linux Apache MySQL PHP&lt;/p&gt;
+
+  &lt;p&gt;LNMP = Linux Nginx MySQL PHP&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;区别在于A和N，也就是同是web服务器，原本是没有解析动态网页（包括php Python等）的能力。那他们
+是如何实现可以解析php程序呢？&lt;/p&gt;
+
+&lt;p&gt;pic# 我画了个图&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/in-post/201710151.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;这个图简化了整个过程，表达的是web服务器会判断用户请求的文件类型，如果是php，那会交给PHP处理器
+（PHP handler）处理，处理结果返回给web服务器，再由web服务器响应给请求方。但是，
+实际的过程应该更加复杂。
+需要先引出一些名词：SAPI，mod_php，mod_fastcgi，CGI，FastCGI，PHP-CGI，PHP-FPM。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;SAPI#&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;pic# 这个图不是我画的&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/in-post/201710152.jpg&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;上图是PHP架构图，可以看到实际的应用程序和PHP之间有一层SAPI
+（Server Application Programming Interface：
+the API used by PHP to interface with Web Servers），
+&lt;strong&gt;SAPI提供了一个和外部通信的接口，使得PHP可以和其他应用进行交互数据。&lt;/strong&gt;
+PHP提供了很多种SAPI，Apache的mod_php，Nginx的mod_fastcgi，还有Shell的CLI。&lt;/p&gt;
+
+&lt;p&gt;那我们就来谈谈Apache的mod_php，Nginx的mod_fastcgi。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;mod_php#&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;在这种模式下，php被编译为apache的一个内置模块，在启动时加载。当有一个php请求过来时，
+直接在httpd进程里完成php的解释运行，将结果返回。&lt;/p&gt;
+
+&lt;p&gt;pic# 我画了个图，扩展了前面的图&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/in-post/201710153.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;mod_fastcgi#&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;这是另一种SAPI，在LAMP中常见，涉及到CGI，FastCGI，PHP-CGI，PHP-FPM这几个名词。&lt;/p&gt;
+
+&lt;p&gt;1# 什么是CGI？&lt;/p&gt;
+
+&lt;p&gt;CGI(Common Gateway Interface)，即公共网关接口，web服务器和脚本语言通信的一个标准、
+接口、协议。CGI规范允许Web服务器执行外部程序，并将它们的输出发送给Web浏览器，
+CGI将Web的一组简单的静态超媒体文档变成一个完整的新的交互式媒体。&lt;/p&gt;
+
+&lt;p&gt;2# 什么是FastCGI？&lt;/p&gt;
+
+&lt;p&gt;CGI的升级版。FastCGI像是一个常驻(long-live)型的CGI，它可以一直执行着，只要激活后，
+不会每次都要花费时间去fork一次(这是CGI最为人诟病的fork-and-execute 模式)。
+它还支持分布式的运算, 即 FastCGI 程序可以在网站服务器以外的主机上执行并且接受
+来自其它网站服务器来的请求。&lt;/p&gt;
+
+&lt;p&gt;FastCGI是语言无关的、可伸缩架构的CGI开放扩展，其主要行为是将CGI解释器进程保持在内存中并因此
+获得较高的性能。众所周知，CGI解释器的反复加载是CGI性能低下的主要原因，
+如果CGI解释器保持在内存中并接受FastCGI进程管理器调度，
+则可以提供良好的性能、伸缩性、Fail- Over特性等等。&lt;/p&gt;
+
+&lt;p&gt;3# 什么是PHP-CGI？&lt;/p&gt;
+
+&lt;p&gt;实现了CGI接口协议的PHP脚本解析器。&lt;/p&gt;
+
+&lt;p&gt;4# 什么是PHP-FPM？&lt;/p&gt;
+
+&lt;p&gt;管理和调度php-cgi进程，进而实现了FastCGI接口协议的程序。&lt;/p&gt;
+
+&lt;p&gt;现在的LAMP一般采用FastCGI+PHP-FPM的组合。Nginx通过FastCGI协议将php脚本请求转发到PHP-FPM管理的
+php-cgi进程。&lt;/p&gt;
+
+&lt;p&gt;pic# 我画了个图，也是扩展第一张图。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/in-post/201710154.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;lanmp&quot;&gt;LANMP&lt;/h4&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;LANMP = Linux Apache Nginx MySQL PHP&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;为什么同时使用Apache和Nginx？&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;对比一下两者的优缺点：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;1# Nginx 相对 Apache 的优点：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;轻量级，占用更少的资源&lt;/li&gt;
+  &lt;li&gt;抗并发，nginx 处理请求是异步非阻塞的，而apache 则是阻塞型的，
+在高并发下nginx 能保持低资源低消耗高性能&lt;/li&gt;
+  &lt;li&gt;高度模块化的设计，编写模块相对简单&lt;/li&gt;
+  &lt;li&gt;社区活跃，各种高性能模块出品迅速啊&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;2# Apache 相对Nginx 的优点：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;配置较复杂&lt;/li&gt;
+  &lt;li&gt;rewrite 强大&lt;/li&gt;
+  &lt;li&gt;模块超多&lt;/li&gt;
+  &lt;li&gt;更稳定&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;3# 更多 » &lt;a href=&quot;https://www.zhihu.com/question/19571087/answer/12313829&quot;&gt;&lt;strong&gt;Nginx 和 Apache 各有什么优缺点？- 知乎&lt;/strong&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Nginx的优势是处理静态请求，cpu内存使用率低，Apache适合处理动态请求 - wuhen&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;所以，在LANMP架构下，Apache负责处理动态请求，而Nginx处理静态请求。Nginx作为web服务的入口，
+如果是动态请求，那就反向代理到Apache。&lt;/p&gt;
+
+&lt;p&gt;pic# 我不想画图了，字面意思，脑补一下嘻嘻&lt;/p&gt;
+
+&lt;h4 id=&quot;lnsmp&quot;&gt;LNSMP&lt;/h4&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;LNSMP = Linux Nginx Swoole MySQL PHP （这是我乱起的缩写）&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;什么是Swoole？&lt;/p&gt;
+
+&lt;p&gt;这是官网的介绍：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;PHP的异步、并行、高性能网络通信引擎，使用纯C语言编写，提供了PHP语言的异步多线程服务器，
+异步TCP/UDP网络客户端，异步MySQL，异步Redis，数据库连接池，AsyncTask，
+消息队列，毫秒定时器，异步文件读写，异步DNS查询。
+Swoole内置了Http/WebSocket服务器端/客户端、Http2.0服务器端/客户端。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;这是作者韩天峰的介绍：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;swoole实际上是一个网络通信和异步io的引擎，一个基础库。
+PHPer可以基于swoole去实现过去PHP无法实现的功能。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Swoole在LNSMP中的作用和LANMP中的Apache一样，处理动态请求。Swoole处理动态请求，涉及到的SAPI
+是CLI(commandline，命令行)模式。&lt;/p&gt;
+
+&lt;hr /&gt;
+</description>
+        <pubDate>Sun, 15 Oct 2017 16:17:01 +0800</pubDate>
+        <link>https://littlesqx.github.io/2017/10/15/lamp-lnmp-lanmp/</link>
+        <guid isPermaLink="true">https://littlesqx.github.io/2017/10/15/lamp-lnmp-lanmp/</guid>
+        
+        <category>LAMP</category>
+        
+        <category>LNMP</category>
+        
+        <category>LANMP</category>
+        
+        <category>LNSMP</category>
+        
+        <category>PHP</category>
+        
+        
+      </item>
     
       <item>
         <title>MySQL定时备份，要不利用SAE Storage吧</title>
