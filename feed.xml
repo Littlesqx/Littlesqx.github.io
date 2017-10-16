@@ -5,9 +5,9 @@
     <description>littlesqx's blog</description>
     <link>https://littlesqx.github.io/</link>
     <atom:link href="https://littlesqx.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Mon, 16 Oct 2017 00:21:40 +0800</pubDate>
-    <lastBuildDate>Mon, 16 Oct 2017 00:21:40 +0800</lastBuildDate>
-    <generator>Jekyll v3.4.3</generator>
+    <pubDate>Mon, 16 Oct 2017 19:41:51 +0800</pubDate>
+    <lastBuildDate>Mon, 16 Oct 2017 19:41:51 +0800</lastBuildDate>
+    <generator>Jekyll v3.6.0</generator>
     
       <item>
         <title>写一篇介绍和对比文章，关于 LAMP LNMP LANMP，还有...</title>
@@ -37,6 +37,8 @@
   &lt;p&gt;LNMP = Linux Nginx MySQL PHP&lt;/p&gt;
 &lt;/blockquote&gt;
 
+&lt;h5 id=&quot;概述&quot;&gt;概述&lt;/h5&gt;
+
 &lt;p&gt;区别在于A和N，也就是同是web服务器，原本是没有解析动态网页（包括php Python等）的能力。那他们
 是如何实现可以解析php程序呢？&lt;/p&gt;
 
@@ -49,7 +51,7 @@
 实际的过程应该更加复杂。
 需要先引出一些名词：SAPI，mod_php，mod_fastcgi，CGI，FastCGI，PHP-CGI，PHP-FPM。&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;SAPI#&lt;/strong&gt;&lt;/p&gt;
+&lt;h5 id=&quot;sapi&quot;&gt;SAPI&lt;/h5&gt;
 
 &lt;p&gt;pic# 这个图不是我画的&lt;/p&gt;
 
@@ -63,7 +65,7 @@ PHP提供了很多种SAPI，Apache的mod_php，Nginx的mod_fastcgi，还有Shell
 
 &lt;p&gt;那我们就来谈谈Apache的mod_php，Nginx的mod_fastcgi。&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;mod_php#&lt;/strong&gt;&lt;/p&gt;
+&lt;h5 id=&quot;mod_php&quot;&gt;mod_php&lt;/h5&gt;
 
 &lt;p&gt;在这种模式下，php被编译为apache的一个内置模块，在启动时加载。当有一个php请求过来时，
 直接在httpd进程里完成php的解释运行，将结果返回。&lt;/p&gt;
@@ -72,7 +74,7 @@ PHP提供了很多种SAPI，Apache的mod_php，Nginx的mod_fastcgi，还有Shell
 
 &lt;p&gt;&lt;img src=&quot;/img/in-post/201710153.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;mod_fastcgi#&lt;/strong&gt;&lt;/p&gt;
+&lt;h5 id=&quot;mod_fastcgi&quot;&gt;mod_fastcgi&lt;/h5&gt;
 
 &lt;p&gt;这是另一种SAPI，在LAMP中常见，涉及到CGI，FastCGI，PHP-CGI，PHP-FPM这几个名词。&lt;/p&gt;
 
@@ -173,10 +175,49 @@ Swoole内置了Http/WebSocket服务器端/客户端、Http2.0服务器端/客户
 PHPer可以基于swoole去实现过去PHP无法实现的功能。&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;Swoole在LNSMP中的作用和LANMP中的Apache一样，处理动态请求。Swoole处理动态请求，涉及到的SAPI
+&lt;p&gt;Swoole内置异步非阻塞多进程的Http服务器，在LNSMP中的作用和LANMP中的Apache一样，处理动态请求。Swoole处理动态请求，涉及到的SAPI
 是CLI(commandline，命令行)模式。&lt;/p&gt;
 
+&lt;p&gt;具体Swoole和php是怎么配合运行的，坦白讲，有点懵逼，就不误导了。&lt;/p&gt;
+
+&lt;h4 id=&quot;对比&quot;&gt;对比&lt;/h4&gt;
+
+&lt;p&gt;从前面的介绍可以看出，每个模式的优点和局限性。需要补充的是，Swoole性能是最好的。这个结论官网有宣传，也有其他同学测试过。有时间，一定好好学习Swoole。&lt;/p&gt;
+
 &lt;hr /&gt;
+
+&lt;h3 id=&quot;结尾&quot;&gt;结尾&lt;/h3&gt;
+
+&lt;h4 id=&quot;补充&quot;&gt;补充&lt;/h4&gt;
+
+&lt;p&gt;1# PHP-FPM虽然在Nginx上使用较多，但Apache上也可以配置使用。同样，Swoole也可以配合Apache。&lt;/p&gt;
+
+&lt;p&gt;2# MySQL呢？PHP和MySQL的交互，需要通过PHP extension。&lt;/p&gt;
+
+&lt;p&gt;3# 命令行模式（CommandLine），常shell上执行。我自己常用来做一些耗时或定时任务。&lt;/p&gt;
+
+&lt;h4 id=&quot;参考文章&quot;&gt;参考文章&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;http://www.cnblogs.com/zl0372/articles/php_4.html&quot;&gt;mod_php、mod_fastcgi和php-fpm的介绍,对比,和性能数据 - 日落紫荆&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;http://www.cnblogs.com/yujon/p/6209551.html&quot;&gt;深入理解PHP的运行模式 - 余朝忠&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://www.qcloud.com/community/article/385799001490608925&quot;&gt;三种 PHP 运行环境的性能对比 - 石仕海&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;http://article.gitos.cn/2015/Aurthur/PHP-Mod-PHP-And-Fast-CGI-Explain.html&quot;&gt;PHP填坑记之FastCGI与mod_php详解 - Aurthur&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;http://m.php.cn/article/325869.html&quot;&gt;Nginx、CGI、FastCGI、PHP-CGI、PHP-FPM处理流程 - PHP中文网&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://tech.meituan.com/php_success_or_failure_web_dev_is_the_sole_cause.html&quot;&gt;【思考】PHP——成也Web，败也Web - 七月的夏天&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
 </description>
         <pubDate>Sun, 15 Oct 2017 16:17:01 +0800</pubDate>
         <link>https://littlesqx.github.io/2017/10/15/lamp-lnmp-lanmp/</link>
@@ -219,13 +260,12 @@ PHPer可以基于swoole去实现过去PHP无法实现的功能。&lt;/p&gt;
 &lt;h4 id=&quot;开始动手&quot;&gt;开始动手&lt;/h4&gt;
 
 &lt;p&gt;1# 安装Swift客户端&lt;/p&gt;
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;yum install python-pip
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;yum install python-pip
 pip install python-swiftclient
 
 &lt;span class=&quot;c&quot;&gt;# test&lt;/span&gt;
-swift --version
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+swift &lt;span class=&quot;nt&quot;&gt;--version&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;2# SAE Storage 创建一个Bucket&lt;/p&gt;
 
@@ -236,15 +276,14 @@ swift --version
 
 &lt;p&gt;3# 编写Shell脚本&lt;/p&gt;
 
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;vim db_backup.sh
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/sh&lt;/span&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;vim db_backup.sh
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/sh&lt;/span&gt;
 
 &lt;span class=&quot;c&quot;&gt;# job setting&lt;/span&gt;
 &lt;span class=&quot;nv&quot;&gt;INTERVAL&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;30 &lt;span class=&quot;c&quot;&gt;# 保留最近三十天的备份数据&lt;/span&gt;
 &lt;span class=&quot;nv&quot;&gt;TODAY&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;date &lt;span class=&quot;s1&quot;&gt;'+%Y%m%d'&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;DROPDAY&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;date -d &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$INTERVAL&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; days ago&quot;&lt;/span&gt; +%Y%m%d&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;DROPDAY&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;date &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$INTERVAL&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; days ago&quot;&lt;/span&gt; +%Y%m%d&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
 
 &lt;span class=&quot;c&quot;&gt;# db setting&lt;/span&gt;
 &lt;span class=&quot;nv&quot;&gt;DB_USER&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;
@@ -261,26 +300,24 @@ swift --version
 &lt;span class=&quot;nv&quot;&gt;PATH&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;data/&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$DB_NAME&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/&quot;&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# 服务器需要先手动创建该目录，SAE Storage 上传时会自动创建&lt;/span&gt;
 
 &lt;span class=&quot;c&quot;&gt;# 导出数据到服务器&lt;/span&gt;
-/usr/bin/mysqldump -u&lt;span class=&quot;nv&quot;&gt;$DB_USER&lt;/span&gt; -p&lt;span class=&quot;nv&quot;&gt;$DB_PASSWD&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$DB_NAME&lt;/span&gt; &amp;gt; /&lt;span class=&quot;nv&quot;&gt;$PATH$DB_NAME$TODAY&lt;/span&gt;.sql
+/usr/bin/mysqldump &lt;span class=&quot;nt&quot;&gt;-u&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$DB_USER&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$DB_PASSWD&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$DB_NAME&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; /&lt;span class=&quot;nv&quot;&gt;$PATH$DB_NAME$TODAY&lt;/span&gt;.sql
 
 &lt;span class=&quot;c&quot;&gt;# 上传当天备份的文件和更新日志&lt;/span&gt;
-/usr/bin/swift -A&lt;span class=&quot;nv&quot;&gt;$ST_AUTH&lt;/span&gt; -U&lt;span class=&quot;nv&quot;&gt;$ST_USER&lt;/span&gt; -K&lt;span class=&quot;nv&quot;&gt;$ST_KEY&lt;/span&gt; upload &lt;span class=&quot;nv&quot;&gt;$ST_BUCKET&lt;/span&gt; /&lt;span class=&quot;nv&quot;&gt;$PATH$DB_NAME$TODAY&lt;/span&gt;.sql --insecure &amp;gt;&amp;gt; /data/&lt;span class=&quot;nv&quot;&gt;$DB_NAME&lt;/span&gt;/backup_logs.log
-/usr/bin/swift -A&lt;span class=&quot;nv&quot;&gt;$ST_AUTH&lt;/span&gt; -U&lt;span class=&quot;nv&quot;&gt;$ST_USER&lt;/span&gt; -K&lt;span class=&quot;nv&quot;&gt;$ST_KEY&lt;/span&gt; upload &lt;span class=&quot;nv&quot;&gt;$ST_BUCKET&lt;/span&gt; /&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PATH&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;backup_logs.log --insecure
+/usr/bin/swift &lt;span class=&quot;nt&quot;&gt;-A&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$ST_AUTH&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-U&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$ST_USER&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-K&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$ST_KEY&lt;/span&gt; upload &lt;span class=&quot;nv&quot;&gt;$ST_BUCKET&lt;/span&gt; /&lt;span class=&quot;nv&quot;&gt;$PATH$DB_NAME$TODAY&lt;/span&gt;.sql &lt;span class=&quot;nt&quot;&gt;--insecure&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; /data/&lt;span class=&quot;nv&quot;&gt;$DB_NAME&lt;/span&gt;/backup_logs.log
+/usr/bin/swift &lt;span class=&quot;nt&quot;&gt;-A&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$ST_AUTH&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-U&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$ST_USER&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-K&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$ST_KEY&lt;/span&gt; upload &lt;span class=&quot;nv&quot;&gt;$ST_BUCKET&lt;/span&gt; /&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PATH&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;backup_logs.log &lt;span class=&quot;nt&quot;&gt;--insecure&lt;/span&gt;
 
 &lt;span class=&quot;c&quot;&gt;# 删除${INTERVAL}天以前的旧数据&lt;/span&gt;
 /usr/bin/rm /&lt;span class=&quot;nv&quot;&gt;$PATH$DB_NAME$DROPDAY&lt;/span&gt;.sql
-/usr/bin/swift -A&lt;span class=&quot;nv&quot;&gt;$ST_AUTH&lt;/span&gt; -U&lt;span class=&quot;nv&quot;&gt;$ST_USER&lt;/span&gt; -K&lt;span class=&quot;nv&quot;&gt;$ST_KEY&lt;/span&gt; delete &lt;span class=&quot;nv&quot;&gt;$ST_BUCKET&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$PATH$DB_NAME$DROPDAY&lt;/span&gt;.sql --insecure
+/usr/bin/swift &lt;span class=&quot;nt&quot;&gt;-A&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$ST_AUTH&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-U&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$ST_USER&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-K&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$ST_KEY&lt;/span&gt; delete &lt;span class=&quot;nv&quot;&gt;$ST_BUCKET&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$PATH$DB_NAME$DROPDAY&lt;/span&gt;.sql &lt;span class=&quot;nt&quot;&gt;--insecure&lt;/span&gt;
 
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;4# crontab 执行计划&lt;/p&gt;
 
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;crontab -e
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;crontab &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt;
 &lt;span class=&quot;c&quot;&gt;# 加入下面的计划，每晚11点30分执行一次，或者其他更加合适的时间&lt;/span&gt;
 30 23 &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt; /usr/bin/sh /data/db_backup.sh
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;hr /&gt;
 
@@ -322,87 +359,76 @@ swift --version
 
 &lt;h4 id=&quot;配置源&quot;&gt;配置源&lt;/h4&gt;
 &lt;p&gt;1# 查看系统版本&lt;/p&gt;
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;root@VM_157_248_centos ~]# cat /etc/centos-release
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;root@VM_157_248_centos ~]# &lt;span class=&quot;nb&quot;&gt;cat&lt;/span&gt; /etc/centos-release
 CentOS Linux release 7.4.1708 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Core&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;root@VM_157_248_centos ~]#
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;2# 配置MariaDB官方源&lt;/p&gt;
 
 &lt;p&gt;根据&lt;a href=&quot;https://downloads.mariadb.org/mariadb/repositories/&quot;&gt;MariaDB官方源&lt;/a&gt;，选择系统合适的版本
 CentOS &amp;gt; CentOS 7(x86_64) &amp;gt; 10.2 [Stable] ：&lt;/p&gt;
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# MariaDB 10.2 CentOS repository list - created 2017-09-23 09:53 UTC&lt;/span&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# MariaDB 10.2 CentOS repository list - created 2017-09-23 09:53 UTC&lt;/span&gt;
 &lt;span class=&quot;c&quot;&gt;# http://downloads.mariadb.org/mariadb/repositories/&lt;/span&gt;
 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;mariadb]
 name &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; MariaDB
 baseurl &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; http://yum.mariadb.org/10.2/centos7-amd64
 &lt;span class=&quot;nv&quot;&gt;gpgkey&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
 &lt;span class=&quot;nv&quot;&gt;gpgcheck&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;vi /etc/yum.repos.d/MariaDB.repo
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;vi /etc/yum.repos.d/MariaDB.repo
 &lt;span class=&quot;c&quot;&gt;# 填入前面的代码段，ESC :wq 保存退出&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;3# 配置Nginx官方源
 根据&lt;a href=&quot;http://nginx.org/en/linux_packages.html#stable&quot;&gt;Nginx官方源&lt;/a&gt;，选择系统合适的版本&lt;/p&gt;
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;nginx]
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;nginx]
 &lt;span class=&quot;nv&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;nginx repo
 &lt;span class=&quot;nv&quot;&gt;baseurl&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;http://nginx.org/packages/centos/7/&lt;span class=&quot;nv&quot;&gt;$basearch&lt;/span&gt;/
 &lt;span class=&quot;nv&quot;&gt;gpgcheck&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0
 &lt;span class=&quot;nv&quot;&gt;enabled&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;vi /etc/yum.repos.d/nginx.repo
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;vi /etc/yum.repos.d/nginx.repo
 &lt;span class=&quot;c&quot;&gt;# 填入前面的代码段，ESC :wq 保存退出&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;4# 配置PHP源&lt;/p&gt;
 
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-rpm -Uvh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;rpm &lt;span class=&quot;nt&quot;&gt;-Uvh&lt;/span&gt; https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+rpm &lt;span class=&quot;nt&quot;&gt;-Uvh&lt;/span&gt; https://mirror.webtatic.com/yum/el7/webtatic-release.rpm
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;h4 id=&quot;安装&quot;&gt;安装&lt;/h4&gt;
 
 &lt;p&gt;1# 安装MariaDB&lt;/p&gt;
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;yum install MariaDB-server -y
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;yum install MariaDB-server &lt;span class=&quot;nt&quot;&gt;-y&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;p&gt;2# 安装Nginx&lt;/p&gt;
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;yum install nginx -y
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;yum install nginx &lt;span class=&quot;nt&quot;&gt;-y&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;p&gt;3# 安装PHP和常用扩展&lt;/p&gt;
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;yum install php71w-cli php71w-fpm -y
-yum install php71w-mbstring php71w-pdo -y
-yum install php71w-gd php71w-mcrypt -y
-yum install php71w-mysql php71w-xml -y
-yum install php71w-soap php71w-xmlrpc -y  
-yum install php71w-opcache -y
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;yum install php71w-cli php71w-fpm &lt;span class=&quot;nt&quot;&gt;-y&lt;/span&gt;
+yum install php71w-mbstring php71w-pdo &lt;span class=&quot;nt&quot;&gt;-y&lt;/span&gt;
+yum install php71w-gd php71w-mcrypt &lt;span class=&quot;nt&quot;&gt;-y&lt;/span&gt;
+yum install php71w-mysql php71w-xml &lt;span class=&quot;nt&quot;&gt;-y&lt;/span&gt;
+yum install php71w-soap php71w-xmlrpc &lt;span class=&quot;nt&quot;&gt;-y&lt;/span&gt;  
+yum install php71w-opcache &lt;span class=&quot;nt&quot;&gt;-y&lt;/span&gt;
 &lt;span class=&quot;c&quot;&gt;# 其他&lt;/span&gt;
 yum search php71w
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;h4 id=&quot;配置&quot;&gt;配置&lt;/h4&gt;
 &lt;p&gt;1# 设置MariaDB&lt;/p&gt;
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mysql_secure_installation
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mysql_secure_installation
 &lt;span class=&quot;c&quot;&gt;# 默认密码为空，要求键入旧密码时回车即可&lt;/span&gt;
 &lt;span class=&quot;c&quot;&gt;# 拒绝远程访问。如果实在需要外网连接，设置允许单独的ip&lt;/span&gt;
-GRANT ALL PRIVILEGES ON &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;数据库.]&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt; TO &lt;span class=&quot;s1&quot;&gt;'用户名'&lt;/span&gt;@&lt;span class=&quot;s1&quot;&gt;'允许访问的IP地址'&lt;/span&gt; IDENTIFIED BY &lt;span class=&quot;s1&quot;&gt;'密码'&lt;/span&gt; WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;数据库.]&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt; TO &lt;span class=&quot;s1&quot;&gt;'用户名'&lt;/span&gt;@&lt;span class=&quot;s1&quot;&gt;'允许访问的IP地址'&lt;/span&gt; IDENTIFIED BY &lt;span class=&quot;s1&quot;&gt;'密码'&lt;/span&gt; WITH GRANT OPTION&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 FLUSH PRIVILEGES；
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;p&gt;2# 设置PHP&lt;/p&gt;
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;vi /etc/php.ini
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;vi /etc/php.ini
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;p&gt;找到 ;cgi.fix_pathinfo=1 （可通过 /cgi.fix_pathinfo 搜索）&lt;/p&gt;
 
 &lt;p&gt;修改成 &lt;strong&gt;cgi.fix_pathinfo=0&lt;/strong&gt;&lt;/p&gt;
@@ -410,27 +436,24 @@ FLUSH PRIVILEGES；
 &lt;p&gt;原因可参考&lt;a href=&quot;http://www.laruence.com/2010/05/20/1495.html&quot;&gt;Nginx + PHP CGI的一个可能的安全漏洞&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;3# 配置Nginx&lt;/p&gt;
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;vi /etc/nginx/conf.d/default.conf
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;vi /etc/nginx/conf.d/default.conf
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;p&gt;修改以下代码段，配置正确的路径&lt;/p&gt;
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000&lt;/span&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000&lt;/span&gt;
 &lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;
 location ~ &lt;span class=&quot;se&quot;&gt;\.&lt;/span&gt;php&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-    root           /usr/share/nginx/html;
-    fastcgi_pass   127.0.0.1:9000;
-    fastcgi_index  index.php;
-    fastcgi_param  SCRIPT_FILENAME  &lt;span class=&quot;nv&quot;&gt;$document_root$fastcgi_script_name&lt;/span&gt;;
-    include        fastcgi_params;
+    root           /usr/share/nginx/html&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    fastcgi_pass   127.0.0.1:9000&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    fastcgi_index  index.php&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    fastcgi_param  SCRIPT_FILENAME  &lt;span class=&quot;nv&quot;&gt;$document_root$fastcgi_script_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    include        fastcgi_params&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;h4 id=&quot;测试&quot;&gt;测试&lt;/h4&gt;
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;systemctl restart nginx
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;systemctl restart nginx
 systemctl restart php-fpm
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;p&gt;&lt;img src=&quot;/img/in-post/phpinfo.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
@@ -442,30 +465,26 @@ systemctl restart php-fpm
 &lt;p&gt;PHP7刚出来时就以性能为主打，确实惊艳了不少PHPer。除了php7本身，鸟哥在自己博客分享了其他的几个技巧&lt;/p&gt;
 
 &lt;p&gt;1# 启用Zend Opcache （貌似7.1是默认开启）&lt;/p&gt;
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;vi /etc/php.ini
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;vi /etc/php.ini
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;p&gt;加入以下代码段&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;zend_extension=opcache.so
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;zend_extension=opcache.so
 opcache.enable=1
 opcache.enable_cli=1&quot;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;p&gt;ESC :wq 保存退出&lt;/p&gt;
 
 &lt;p&gt;2# 使用新的编译器
 gcc version &amp;gt;= 4.8&lt;/p&gt;
 
 &lt;p&gt;3# HugePage&lt;/p&gt;
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sysctl vm.nr_hugepages&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;512
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sysctl vm.nr_hugepages&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;512
 
 vi /etc/php.ini
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;p&gt;加入以下代码段&lt;/p&gt;
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;opcache.huge_code_pages&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;opcache.huge_code_pages&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;p&gt;ESC :wq 保存退出&lt;/p&gt;
 
 &lt;p&gt;4# &lt;a href=&quot;http://www.laruence.com/2015/12/04/3086.html&quot;&gt;更多&lt;/a&gt;&lt;/p&gt;

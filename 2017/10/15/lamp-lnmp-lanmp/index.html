@@ -211,6 +211,8 @@
   <p>LNMP = Linux Nginx MySQL PHP</p>
 </blockquote>
 
+<h5 id="概述">概述</h5>
+
 <p>区别在于A和N，也就是同是web服务器，原本是没有解析动态网页（包括php Python等）的能力。那他们
 是如何实现可以解析php程序呢？</p>
 
@@ -223,7 +225,7 @@
 实际的过程应该更加复杂。
 需要先引出一些名词：SAPI，mod_php，mod_fastcgi，CGI，FastCGI，PHP-CGI，PHP-FPM。</p>
 
-<p><strong>SAPI#</strong></p>
+<h5 id="sapi">SAPI</h5>
 
 <p>pic# 这个图不是我画的</p>
 
@@ -237,7 +239,7 @@ PHP提供了很多种SAPI，Apache的mod_php，Nginx的mod_fastcgi，还有Shell
 
 <p>那我们就来谈谈Apache的mod_php，Nginx的mod_fastcgi。</p>
 
-<p><strong>mod_php#</strong></p>
+<h5 id="mod_php">mod_php</h5>
 
 <p>在这种模式下，php被编译为apache的一个内置模块，在启动时加载。当有一个php请求过来时，
 直接在httpd进程里完成php的解释运行，将结果返回。</p>
@@ -246,7 +248,7 @@ PHP提供了很多种SAPI，Apache的mod_php，Nginx的mod_fastcgi，还有Shell
 
 <p><img src="/img/in-post/201710153.png" alt="img" /></p>
 
-<p><strong>mod_fastcgi#</strong></p>
+<h5 id="mod_fastcgi">mod_fastcgi</h5>
 
 <p>这是另一种SAPI，在LAMP中常见，涉及到CGI，FastCGI，PHP-CGI，PHP-FPM这几个名词。</p>
 
@@ -347,10 +349,49 @@ Swoole内置了Http/WebSocket服务器端/客户端、Http2.0服务器端/客户
 PHPer可以基于swoole去实现过去PHP无法实现的功能。</p>
 </blockquote>
 
-<p>Swoole在LNSMP中的作用和LANMP中的Apache一样，处理动态请求。Swoole处理动态请求，涉及到的SAPI
+<p>Swoole内置异步非阻塞多进程的Http服务器，在LNSMP中的作用和LANMP中的Apache一样，处理动态请求。Swoole处理动态请求，涉及到的SAPI
 是CLI(commandline，命令行)模式。</p>
 
+<p>具体Swoole和php是怎么配合运行的，坦白讲，有点懵逼，就不误导了。</p>
+
+<h4 id="对比">对比</h4>
+
+<p>从前面的介绍可以看出，每个模式的优点和局限性。需要补充的是，Swoole性能是最好的。这个结论官网有宣传，也有其他同学测试过。有时间，一定好好学习Swoole。</p>
+
 <hr />
+
+<h3 id="结尾">结尾</h3>
+
+<h4 id="补充">补充</h4>
+
+<p>1# PHP-FPM虽然在Nginx上使用较多，但Apache上也可以配置使用。同样，Swoole也可以配合Apache。</p>
+
+<p>2# MySQL呢？PHP和MySQL的交互，需要通过PHP extension。</p>
+
+<p>3# 命令行模式（CommandLine），常shell上执行。我自己常用来做一些耗时或定时任务。</p>
+
+<h4 id="参考文章">参考文章</h4>
+
+<ul>
+  <li>
+    <p><a href="http://www.cnblogs.com/zl0372/articles/php_4.html">mod_php、mod_fastcgi和php-fpm的介绍,对比,和性能数据 - 日落紫荆</a></p>
+  </li>
+  <li>
+    <p><a href="http://www.cnblogs.com/yujon/p/6209551.html">深入理解PHP的运行模式 - 余朝忠</a></p>
+  </li>
+  <li>
+    <p><a href="https://www.qcloud.com/community/article/385799001490608925">三种 PHP 运行环境的性能对比 - 石仕海</a></p>
+  </li>
+  <li>
+    <p><a href="http://article.gitos.cn/2015/Aurthur/PHP-Mod-PHP-And-Fast-CGI-Explain.html">PHP填坑记之FastCGI与mod_php详解 - Aurthur</a></p>
+  </li>
+  <li>
+    <p><a href="http://m.php.cn/article/325869.html">Nginx、CGI、FastCGI、PHP-CGI、PHP-FPM处理流程 - PHP中文网</a></p>
+  </li>
+  <li>
+    <p><a href="https://tech.meituan.com/php_success_or_failure_web_dev_is_the_sole_cause.html">【思考】PHP——成也Web，败也Web - 七月的夏天</a></p>
+  </li>
+</ul>
 
 
                 <hr>
