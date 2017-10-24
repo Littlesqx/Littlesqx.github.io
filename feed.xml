@@ -5,8 +5,8 @@
     <description>littlesqx's blog</description>
     <link>https://littlesqx.github.io/</link>
     <atom:link href="https://littlesqx.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Tue, 24 Oct 2017 20:07:58 +0800</pubDate>
-    <lastBuildDate>Tue, 24 Oct 2017 20:07:58 +0800</lastBuildDate>
+    <pubDate>Tue, 24 Oct 2017 20:43:44 +0800</pubDate>
+    <lastBuildDate>Tue, 24 Oct 2017 20:43:44 +0800</lastBuildDate>
     <generator>Jekyll v3.6.0</generator>
     
       <item>
@@ -16,7 +16,7 @@
 &lt;/blockquote&gt;
 
 &lt;h3 id=&quot;前言&quot;&gt;前言&lt;/h3&gt;
-&lt;p&gt;源自于最近在写的一个项目，原因是前期的axios封装考虑得不是很好，逐渐出现冗余。趁着还早，就重构一些这部分。&lt;/p&gt;
+&lt;p&gt;源自于最近在写的一个项目，原因是前期的axios封装考虑得不是很好，逐渐出现冗余。趁着还早，就重构一下这部分。&lt;/p&gt;
 
 &lt;h3 id=&quot;正文&quot;&gt;正文&lt;/h3&gt;
 
@@ -86,8 +86,7 @@
 
 &lt;p&gt;我的是用在vue上， /utils/http.js&lt;/p&gt;
 
-&lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Vue&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'vue'&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;qs&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'qs'&lt;/span&gt;
+&lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;qs&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'qs'&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;axios&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'axios'&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;store&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'../../store'&lt;/span&gt;
 
@@ -196,7 +195,7 @@
         
         <category>axios</category>
         
-        <category>Ajax</category>
+        <category>JavaScript</category>
         
         
       </item>
