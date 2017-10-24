@@ -10,9 +10,9 @@
     <meta name="keyword"  content="git php mysql laravel littlesqx">
     <link rel="shortcut icon" href="https://littlesqx-github-io.b0.upaiyun.com/img/favicon.ico">
 
-    <title>Hello World! - Littlesqx Blog</title>
+    <title>记一次axios封装 - Littlesqx Blog</title>
 
-    <link rel="canonical" href="https://littlesqx.github.io/2017/09/16/hello-world/">
+    <link rel="canonical" href="https://littlesqx.github.io/2017/10/24/axios-packaging-notes/">
 
     <!-- nprogress CSS -->
     <link href="https://cdn.bootcss.com/nprogress/0.2.0/nprogress.min.css" rel="stylesheet">
@@ -151,15 +151,17 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#博客" title="博客">博客</a>
+                        <a class="tag" href="/tags/#axios" title="axios">axios</a>
+                        
+                        <a class="tag" href="/tags/#Ajax" title="Ajax">Ajax</a>
                         
                     </div>
-                    <h1>Hello World!</h1>
+                    <h1>记一次axios封装</h1>
                     
                     
-                    <h2 class="subheading">it's never too late to start studing anything</h2>
+                    <h2 class="subheading"></h2>
                     
-                    <span class="meta">Posted by Littlesqx on September 16, 2017</span>
+                    <span class="meta">Posted by Littlesqx on October 24, 2017</span>
                 </div>
             </div>
         </div>
@@ -178,8 +180,183 @@
                 post-container">
 
 				<blockquote>
-  <p>keep!</p>
+  <p>就祝自己1024快乐吧！</p>
 </blockquote>
+
+<h3 id="前言">前言</h3>
+<p>源自于最近在写的一个项目，原因是前期的axios封装考虑得不是很好，逐渐出现冗余。趁着还早，就重构一些这部分。</p>
+
+<h3 id="正文">正文</h3>
+
+<h4 id="axios">axios</h4>
+
+<p>web开发里，axios是首推的Ajax库了，应该说基本上都用它。</p>
+
+<p>官方是这样介绍的：</p>
+
+<blockquote>
+  <p>Make XMLHttpRequests from the browser</p>
+
+  <p>Make http requests from node.js</p>
+
+  <p>Supports the Promise API</p>
+
+  <p>Intercept request and response</p>
+
+  <p>Transform request and response data</p>
+
+  <p>Cancel requests</p>
+
+  <p>Automatic transforms for JSON data</p>
+
+  <p>Client side support for protecting against XSRF</p>
+</blockquote>
+
+<h4 id="谈谈流程">谈谈流程</h4>
+
+<p>一个体验好的web应用，应该具备的请求过程有什么？</p>
+
+<p>pic# 对，我又画了个图</p>
+
+<p><img src="/img/in-post/201710241.png" alt="img" /></p>
+
+<p>确定参数：请求url，请求方式，请求参数，其他请求参数（时限？请求头？）</p>
+
+<p>过渡动画：请求开始后一直到请求结束之间有过渡动画，容易想到axios提供的拦截器</p>
+
+<p>视图响应：提示框？对话框？路由跳转？</p>
+
+<h4 id="怎么实现">怎么实现</h4>
+
+<h5 id="确定参数">确定参数</h5>
+
+<p>1# 接口是多样的，接口的代码入口，是以url还是method来区分？</p>
+
+<p>其实都有，以url为区分，会设计为每个接口一个函数；以method为区分，一般只有涉及到的get，post，put，patch，delete，那就主要有这么几个函数，实际调用再具体指定url。</p>
+
+<p>个人倾向于后者，应为当借口类型多了，那前者写比较多函数，有点多余了。但是后者有个问题，当url变动时，每一处调用都需要修改。参考工厂模式的思想，可以把url写到单个配置文件，这样就可以避免了。</p>
+
+<p>2# 动态的参数怎么设置？比如验证token，接受语言。</p>
+
+<p>这部分配置都在请求头处，那可以增加header参数，因为axios已提供动态修改或header的api。</p>
+
+<p>一些公共的header，比如接受语言，那就可以利用拦截器增加。</p>
+
+<h5 id="过渡动画">过渡动画</h5>
+
+<p>axios的拦截器包括了请求前的拦截和响应后的拦截。那过渡动画的增加就简单了。</p>
+
+<h5 id="视图响应">视图响应</h5>
+
+<p>还是选择拦截器，可根据响应结果做具体处理。</p>
+
+<h4 id="代码样例">代码样例</h4>
+
+<p>我的是用在vue上， /utils/http.js</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nx">Vue</span> <span class="k">from</span> <span class="s1">'vue'</span>
+<span class="k">import</span> <span class="nx">qs</span> <span class="k">from</span> <span class="s1">'qs'</span>
+<span class="k">import</span> <span class="nx">axios</span> <span class="k">from</span> <span class="s1">'axios'</span>
+<span class="k">import</span> <span class="nx">store</span> <span class="k">from</span> <span class="s1">'../../store'</span>
+
+<span class="nx">axios</span><span class="p">.</span><span class="nx">defaults</span><span class="p">.</span><span class="nx">headers</span><span class="p">.</span><span class="nx">common</span><span class="p">[</span><span class="s1">'X-Requested-With'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'XMLHttpRequest'</span>
+<span class="nx">axios</span><span class="p">.</span><span class="nx">defaults</span><span class="p">.</span><span class="nx">timeout</span> <span class="o">=</span> <span class="mi">10000</span> <span class="c1">// ms</span>
+<span class="nx">axios</span><span class="p">.</span><span class="nx">defaults</span><span class="p">.</span><span class="nx">baseURL</span> <span class="o">=</span> <span class="s1">'/api'</span>
+<span class="nx">axios</span><span class="p">.</span><span class="nx">defaults</span><span class="p">.</span><span class="nx">headers</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"Content-Type"</span><span class="p">:</span> <span class="s2">"application/x-www-form-urlencoded"</span><span class="p">,</span>
+    <span class="s1">'accept-language'</span><span class="p">:</span> <span class="nx">store</span><span class="p">.</span><span class="nx">getters</span><span class="p">.</span><span class="nx">lang</span>
+<span class="p">}</span>
+<span class="c1">// cors with cookie</span>
+<span class="c1">// axios.defaults.withCredentials = true</span>
+
+<span class="nx">axios</span><span class="p">.</span><span class="nx">interceptors</span><span class="p">.</span><span class="nx">request</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">config</span> <span class="o">=&gt;</span> <span class="p">{</span>
+
+    <span class="c1">// set configs</span>
+    <span class="nx">config</span><span class="p">.</span><span class="nx">headers</span><span class="p">[</span><span class="s1">'accept-language'</span><span class="p">]</span> <span class="o">=</span> <span class="nx">store</span><span class="p">.</span><span class="nx">getters</span><span class="p">.</span><span class="nx">lang</span>
+
+    <span class="c1">// loading start</span>
+    <span class="c1">// ...</span>
+
+    <span class="k">return</span> <span class="nx">config</span>
+<span class="p">},</span> <span class="nx">error</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nb">Promise</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span>
+<span class="p">})</span>
+
+<span class="nx">axios</span><span class="p">.</span><span class="nx">interceptors</span><span class="p">.</span><span class="nx">response</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">response</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">response</span>
+<span class="p">},</span> <span class="nx">error</span> <span class="o">=&gt;</span> <span class="p">{</span>
+
+    <span class="kd">const</span> <span class="p">{</span> <span class="nx">response</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">error</span>
+
+    <span class="c1">// loading finish</span>
+    <span class="c1">// ...</span>
+
+    <span class="c1">// deal with errorResponse</span>
+    <span class="c1">// ...</span>
+
+    <span class="k">return</span> <span class="nb">Promise</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span>
+<span class="p">})</span>
+
+<span class="k">export</span> <span class="k">default</span> <span class="p">{</span>
+    <span class="kd">get</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">params</span><span class="p">,</span> <span class="nx">header</span> <span class="o">=</span> <span class="p">{})</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">axios</span><span class="p">.</span><span class="kd">get</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="p">{</span>
+            <span class="nx">params</span><span class="p">,</span> <span class="nx">header</span>
+        <span class="p">})</span>
+    <span class="p">},</span>
+    <span class="nx">post</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">params</span><span class="p">,</span> <span class="nx">header</span> <span class="o">=</span> <span class="p">{})</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">axios</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">qs</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">params</span><span class="p">),</span> <span class="p">{</span>
+            <span class="nx">header</span>
+        <span class="p">})</span>
+    <span class="p">},</span>
+    <span class="nx">put</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">params</span><span class="p">,</span> <span class="nx">header</span> <span class="o">=</span> <span class="p">{})</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">axios</span><span class="p">.</span><span class="nx">put</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">qs</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">params</span><span class="p">),</span> <span class="p">{</span>
+            <span class="nx">header</span>
+        <span class="p">})</span>
+    <span class="p">},</span>
+    <span class="nx">patch</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">params</span><span class="p">,</span> <span class="nx">header</span> <span class="o">=</span> <span class="p">{})</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">axios</span><span class="p">.</span><span class="nx">patch</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">qs</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">params</span><span class="p">),</span> <span class="p">{</span>
+            <span class="nx">header</span>
+        <span class="p">})</span>
+    <span class="p">},</span>
+    <span class="k">delete</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">params</span><span class="p">,</span> <span class="nx">header</span> <span class="o">=</span> <span class="p">{})</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">axios</span><span class="p">.</span><span class="k">delete</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="p">{</span>
+            <span class="nx">header</span><span class="p">,</span> <span class="nx">params</span>
+        <span class="p">})</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>实际使用</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nx">http</span> <span class="k">from</span> <span class="s1">'./utils/http'</span>
+
+<span class="nx">fetch</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">http</span><span class="p">.</span><span class="kd">get</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">params</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span> <span class="nx">response</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="c1">// ...</span>
+  <span class="p">}).</span><span class="k">catch</span><span class="p">(</span> <span class="nx">error</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="c1">// ...</span>
+  <span class="p">})</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><strong>有必要使用async/await代替Promise</strong></p>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nx">http</span> <span class="k">from</span> <span class="s1">'./utils/http'</span>
+
+<span class="k">async</span> <span class="nx">fetch</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">try</span> <span class="p">{</span>
+    <span class="kd">let</span> <span class="nx">response</span> <span class="o">=</span> <span class="kr">await</span> <span class="nx">http</span><span class="p">.</span><span class="kd">get</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">params</span><span class="p">)</span>
+    <span class="c1">// ...</span>
+  <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// ...</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>使用async/await有效避免很多回调的代码，线性的执行也更好理解。</p>
+
+<h3 id="结尾">结尾</h3>
+
+<p>写完啦，下班噜~~</p>
 
 
                 <hr>
@@ -192,10 +369,10 @@
 
                 <ul class="pager">
                     
-                    
-                    <li class="next">
-                        <a href="/2017/09/23/centos7-lnmp/" data-toggle="tooltip" data-placement="top" title="在CentOS 7 上配置 LNMP 环境">Next Post &rarr;</a>
+                    <li class="previous">
+                        <a href="/2017/10/15/lamp-lnmp-lanmp/" data-toggle="tooltip" data-placement="top" title="写一篇介绍和对比文章，关于 LAMP LNMP LANMP，还有...">&larr; Previous Post</a>
                     </li>
+                    
                     
                 </ul>
 
