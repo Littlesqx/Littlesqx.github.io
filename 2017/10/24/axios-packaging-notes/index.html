@@ -15,7 +15,7 @@
     <link rel="canonical" href="https://littlesqx.github.io/2017/10/24/axios-packaging-notes/">
 
     <!-- nprogress CSS -->
-    <link href="https://cdn.bootcss.com/nprogress/0.2.0/nprogress.min.css" rel="stylesheet">
+    <link href="https://littlesqx-github-io.b0.upaiyun.com/css/nprogress.min.css" rel="stylesheet">
     <style media="screen">
       #nprogress .bar {
         height: 3px;
@@ -254,9 +254,9 @@
 
 <p>我的是用在vue上， /utils/http.js</p>
 
-<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nx">qs</span> <span class="k">from</span> <span class="s1">'qs'</span>
-<span class="k">import</span> <span class="nx">axios</span> <span class="k">from</span> <span class="s1">'axios'</span>
-<span class="k">import</span> <span class="nx">store</span> <span class="k">from</span> <span class="s1">'../../store'</span>
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="kr">import</span> <span class="nx">qs</span> <span class="nx">from</span> <span class="s1">'qs'</span>
+<span class="kr">import</span> <span class="nx">axios</span> <span class="nx">from</span> <span class="s1">'axios'</span>
+<span class="kr">import</span> <span class="nx">store</span> <span class="nx">from</span> <span class="s1">'../../store'</span>
 
 <span class="nx">axios</span><span class="p">.</span><span class="nx">defaults</span><span class="p">.</span><span class="nx">headers</span><span class="p">.</span><span class="nx">common</span><span class="p">[</span><span class="s1">'X-Requested-With'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'XMLHttpRequest'</span>
 <span class="nx">axios</span><span class="p">.</span><span class="nx">defaults</span><span class="p">.</span><span class="nx">timeout</span> <span class="o">=</span> <span class="mi">10000</span> <span class="c1">// ms</span>
@@ -278,14 +278,14 @@
 
     <span class="k">return</span> <span class="nx">config</span>
 <span class="p">},</span> <span class="nx">error</span> <span class="o">=&gt;</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="nb">Promise</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nx">Promise</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span>
 <span class="p">})</span>
 
 <span class="nx">axios</span><span class="p">.</span><span class="nx">interceptors</span><span class="p">.</span><span class="nx">response</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">response</span> <span class="o">=&gt;</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">response</span>
 <span class="p">},</span> <span class="nx">error</span> <span class="o">=&gt;</span> <span class="p">{</span>
 
-    <span class="kd">const</span> <span class="p">{</span> <span class="nx">response</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">error</span>
+    <span class="kr">const</span> <span class="p">{</span> <span class="nx">response</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">error</span>
 
     <span class="c1">// loading finish</span>
     <span class="c1">// ...</span>
@@ -293,12 +293,12 @@
     <span class="c1">// deal with errorResponse</span>
     <span class="c1">// ...</span>
 
-    <span class="k">return</span> <span class="nb">Promise</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nx">Promise</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span>
 <span class="p">})</span>
 
-<span class="k">export</span> <span class="k">default</span> <span class="p">{</span>
-    <span class="kd">get</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">params</span><span class="p">,</span> <span class="nx">header</span> <span class="o">=</span> <span class="p">{})</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="nx">axios</span><span class="p">.</span><span class="kd">get</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="p">{</span>
+<span class="kr">export</span> <span class="k">default</span> <span class="p">{</span>
+    <span class="nx">get</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">params</span><span class="p">,</span> <span class="nx">header</span> <span class="o">=</span> <span class="p">{})</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">axios</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="p">{</span>
             <span class="nx">params</span><span class="p">,</span> <span class="nx">header</span>
         <span class="p">})</span>
     <span class="p">},</span>
@@ -323,33 +323,36 @@
         <span class="p">})</span>
     <span class="p">}</span>
 <span class="p">}</span>
-</code></pre></div></div>
+</code></pre>
+</div>
 
 <p>实际使用</p>
 
-<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nx">http</span> <span class="k">from</span> <span class="s1">'./utils/http'</span>
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="kr">import</span> <span class="nx">http</span> <span class="nx">from</span> <span class="s1">'./utils/http'</span>
 
 <span class="nx">fetch</span><span class="p">()</span> <span class="p">{</span>
-  <span class="nx">http</span><span class="p">.</span><span class="kd">get</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">params</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span> <span class="nx">response</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="nx">http</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">params</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span> <span class="nx">response</span> <span class="o">=&gt;</span> <span class="p">{</span>
     <span class="c1">// ...</span>
   <span class="p">}).</span><span class="k">catch</span><span class="p">(</span> <span class="nx">error</span> <span class="o">=&gt;</span> <span class="p">{</span>
     <span class="c1">// ...</span>
   <span class="p">})</span>
 <span class="p">}</span>
-</code></pre></div></div>
+</code></pre>
+</div>
 
 <p><strong>有必要使用async/await代替Promise</strong></p>
-<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nx">http</span> <span class="k">from</span> <span class="s1">'./utils/http'</span>
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="kr">import</span> <span class="nx">http</span> <span class="nx">from</span> <span class="s1">'./utils/http'</span>
 
-<span class="k">async</span> <span class="nx">fetch</span><span class="p">()</span> <span class="p">{</span>
+<span class="nx">async</span> <span class="nx">fetch</span><span class="p">()</span> <span class="p">{</span>
   <span class="k">try</span> <span class="p">{</span>
-    <span class="kd">let</span> <span class="nx">response</span> <span class="o">=</span> <span class="kr">await</span> <span class="nx">http</span><span class="p">.</span><span class="kd">get</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">params</span><span class="p">)</span>
+    <span class="kd">let</span> <span class="nx">response</span> <span class="o">=</span> <span class="nx">await</span> <span class="nx">http</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">params</span><span class="p">)</span>
     <span class="c1">// ...</span>
   <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
     <span class="c1">// ...</span>
   <span class="p">}</span>
 <span class="p">}</span>
-</code></pre></div></div>
+</code></pre>
+</div>
 
 <p>使用async/await有效避免很多回调的代码，线性的执行也更好理解。</p>
 
@@ -623,7 +626,7 @@
 <script src="https://littlesqx-github-io.b0.upaiyun.com/js/hux-blog.min.js "></script>
 
 <!-- nprogress JavaScript -->
-<script src="https://cdn.bootcss.com/nprogress/0.2.0/nprogress.min.js"></script>
+<script src="https://littlesqx-github-io.b0.upaiyun.com/js/nprogress.min.js "></script>
 
 
 <!-- async load function -->
@@ -673,7 +676,7 @@
 
 <!--fastClick.js -->
 <script>
-    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+    async("https://littlesqx-github-io.b0.upaiyun.com/js/fastclick.min.js ", function(){
         var $nav = document.querySelector("nav");
         if($nav) FastClick.attach($nav);
     })
