@@ -252,11 +252,11 @@
 
 <h4 id="代码样例">代码样例</h4>
 
-<p>我的是用在vue上， /utils/http.js</p>
+<p>我的是用在vue上， ./utils/http.js</p>
 
 <div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="kr">import</span> <span class="nx">qs</span> <span class="nx">from</span> <span class="s1">'qs'</span>
 <span class="kr">import</span> <span class="nx">axios</span> <span class="nx">from</span> <span class="s1">'axios'</span>
-<span class="kr">import</span> <span class="nx">store</span> <span class="nx">from</span> <span class="s1">'../../store'</span>
+<span class="kr">import</span> <span class="nx">store</span> <span class="nx">from</span> <span class="s1">'../store'</span>
 
 <span class="nx">axios</span><span class="p">.</span><span class="nx">defaults</span><span class="p">.</span><span class="nx">headers</span><span class="p">.</span><span class="nx">common</span><span class="p">[</span><span class="s1">'X-Requested-With'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'XMLHttpRequest'</span>
 <span class="nx">axios</span><span class="p">.</span><span class="nx">defaults</span><span class="p">.</span><span class="nx">timeout</span> <span class="o">=</span> <span class="mi">10000</span> <span class="c1">// ms</span>
@@ -326,7 +326,7 @@
 </code></pre>
 </div>
 
-<p>实际使用</p>
+<p>调用代码</p>
 
 <div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="kr">import</span> <span class="nx">http</span> <span class="nx">from</span> <span class="s1">'./utils/http'</span>
 
@@ -354,7 +354,7 @@
 </code></pre>
 </div>
 
-<p>使用async/await有效避免很多回调的代码，线性的执行也更好理解。</p>
+<p>使用async/await有效避免很多回调的代码，线性的执行更好理解。</p>
 
 <h3 id="结尾">结尾</h3>
 
@@ -375,6 +375,10 @@
                         <a href="/2017/10/15/lamp-lnmp-lanmp/" data-toggle="tooltip" data-placement="top" title="写一篇介绍和对比文章，关于 LAMP LNMP LANMP，还有...">&larr; Previous Post</a>
                     </li>
                     
+                    
+                    <li class="next">
+                        <a href="/2017/12/08/elasticsearch-learn-notes-1/" data-toggle="tooltip" data-placement="top" title="you know, for search - ElasticSearch 学习笔记(1)">Next Post &rarr;</a>
+                    </li>
                     
                 </ul>
 
@@ -479,6 +483,12 @@
                             
                 				<a href="/tags/#JavaScript" title="JavaScript" rel="1">
                                     JavaScript
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#ElasticSearch" title="ElasticSearch" rel="1">
+                                    ElasticSearch
                                 </a>
                             
         				

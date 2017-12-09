@@ -5,9 +5,204 @@
     <description>littlesqx's blog</description>
     <link>https://littlesqx.github.io/</link>
     <atom:link href="https://littlesqx.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Tue, 24 Oct 2017 23:42:22 +0800</pubDate>
-    <lastBuildDate>Tue, 24 Oct 2017 23:42:22 +0800</lastBuildDate>
+    <pubDate>Sat, 09 Dec 2017 18:49:50 +0800</pubDate>
+    <lastBuildDate>Sat, 09 Dec 2017 18:49:50 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
+    
+      <item>
+        <title>you know, for search - ElasticSearch 学习笔记(1)</title>
+        <description>&lt;blockquote&gt;
+  &lt;p&gt;好大的胆子，写了(1)，不知道后面还能不能坚持。。。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;elasticsearch-是什么-&quot;&gt;ElasticSearch 是什么 ?&lt;/h3&gt;
+
+&lt;p&gt;&lt;strong&gt;怒抄一波介绍：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Elasticsearch是一个基于Apache Lucene(TM)的开源搜索引擎。无论在开源还是专有领域，Lucene可以被认为是迄今为止最先进、性能最好的、功能最全的搜索引擎库。
+&lt;br /&gt;&lt;br /&gt;
+不过，Elasticsearch不仅仅是Lucene和全文搜索，我们还能这样去描述它：&lt;/p&gt;
+  &lt;ul&gt;
+    &lt;li&gt;分布式的实时文件存储，每个字段都被索引并可被搜索&lt;/li&gt;
+    &lt;li&gt;分布式的实时分析搜索引擎&lt;/li&gt;
+    &lt;li&gt;可以扩展到上百台服务器，处理PB级结构化或非结构化数据&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;p&gt;而且，所有的这些功能被集成到一个服务里面，你的应用可以通过简单的RESTful API、各种语言的客户端甚至命令行与之交互。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;高大上的感觉，没关系，来个与传统关系型数据库的类比：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Relational DB&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;ElasticSearch&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Databases&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Indices&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Tables&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Types&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Rows&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Documents&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Columns&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Fields&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Schemas&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Mappings&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Index&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Everything is indexed&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;SQL(DB Client)&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Query DSL (RESTful API / Java API)&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;&lt;strong&gt;这在比较多关于ElasticSearch的文章也提到过，甚至包括官方的文档。虽然很能帮助入门理解，然而，官方逐渐意识到了这是一个 bad analogy。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;This was a bad analogy that led to incorrect assumptions. In an SQL database, tables are independent of each other. The columns in one table have no bearing on columns with the same name in another table. This is not the case for fields in a mapping type.
+&lt;br /&gt;&lt;br /&gt;
+In an Elasticsearch index, fields that have the same name in different mapping types are backed by the same Lucene field internally.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;理解这段话之前，先理解ElasticSearch里的各种概念&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;1# 索引 (Index)&lt;/strong&gt;
+**
+拥有相似特征的文档的集合。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;2# 类型 (Type)&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;del&gt;在一个索引中，你可以定义一种或多种类型。一个类型是你的索引的一个逻辑上的分类/分区，其语义完全由你来定。通常，会为具有一组相同字段的文档定义一个类型。&lt;/del&gt; 删除线的原因后面补充。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;3# 文档 (Document)&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;一个文档是一个可被索引的基础信息单元。文档以JSON格式来表示。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;4# 映射 (Mapping)&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;del&gt;映射(mapping)机制用于进行字段类型确认，将每个字段匹配为一种确定的数据类型(string, number, booleans, date等)。此外，映射机制也可以给字段绑定使用的字段格式和分析器(analyzer)。&lt;/del&gt; 删除原因同上。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;5# 近实时 (Near Real Time, NRT)&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Elasticsearch 是一个接近实时的搜索平台。从索引一个文档直到这个文档能够被搜索到有一个很小的延迟（通常是 1 秒）。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;6# 集群 (Cluster)&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;一个集群就是由一个或多个节点组织在一起， 它们共同持有你全部的数据， 并一起提供索引和搜索功能。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;7# 节点 (Node)&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;一个节点是你集群中的一个服务器，作为集群的一部分，它存储你的数据，参与集群的索引和搜索功能。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;8# 分片和复制 (Shards and Replicas)&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Elasticsearch提供了将索引划分成多片的能力，这些片叫做 &lt;strong&gt;分片&lt;/strong&gt; 。每个分片本身也是一个功能完善并且独立的“索引”，这个“索引” 可以被放置到集群中的任何节点上。&lt;/p&gt;
+
+&lt;p&gt;分片之所以重要，主要有两方面的原因：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;允许你水平分割/扩展你的内容容量&lt;/li&gt;
+  &lt;li&gt;允许你在分片（位于多个节点上）之上进行分布式的、并行的操作，进而提高性能/吞吐量&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Elasticsearch允许你创建分片的一份或多份拷贝，这些拷贝叫做复制分片，或者直接叫 &lt;strong&gt;复制&lt;/strong&gt; 。&lt;/p&gt;
+
+&lt;p&gt;复制之所以重要，有两个主要原因：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;在分片/节点失败的情况下，复制提供了高可用性。复制分片不与原/主要分片置于同一节点上是非常重要的。&lt;/li&gt;
+  &lt;li&gt;因为搜索可以在所有的复制上并行运行，复制可以扩展你的搜索量/吞吐量&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;总之，每个索引可以被分成多个分片。一个索引也可以被复制0次（即没有复制） 或多次。一旦复制了，每个索引就有了主分片（作为复制源的分片）和复制分片（主分片的拷贝）。 分片和复制的数量可以在索引创建的时候指定。&lt;strong&gt;在索引创建之后，你可以在任何时候动态地改变复制的数量，但是你不能再改变分片的数量。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;补充删除线的原因&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;官方文档 &lt;a href=&quot;https://www.elastic.co/guide/en/elasticsearch/reference/6.0/removal-of-types.html&quot;&gt;Elasticsearch Reference [6.0] » Mapping » Removal of mapping types&lt;/a&gt; 除了提到了类比传统关系型数据库是一个bad analogy，还提到了关于映射和类型的未来。甚至给出了一个移除时间表。一句话总结，其实自5.6版本后，行动就开始了，现在最新的6.x版本已经不支持一个索引里有多种类型，类型(Type)已经名存实亡，后面的版本将逐步移除映射和类型。&lt;/p&gt;
+
+&lt;h3 id=&quot;为什么使用elasticsearch-&quot;&gt;为什么使用ElasticSearch ？&lt;/h3&gt;
+
+&lt;p&gt;提这么一个小结，对于我这种萌新有点逞强。查阅了资料可以从他的优势和场景回答。&lt;/p&gt;
+
+&lt;p&gt;优势：部署和基本使用十分简单，查询快速，性能优越，可扩展，高可用…&lt;/p&gt;
+
+&lt;p&gt;场景：搜索、日志、统计、分析、监控…&lt;/p&gt;
+
+&lt;p&gt;为什么ElasticSearch那么快，可以参考 &lt;a href=&quot;https://neway6655.github.io/elasticsearch/2015/09/11/elasticsearch-study-notes.html#reference&quot;&gt;ElasticSearch学习笔记 - Neway&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;自己看完后不是很懂，大概了解到这几个关键点：&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Everything is indexed&lt;/strong&gt;、&lt;strong&gt;倒排索引&lt;/strong&gt;、&lt;strong&gt;利用内存计算&lt;/strong&gt;、&lt;strong&gt;FST(Finite State Transducers)压缩技术&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;怎么使用elasticsearch-&quot;&gt;怎么使用ElasticSearch ?&lt;/h3&gt;
+
+&lt;p&gt;&lt;strong&gt;下载和安装&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;请到&lt;a href=&quot;https://www.elastic.co/&quot;&gt;官方&lt;/a&gt;下载。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;配置&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;服务器配置，有几点需要注意：&lt;/p&gt;
+
+&lt;p&gt;1# 不能root账号执行，显然是出于安全考虑。解决办法是新建ElasticSearch用户组和用户。&lt;/p&gt;
+
+&lt;p&gt;2# Linux用户最大使用进程数。 参考 &lt;a href=&quot;https://www.elastic.co/guide/en/elasticsearch/reference/6.0/setting-system-settings.html&quot;&gt;system-settings&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;3# vm-max-map-count。参考 &lt;a href=&quot;https://www.elastic.co/guide/en/elasticsearch/reference/6.0/vm-max-map-count.html&quot;&gt;vm-max-map-count&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;4# jvm 内存限制。官方建议设置为机身最大内存的一半，但不超过32G。参考 &lt;a href=&quot;https://www.elastic.co/guide/en/elasticsearch/reference/6.0/heap-size.html&quot;&gt;heap-size&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;重要的ElasticSearch配置。 &lt;a href=&quot;https://www.elastic.co/guide/en/elasticsearch/reference/6.0/important-settings.html&quot;&gt;important-settings&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;使用&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;JAVA API 和 RESTful API。推荐后者，详细见官方文档。&lt;/p&gt;
+
+&lt;h4 id=&quot;参考文章&quot;&gt;参考文章&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://endymecy.gitbooks.io/elasticsearch-guide-chinese/content/index.html&quot;&gt;ElasticSearch中文开发指南&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://www.gitbook.com/book/looly/elasticsearch-the-definitive-guide-cn/details&quot;&gt;ElasticSearch权威指南&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://www.elastic.co/guide/en/elasticsearch/reference/6.0/index.html&quot;&gt;Elasticsearch Reference 6.0&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;http://www.javajh.com/rest/article/297e9e7954952e6d0154f8b998090013.html&quot;&gt;Elasticsearch 和 传统关系型数据库的对比&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://neway6655.github.io/elasticsearch/2015/09/11/elasticsearch-study-notes.html#reference&quot;&gt;ElasticSearch学习笔记 - Neway&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Fri, 08 Dec 2017 17:05:01 +0800</pubDate>
+        <link>https://littlesqx.github.io/2017/12/08/elasticsearch-learn-notes-1/</link>
+        <guid isPermaLink="true">https://littlesqx.github.io/2017/12/08/elasticsearch-learn-notes-1/</guid>
+        
+        <category>ElasticSearch</category>
+        
+        
+      </item>
     
       <item>
         <title>记一次axios封装</title>
@@ -84,11 +279,11 @@
 
 &lt;h4 id=&quot;代码样例&quot;&gt;代码样例&lt;/h4&gt;
 
-&lt;p&gt;我的是用在vue上， /utils/http.js&lt;/p&gt;
+&lt;p&gt;我的是用在vue上， ./utils/http.js&lt;/p&gt;
 
 &lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kr&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;qs&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'qs'&lt;/span&gt;
 &lt;span class=&quot;kr&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;axios&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'axios'&lt;/span&gt;
-&lt;span class=&quot;kr&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;store&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'../../store'&lt;/span&gt;
+&lt;span class=&quot;kr&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;store&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'../store'&lt;/span&gt;
 
 &lt;span class=&quot;nx&quot;&gt;axios&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;defaults&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;headers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;common&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'X-Requested-With'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'XMLHttpRequest'&lt;/span&gt;
 &lt;span class=&quot;nx&quot;&gt;axios&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;defaults&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;timeout&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10000&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// ms&lt;/span&gt;
@@ -158,7 +353,7 @@
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;实际使用&lt;/p&gt;
+&lt;p&gt;调用代码&lt;/p&gt;
 
 &lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kr&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;http&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'./utils/http'&lt;/span&gt;
 
@@ -186,7 +381,7 @@
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;使用async/await有效避免很多回调的代码，线性的执行也更好理解。&lt;/p&gt;
+&lt;p&gt;使用async/await有效避免很多回调的代码，线性的执行更好理解。&lt;/p&gt;
 
 &lt;h3 id=&quot;结尾&quot;&gt;结尾&lt;/h3&gt;
 

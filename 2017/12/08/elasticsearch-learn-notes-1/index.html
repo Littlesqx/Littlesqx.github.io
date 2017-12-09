@@ -10,9 +10,9 @@
     <meta name="keyword"  content="git php mysql laravel littlesqx">
     <link rel="shortcut icon" href="https://littlesqx-github-io.b0.upaiyun.com/img/favicon.ico">
 
-    <title>Hello World! - Littlesqx Blog</title>
+    <title>you know, for search - ElasticSearch 学习笔记(1) - Littlesqx Blog</title>
 
-    <link rel="canonical" href="https://littlesqx.github.io/2017/09/16/hello-world/">
+    <link rel="canonical" href="https://littlesqx.github.io/2017/12/08/elasticsearch-learn-notes-1/">
 
     <!-- nprogress CSS -->
     <link href="https://littlesqx-github-io.b0.upaiyun.com/css/nprogress.min.css" rel="stylesheet">
@@ -151,15 +151,15 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#博客" title="博客">博客</a>
+                        <a class="tag" href="/tags/#ElasticSearch" title="ElasticSearch">ElasticSearch</a>
                         
                     </div>
-                    <h1>Hello World!</h1>
+                    <h1>you know, for search - ElasticSearch 学习笔记(1)</h1>
                     
                     
-                    <h2 class="subheading">it's never too late to start studing anything</h2>
+                    <h2 class="subheading"></h2>
                     
-                    <span class="meta">Posted by Littlesqx on September 16, 2017</span>
+                    <span class="meta">Posted by Littlesqx on December 8, 2017</span>
                 </div>
             </div>
         </div>
@@ -178,8 +178,188 @@
                 post-container">
 
 				<blockquote>
-  <p>keep!</p>
+  <p>好大的胆子，写了(1)，不知道后面还能不能坚持。。。</p>
 </blockquote>
+
+<h3 id="elasticsearch-是什么-">ElasticSearch 是什么 ?</h3>
+
+<p><strong>怒抄一波介绍：</strong></p>
+
+<blockquote>
+  <p>Elasticsearch是一个基于Apache Lucene(TM)的开源搜索引擎。无论在开源还是专有领域，Lucene可以被认为是迄今为止最先进、性能最好的、功能最全的搜索引擎库。
+<br /><br />
+不过，Elasticsearch不仅仅是Lucene和全文搜索，我们还能这样去描述它：</p>
+  <ul>
+    <li>分布式的实时文件存储，每个字段都被索引并可被搜索</li>
+    <li>分布式的实时分析搜索引擎</li>
+    <li>可以扩展到上百台服务器，处理PB级结构化或非结构化数据</li>
+  </ul>
+
+  <p>而且，所有的这些功能被集成到一个服务里面，你的应用可以通过简单的RESTful API、各种语言的客户端甚至命令行与之交互。</p>
+</blockquote>
+
+<p><strong>高大上的感觉，没关系，来个与传统关系型数据库的类比：</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Relational DB</th>
+      <th style="text-align: left">ElasticSearch</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Databases</td>
+      <td style="text-align: left">Indices</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Tables</td>
+      <td style="text-align: left">Types</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Rows</td>
+      <td style="text-align: left">Documents</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Columns</td>
+      <td style="text-align: left">Fields</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Schemas</td>
+      <td style="text-align: left">Mappings</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Index</td>
+      <td style="text-align: left">Everything is indexed</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">SQL(DB Client)</td>
+      <td style="text-align: left">Query DSL (RESTful API / Java API)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>这在比较多关于ElasticSearch的文章也提到过，甚至包括官方的文档。虽然很能帮助入门理解，然而，官方逐渐意识到了这是一个 bad analogy。</strong></p>
+
+<blockquote>
+  <p>This was a bad analogy that led to incorrect assumptions. In an SQL database, tables are independent of each other. The columns in one table have no bearing on columns with the same name in another table. This is not the case for fields in a mapping type.
+<br /><br />
+In an Elasticsearch index, fields that have the same name in different mapping types are backed by the same Lucene field internally.</p>
+</blockquote>
+
+<p><strong>理解这段话之前，先理解ElasticSearch里的各种概念</strong></p>
+
+<p><strong>1# 索引 (Index)</strong>
+**
+拥有相似特征的文档的集合。</p>
+
+<p><strong>2# 类型 (Type)</strong></p>
+
+<p><del>在一个索引中，你可以定义一种或多种类型。一个类型是你的索引的一个逻辑上的分类/分区，其语义完全由你来定。通常，会为具有一组相同字段的文档定义一个类型。</del> 删除线的原因后面补充。</p>
+
+<p><strong>3# 文档 (Document)</strong></p>
+
+<p>一个文档是一个可被索引的基础信息单元。文档以JSON格式来表示。</p>
+
+<p><strong>4# 映射 (Mapping)</strong></p>
+
+<p><del>映射(mapping)机制用于进行字段类型确认，将每个字段匹配为一种确定的数据类型(string, number, booleans, date等)。此外，映射机制也可以给字段绑定使用的字段格式和分析器(analyzer)。</del> 删除原因同上。</p>
+
+<p><strong>5# 近实时 (Near Real Time, NRT)</strong></p>
+
+<p>Elasticsearch 是一个接近实时的搜索平台。从索引一个文档直到这个文档能够被搜索到有一个很小的延迟（通常是 1 秒）。</p>
+
+<p><strong>6# 集群 (Cluster)</strong></p>
+
+<p>一个集群就是由一个或多个节点组织在一起， 它们共同持有你全部的数据， 并一起提供索引和搜索功能。</p>
+
+<p><strong>7# 节点 (Node)</strong></p>
+
+<p>一个节点是你集群中的一个服务器，作为集群的一部分，它存储你的数据，参与集群的索引和搜索功能。</p>
+
+<p><strong>8# 分片和复制 (Shards and Replicas)</strong></p>
+
+<p>Elasticsearch提供了将索引划分成多片的能力，这些片叫做 <strong>分片</strong> 。每个分片本身也是一个功能完善并且独立的“索引”，这个“索引” 可以被放置到集群中的任何节点上。</p>
+
+<p>分片之所以重要，主要有两方面的原因：</p>
+
+<ul>
+  <li>允许你水平分割/扩展你的内容容量</li>
+  <li>允许你在分片（位于多个节点上）之上进行分布式的、并行的操作，进而提高性能/吞吐量</li>
+</ul>
+
+<p>Elasticsearch允许你创建分片的一份或多份拷贝，这些拷贝叫做复制分片，或者直接叫 <strong>复制</strong> 。</p>
+
+<p>复制之所以重要，有两个主要原因：</p>
+
+<ul>
+  <li>在分片/节点失败的情况下，复制提供了高可用性。复制分片不与原/主要分片置于同一节点上是非常重要的。</li>
+  <li>因为搜索可以在所有的复制上并行运行，复制可以扩展你的搜索量/吞吐量</li>
+</ul>
+
+<p>总之，每个索引可以被分成多个分片。一个索引也可以被复制0次（即没有复制） 或多次。一旦复制了，每个索引就有了主分片（作为复制源的分片）和复制分片（主分片的拷贝）。 分片和复制的数量可以在索引创建的时候指定。<strong>在索引创建之后，你可以在任何时候动态地改变复制的数量，但是你不能再改变分片的数量。</strong></p>
+
+<p><strong>补充删除线的原因</strong></p>
+
+<p>官方文档 <a href="https://www.elastic.co/guide/en/elasticsearch/reference/6.0/removal-of-types.html">Elasticsearch Reference [6.0] » Mapping » Removal of mapping types</a> 除了提到了类比传统关系型数据库是一个bad analogy，还提到了关于映射和类型的未来。甚至给出了一个移除时间表。一句话总结，其实自5.6版本后，行动就开始了，现在最新的6.x版本已经不支持一个索引里有多种类型，类型(Type)已经名存实亡，后面的版本将逐步移除映射和类型。</p>
+
+<h3 id="为什么使用elasticsearch-">为什么使用ElasticSearch ？</h3>
+
+<p>提这么一个小结，对于我这种萌新有点逞强。查阅了资料可以从他的优势和场景回答。</p>
+
+<p>优势：部署和基本使用十分简单，查询快速，性能优越，可扩展，高可用…</p>
+
+<p>场景：搜索、日志、统计、分析、监控…</p>
+
+<p>为什么ElasticSearch那么快，可以参考 <a href="https://neway6655.github.io/elasticsearch/2015/09/11/elasticsearch-study-notes.html#reference">ElasticSearch学习笔记 - Neway</a></p>
+
+<p>自己看完后不是很懂，大概了解到这几个关键点：</p>
+
+<p><strong>Everything is indexed</strong>、<strong>倒排索引</strong>、<strong>利用内存计算</strong>、<strong>FST(Finite State Transducers)压缩技术</strong></p>
+
+<h3 id="怎么使用elasticsearch-">怎么使用ElasticSearch ?</h3>
+
+<p><strong>下载和安装</strong></p>
+
+<p>请到<a href="https://www.elastic.co/">官方</a>下载。</p>
+
+<p><strong>配置</strong></p>
+
+<p>服务器配置，有几点需要注意：</p>
+
+<p>1# 不能root账号执行，显然是出于安全考虑。解决办法是新建ElasticSearch用户组和用户。</p>
+
+<p>2# Linux用户最大使用进程数。 参考 <a href="https://www.elastic.co/guide/en/elasticsearch/reference/6.0/setting-system-settings.html">system-settings</a></p>
+
+<p>3# vm-max-map-count。参考 <a href="https://www.elastic.co/guide/en/elasticsearch/reference/6.0/vm-max-map-count.html">vm-max-map-count</a></p>
+
+<p>4# jvm 内存限制。官方建议设置为机身最大内存的一半，但不超过32G。参考 <a href="https://www.elastic.co/guide/en/elasticsearch/reference/6.0/heap-size.html">heap-size</a></p>
+
+<p>重要的ElasticSearch配置。 <a href="https://www.elastic.co/guide/en/elasticsearch/reference/6.0/important-settings.html">important-settings</a></p>
+
+<p><strong>使用</strong></p>
+
+<p>JAVA API 和 RESTful API。推荐后者，详细见官方文档。</p>
+
+<h4 id="参考文章">参考文章</h4>
+
+<ul>
+  <li>
+    <p><a href="https://endymecy.gitbooks.io/elasticsearch-guide-chinese/content/index.html">ElasticSearch中文开发指南</a></p>
+  </li>
+  <li>
+    <p><a href="https://www.gitbook.com/book/looly/elasticsearch-the-definitive-guide-cn/details">ElasticSearch权威指南</a></p>
+  </li>
+  <li>
+    <p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/6.0/index.html">Elasticsearch Reference 6.0</a></p>
+  </li>
+  <li>
+    <p><a href="http://www.javajh.com/rest/article/297e9e7954952e6d0154f8b998090013.html">Elasticsearch 和 传统关系型数据库的对比</a></p>
+  </li>
+  <li>
+    <p><a href="https://neway6655.github.io/elasticsearch/2015/09/11/elasticsearch-study-notes.html#reference">ElasticSearch学习笔记 - Neway</a></p>
+  </li>
+</ul>
 
 
                 <hr>
@@ -192,10 +372,10 @@
 
                 <ul class="pager">
                     
-                    
-                    <li class="next">
-                        <a href="/2017/09/23/centos7-lnmp/" data-toggle="tooltip" data-placement="top" title="在CentOS 7 上配置 LNMP 环境">Next Post &rarr;</a>
+                    <li class="previous">
+                        <a href="/2017/10/24/axios-packaging-notes/" data-toggle="tooltip" data-placement="top" title="记一次axios封装">&larr; Previous Post</a>
                     </li>
+                    
                     
                 </ul>
 
