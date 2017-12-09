@@ -1,0 +1,946 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Littlesqx Blog</title>
+    <description>littlesqx's blog</description>
+    <link>https://littlesqx.github.io/</link>
+    <atom:link href="https://littlesqx.github.io/feed.xml" rel="self" type="application/rss+xml" />
+    <pubDate>Sat, 09 Dec 2017 18:52:52 +0800</pubDate>
+    <lastBuildDate>Sat, 09 Dec 2017 18:52:52 +0800</lastBuildDate>
+    <generator>Jekyll v3.4.3</generator>
+    
+      <item>
+        <title>you know, for search - ElasticSearch 学习笔记(1)</title>
+        <description>&lt;blockquote&gt;
+  &lt;p&gt;好大的胆子，写了(1)，不知道后面还能不能坚持。。。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;elasticsearch-是什么-&quot;&gt;ElasticSearch 是什么 ?&lt;/h3&gt;
+
+&lt;p&gt;&lt;strong&gt;怒抄一波介绍：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Elasticsearch是一个基于Apache Lucene(TM)的开源搜索引擎。无论在开源还是专有领域，Lucene可以被认为是迄今为止最先进、性能最好的、功能最全的搜索引擎库。
+&lt;br /&gt;&lt;br /&gt;
+不过，Elasticsearch不仅仅是Lucene和全文搜索，我们还能这样去描述它：&lt;/p&gt;
+  &lt;ul&gt;
+    &lt;li&gt;分布式的实时文件存储，每个字段都被索引并可被搜索&lt;/li&gt;
+    &lt;li&gt;分布式的实时分析搜索引擎&lt;/li&gt;
+    &lt;li&gt;可以扩展到上百台服务器，处理PB级结构化或非结构化数据&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;p&gt;而且，所有的这些功能被集成到一个服务里面，你的应用可以通过简单的RESTful API、各种语言的客户端甚至命令行与之交互。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;高大上的感觉，没关系，来个与传统关系型数据库的类比：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Relational DB&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;ElasticSearch&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Databases&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Indices&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Tables&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Types&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Rows&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Documents&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Columns&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Fields&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Schemas&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Mappings&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Index&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Everything is indexed&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;SQL(DB Client)&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Query DSL (RESTful API / Java API)&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;&lt;strong&gt;这在比较多关于ElasticSearch的文章也提到过，甚至包括官方的文档。虽然很能帮助入门理解，然而，官方逐渐意识到了这是一个 bad analogy。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;This was a bad analogy that led to incorrect assumptions. In an SQL database, tables are independent of each other. The columns in one table have no bearing on columns with the same name in another table. This is not the case for fields in a mapping type.
+&lt;br /&gt;&lt;br /&gt;
+In an Elasticsearch index, fields that have the same name in different mapping types are backed by the same Lucene field internally.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;理解这段话之前，先理解ElasticSearch里的各种概念&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;1# 索引 (Index)&lt;/strong&gt;
+**
+拥有相似特征的文档的集合。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;2# 类型 (Type)&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;del&gt;在一个索引中，你可以定义一种或多种类型。一个类型是你的索引的一个逻辑上的分类/分区，其语义完全由你来定。通常，会为具有一组相同字段的文档定义一个类型。&lt;/del&gt; 删除线的原因后面补充。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;3# 文档 (Document)&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;一个文档是一个可被索引的基础信息单元。文档以JSON格式来表示。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;4# 映射 (Mapping)&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;del&gt;映射(mapping)机制用于进行字段类型确认，将每个字段匹配为一种确定的数据类型(string, number, booleans, date等)。此外，映射机制也可以给字段绑定使用的字段格式和分析器(analyzer)。&lt;/del&gt; 删除原因同上。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;5# 近实时 (Near Real Time, NRT)&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Elasticsearch 是一个接近实时的搜索平台。从索引一个文档直到这个文档能够被搜索到有一个很小的延迟（通常是 1 秒）。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;6# 集群 (Cluster)&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;一个集群就是由一个或多个节点组织在一起， 它们共同持有你全部的数据， 并一起提供索引和搜索功能。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;7# 节点 (Node)&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;一个节点是你集群中的一个服务器，作为集群的一部分，它存储你的数据，参与集群的索引和搜索功能。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;8# 分片和复制 (Shards and Replicas)&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Elasticsearch提供了将索引划分成多片的能力，这些片叫做 &lt;strong&gt;分片&lt;/strong&gt; 。每个分片本身也是一个功能完善并且独立的“索引”，这个“索引” 可以被放置到集群中的任何节点上。&lt;/p&gt;
+
+&lt;p&gt;分片之所以重要，主要有两方面的原因：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;允许你水平分割/扩展你的内容容量&lt;/li&gt;
+  &lt;li&gt;允许你在分片（位于多个节点上）之上进行分布式的、并行的操作，进而提高性能/吞吐量&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Elasticsearch允许你创建分片的一份或多份拷贝，这些拷贝叫做复制分片，或者直接叫 &lt;strong&gt;复制&lt;/strong&gt; 。&lt;/p&gt;
+
+&lt;p&gt;复制之所以重要，有两个主要原因：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;在分片/节点失败的情况下，复制提供了高可用性。复制分片不与原/主要分片置于同一节点上是非常重要的。&lt;/li&gt;
+  &lt;li&gt;因为搜索可以在所有的复制上并行运行，复制可以扩展你的搜索量/吞吐量&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;总之，每个索引可以被分成多个分片。一个索引也可以被复制0次（即没有复制） 或多次。一旦复制了，每个索引就有了主分片（作为复制源的分片）和复制分片（主分片的拷贝）。 分片和复制的数量可以在索引创建的时候指定。&lt;strong&gt;在索引创建之后，你可以在任何时候动态地改变复制的数量，但是你不能再改变分片的数量。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;补充删除线的原因&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;官方文档 &lt;a href=&quot;https://www.elastic.co/guide/en/elasticsearch/reference/6.0/removal-of-types.html&quot;&gt;Elasticsearch Reference [6.0] » Mapping » Removal of mapping types&lt;/a&gt; 除了提到了类比传统关系型数据库是一个bad analogy，还提到了关于映射和类型的未来。甚至给出了一个移除时间表。一句话总结，其实自5.6版本后，行动就开始了，现在最新的6.x版本已经不支持一个索引里有多种类型，类型(Type)已经名存实亡，后面的版本将逐步移除映射和类型。&lt;/p&gt;
+
+&lt;h3 id=&quot;为什么使用elasticsearch-&quot;&gt;为什么使用ElasticSearch ？&lt;/h3&gt;
+
+&lt;p&gt;提这么一个小结，对于我这种萌新有点逞强。查阅了资料可以从他的优势和场景回答。&lt;/p&gt;
+
+&lt;p&gt;优势：部署和基本使用十分简单，查询快速，性能优越，可扩展，高可用…&lt;/p&gt;
+
+&lt;p&gt;场景：搜索、日志、统计、分析、监控…&lt;/p&gt;
+
+&lt;p&gt;为什么ElasticSearch那么快，可以参考 &lt;a href=&quot;https://neway6655.github.io/elasticsearch/2015/09/11/elasticsearch-study-notes.html#reference&quot;&gt;ElasticSearch学习笔记 - Neway&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;自己看完后不是很懂，大概了解到这几个关键点：&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Everything is indexed&lt;/strong&gt;、&lt;strong&gt;倒排索引&lt;/strong&gt;、&lt;strong&gt;利用内存计算&lt;/strong&gt;、&lt;strong&gt;FST(Finite State Transducers)压缩技术&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;怎么使用elasticsearch-&quot;&gt;怎么使用ElasticSearch ?&lt;/h3&gt;
+
+&lt;p&gt;&lt;strong&gt;下载和安装&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;请到&lt;a href=&quot;https://www.elastic.co/&quot;&gt;官方&lt;/a&gt;下载。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;配置&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;服务器配置，有几点需要注意：&lt;/p&gt;
+
+&lt;p&gt;1# 不能root账号执行，显然是出于安全考虑。解决办法是新建ElasticSearch用户组和用户。&lt;/p&gt;
+
+&lt;p&gt;2# Linux用户最大使用进程数。 参考 &lt;a href=&quot;https://www.elastic.co/guide/en/elasticsearch/reference/6.0/setting-system-settings.html&quot;&gt;system-settings&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;3# vm-max-map-count。参考 &lt;a href=&quot;https://www.elastic.co/guide/en/elasticsearch/reference/6.0/vm-max-map-count.html&quot;&gt;vm-max-map-count&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;4# jvm 内存限制。官方建议设置为机身最大内存的一半，但不超过32G。参考 &lt;a href=&quot;https://www.elastic.co/guide/en/elasticsearch/reference/6.0/heap-size.html&quot;&gt;heap-size&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;重要的ElasticSearch配置。 &lt;a href=&quot;https://www.elastic.co/guide/en/elasticsearch/reference/6.0/important-settings.html&quot;&gt;important-settings&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;使用&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;JAVA API 和 RESTful API。推荐后者，详细见官方文档。&lt;/p&gt;
+
+&lt;h4 id=&quot;参考文章&quot;&gt;参考文章&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://endymecy.gitbooks.io/elasticsearch-guide-chinese/content/index.html&quot;&gt;ElasticSearch中文开发指南&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://www.gitbook.com/book/looly/elasticsearch-the-definitive-guide-cn/details&quot;&gt;ElasticSearch权威指南&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://www.elastic.co/guide/en/elasticsearch/reference/6.0/index.html&quot;&gt;Elasticsearch Reference 6.0&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;http://www.javajh.com/rest/article/297e9e7954952e6d0154f8b998090013.html&quot;&gt;Elasticsearch 和 传统关系型数据库的对比&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://neway6655.github.io/elasticsearch/2015/09/11/elasticsearch-study-notes.html#reference&quot;&gt;ElasticSearch学习笔记 - Neway&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Fri, 08 Dec 2017 17:05:01 +0800</pubDate>
+        <link>https://littlesqx.github.io/2017/12/08/elasticsearch-learn-notes-1/</link>
+        <guid isPermaLink="true">https://littlesqx.github.io/2017/12/08/elasticsearch-learn-notes-1/</guid>
+        
+        <category>ElasticSearch</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>记一次axios封装</title>
+        <description>&lt;blockquote&gt;
+  &lt;p&gt;就祝自己1024快乐吧！&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;前言&quot;&gt;前言&lt;/h3&gt;
+&lt;p&gt;源自于最近在写的一个项目，原因是前期的axios封装考虑得不是很好，逐渐出现冗余。趁着还早，就重构一下这部分。&lt;/p&gt;
+
+&lt;h3 id=&quot;正文&quot;&gt;正文&lt;/h3&gt;
+
+&lt;h4 id=&quot;axios&quot;&gt;axios&lt;/h4&gt;
+
+&lt;p&gt;web开发里，axios是首推的Ajax库了，应该说基本上都用它。&lt;/p&gt;
+
+&lt;p&gt;官方是这样介绍的：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Make XMLHttpRequests from the browser&lt;/p&gt;
+
+  &lt;p&gt;Make http requests from node.js&lt;/p&gt;
+
+  &lt;p&gt;Supports the Promise API&lt;/p&gt;
+
+  &lt;p&gt;Intercept request and response&lt;/p&gt;
+
+  &lt;p&gt;Transform request and response data&lt;/p&gt;
+
+  &lt;p&gt;Cancel requests&lt;/p&gt;
+
+  &lt;p&gt;Automatic transforms for JSON data&lt;/p&gt;
+
+  &lt;p&gt;Client side support for protecting against XSRF&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h4 id=&quot;谈谈流程&quot;&gt;谈谈流程&lt;/h4&gt;
+
+&lt;p&gt;一个体验好的web应用，应该具备的请求过程有什么？&lt;/p&gt;
+
+&lt;p&gt;pic# 对，我又画了个图&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/in-post/201710241.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;确定参数：请求url，请求方式，请求参数，其他请求参数（时限？请求头？）&lt;/p&gt;
+
+&lt;p&gt;过渡动画：请求开始后一直到请求结束之间有过渡动画，容易想到axios提供的拦截器&lt;/p&gt;
+
+&lt;p&gt;视图响应：提示框？对话框？路由跳转？&lt;/p&gt;
+
+&lt;h4 id=&quot;怎么实现&quot;&gt;怎么实现&lt;/h4&gt;
+
+&lt;h5 id=&quot;确定参数&quot;&gt;确定参数&lt;/h5&gt;
+
+&lt;p&gt;1# 接口是多样的，接口的代码入口，是以url还是method来区分？&lt;/p&gt;
+
+&lt;p&gt;其实都有，以url为区分，会设计为每个接口一个函数；以method为区分，一般只有涉及到的get，post，put，patch，delete，那就主要有这么几个函数，实际调用再具体指定url。&lt;/p&gt;
+
+&lt;p&gt;个人倾向于后者，应为当借口类型多了，那前者写比较多函数，有点多余了。但是后者有个问题，当url变动时，每一处调用都需要修改。参考工厂模式的思想，可以把url写到单个配置文件，这样就可以避免了。&lt;/p&gt;
+
+&lt;p&gt;2# 动态的参数怎么设置？比如验证token，接受语言。&lt;/p&gt;
+
+&lt;p&gt;这部分配置都在请求头处，那可以增加header参数，因为axios已提供动态修改或header的api。&lt;/p&gt;
+
+&lt;p&gt;一些公共的header，比如接受语言，那就可以利用拦截器增加。&lt;/p&gt;
+
+&lt;h5 id=&quot;过渡动画&quot;&gt;过渡动画&lt;/h5&gt;
+
+&lt;p&gt;axios的拦截器包括了请求前的拦截和响应后的拦截。那过渡动画的增加就简单了。&lt;/p&gt;
+
+&lt;h5 id=&quot;视图响应&quot;&gt;视图响应&lt;/h5&gt;
+
+&lt;p&gt;还是选择拦截器，可根据响应结果做具体处理。&lt;/p&gt;
+
+&lt;h4 id=&quot;代码样例&quot;&gt;代码样例&lt;/h4&gt;
+
+&lt;p&gt;我的是用在vue上， ./utils/http.js&lt;/p&gt;
+
+&lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kr&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;qs&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'qs'&lt;/span&gt;
+&lt;span class=&quot;kr&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;axios&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'axios'&lt;/span&gt;
+&lt;span class=&quot;kr&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;store&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'../store'&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;axios&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;defaults&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;headers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;common&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'X-Requested-With'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'XMLHttpRequest'&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;axios&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;defaults&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;timeout&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10000&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// ms&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;axios&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;defaults&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;baseURL&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'/api'&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;axios&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;defaults&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;headers&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&quot;Content-Type&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;application/x-www-form-urlencoded&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;s1&quot;&gt;'accept-language'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;store&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getters&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;lang&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// cors with cookie&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// axios.defaults.withCredentials = true&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;axios&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;interceptors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;use&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;config&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+
+    &lt;span class=&quot;c1&quot;&gt;// set configs&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;headers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'accept-language'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;store&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getters&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;lang&lt;/span&gt;
+
+    &lt;span class=&quot;c1&quot;&gt;// loading start&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;// ...&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;config&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;error&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Promise&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;reject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;axios&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;interceptors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;use&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;response&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;response&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;error&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+
+    &lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;response&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;error&lt;/span&gt;
+
+    &lt;span class=&quot;c1&quot;&gt;// loading finish&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;// ...&lt;/span&gt;
+
+    &lt;span class=&quot;c1&quot;&gt;// deal with errorResponse&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;// ...&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Promise&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;reject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+
+&lt;span class=&quot;kr&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;default&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;header&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{})&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;axios&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;nx&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;header&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;post&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;header&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{})&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;axios&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;post&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;qs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;stringify&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;nx&quot;&gt;header&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;put&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;header&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{})&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;axios&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;put&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;qs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;stringify&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;nx&quot;&gt;header&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;patch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;header&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{})&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;axios&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;patch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;qs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;stringify&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;nx&quot;&gt;header&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;delete&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;header&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{})&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;axios&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;delete&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;nx&quot;&gt;header&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;params&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;调用代码&lt;/p&gt;
+
+&lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kr&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;http&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'./utils/http'&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;fetch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;http&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;then&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;response&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;// ...&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}).&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;catch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;error&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;// ...&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;有必要使用async/await代替Promise&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kr&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;http&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'./utils/http'&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;async&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;fetch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;try&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;response&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;await&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;http&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;// ...&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;catch&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;// ...&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;使用async/await有效避免很多回调的代码，线性的执行更好理解。&lt;/p&gt;
+
+&lt;h3 id=&quot;结尾&quot;&gt;结尾&lt;/h3&gt;
+
+&lt;p&gt;写完啦，下班噜~~&lt;/p&gt;
+</description>
+        <pubDate>Tue, 24 Oct 2017 18:31:01 +0800</pubDate>
+        <link>https://littlesqx.github.io/2017/10/24/axios-packaging-notes/</link>
+        <guid isPermaLink="true">https://littlesqx.github.io/2017/10/24/axios-packaging-notes/</guid>
+        
+        <category>axios</category>
+        
+        <category>JavaScript</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>写一篇介绍和对比文章，关于 LAMP LNMP LANMP，还有...</title>
+        <description>&lt;blockquote&gt;
+  &lt;p&gt;LAMP = Linux Apache MySQL PHP&lt;/p&gt;
+
+  &lt;p&gt;LNMP = Linux Nginx MySQL PHP&lt;/p&gt;
+
+  &lt;p&gt;LANMP = Linux Apache Nginx MySQL PHP&lt;/p&gt;
+
+  &lt;p&gt;LNSMP = Linux Nginx Swoole MySQL PHP （这是我乱起的缩写）&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;前言&quot;&gt;前言&lt;/h3&gt;
+&lt;p&gt;在第一篇文章《&lt;a href=&quot;https://littlesqx.github.io/2017/09/23/centos7-lnmp/&quot;&gt;在CentOS 7 上配置 LNMP 环境
+&lt;/a&gt;》提到过，有时间对比一下LAMP
+和LNMP的区别，现在把php可能的web运行环境都做一次说明，也就是加上了LANMP和LNSMP，前者好说，
+后者是有关于重新定义PHP的&lt;a href=&quot;https://www.swoole.com/&quot;&gt;Swoole&lt;/a&gt;，其实我还没学过哈哈哈。&lt;/p&gt;
+
+&lt;h3 id=&quot;正文&quot;&gt;正文&lt;/h3&gt;
+
+&lt;h4 id=&quot;lamp-和-lnmp&quot;&gt;LAMP 和 LNMP&lt;/h4&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;LAMP = Linux Apache MySQL PHP&lt;/p&gt;
+
+  &lt;p&gt;LNMP = Linux Nginx MySQL PHP&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h5 id=&quot;概述&quot;&gt;概述&lt;/h5&gt;
+
+&lt;p&gt;区别在于A和N，也就是同是web服务器，原本是没有解析动态网页（包括php Python等）的能力。那他们
+是如何实现可以解析php程序呢？&lt;/p&gt;
+
+&lt;p&gt;pic# 我画了个图&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/in-post/201710151.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;这个图简化了整个过程，表达的是web服务器会判断用户请求的文件类型，如果是php，那会交给PHP处理器
+（PHP handler）处理，处理结果返回给web服务器，再由web服务器响应给请求方。但是，
+实际的过程应该更加复杂。
+需要先引出一些名词：SAPI，mod_php，mod_fastcgi，CGI，FastCGI，PHP-CGI，PHP-FPM。&lt;/p&gt;
+
+&lt;h5 id=&quot;sapi&quot;&gt;SAPI&lt;/h5&gt;
+
+&lt;p&gt;pic# 这个图不是我画的&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/in-post/201710152.jpg&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;上图是PHP架构图，可以看到实际的应用程序和PHP之间有一层SAPI
+（Server Application Programming Interface：
+the API used by PHP to interface with Web Servers），
+&lt;strong&gt;SAPI提供了一个和外部通信的接口，使得PHP可以和其他应用进行交互数据。&lt;/strong&gt;
+PHP提供了很多种SAPI，Apache的mod_php，Nginx的mod_fastcgi，还有Shell的CLI。&lt;/p&gt;
+
+&lt;p&gt;那我们就来谈谈Apache的mod_php，Nginx的mod_fastcgi。&lt;/p&gt;
+
+&lt;h5 id=&quot;mod_php&quot;&gt;mod_php&lt;/h5&gt;
+
+&lt;p&gt;在这种模式下，php被编译为apache的一个内置模块，在启动时加载。当有一个php请求过来时，
+直接在httpd进程里完成php的解释运行，将结果返回。&lt;/p&gt;
+
+&lt;p&gt;pic# 我画了个图，扩展了前面的图&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/in-post/201710153.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;h5 id=&quot;mod_fastcgi&quot;&gt;mod_fastcgi&lt;/h5&gt;
+
+&lt;p&gt;这是另一种SAPI，在LAMP中常见，涉及到CGI，FastCGI，PHP-CGI，PHP-FPM这几个名词。&lt;/p&gt;
+
+&lt;p&gt;1# 什么是CGI？&lt;/p&gt;
+
+&lt;p&gt;CGI(Common Gateway Interface)，即公共网关接口，web服务器和脚本语言通信的一个标准、
+接口、协议。CGI规范允许Web服务器执行外部程序，并将它们的输出发送给Web浏览器，
+CGI将Web的一组简单的静态超媒体文档变成一个完整的新的交互式媒体。&lt;/p&gt;
+
+&lt;p&gt;2# 什么是FastCGI？&lt;/p&gt;
+
+&lt;p&gt;CGI的升级版。FastCGI像是一个常驻(long-live)型的CGI，它可以一直执行着，只要激活后，
+不会每次都要花费时间去fork一次(这是CGI最为人诟病的fork-and-execute 模式)。
+它还支持分布式的运算, 即 FastCGI 程序可以在网站服务器以外的主机上执行并且接受
+来自其它网站服务器来的请求。&lt;/p&gt;
+
+&lt;p&gt;FastCGI是语言无关的、可伸缩架构的CGI开放扩展，其主要行为是将CGI解释器进程保持在内存中并因此
+获得较高的性能。众所周知，CGI解释器的反复加载是CGI性能低下的主要原因，
+如果CGI解释器保持在内存中并接受FastCGI进程管理器调度，
+则可以提供良好的性能、伸缩性、Fail- Over特性等等。&lt;/p&gt;
+
+&lt;p&gt;3# 什么是PHP-CGI？&lt;/p&gt;
+
+&lt;p&gt;实现了CGI接口协议的PHP脚本解析器。&lt;/p&gt;
+
+&lt;p&gt;4# 什么是PHP-FPM？&lt;/p&gt;
+
+&lt;p&gt;管理和调度php-cgi进程，进而实现了FastCGI接口协议的程序。&lt;/p&gt;
+
+&lt;p&gt;现在的LAMP一般采用FastCGI+PHP-FPM的组合。Nginx通过FastCGI协议将php脚本请求转发到PHP-FPM管理的
+php-cgi进程。&lt;/p&gt;
+
+&lt;p&gt;pic# 我画了个图，也是扩展第一张图。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/in-post/201710154.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;lanmp&quot;&gt;LANMP&lt;/h4&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;LANMP = Linux Apache Nginx MySQL PHP&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;为什么同时使用Apache和Nginx？&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;对比一下两者的优缺点：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;1# Nginx 相对 Apache 的优点：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;轻量级，占用更少的资源&lt;/li&gt;
+  &lt;li&gt;抗并发，nginx 处理请求是异步非阻塞的，而apache 则是阻塞型的，
+在高并发下nginx 能保持低资源低消耗高性能&lt;/li&gt;
+  &lt;li&gt;高度模块化的设计，编写模块相对简单&lt;/li&gt;
+  &lt;li&gt;社区活跃，各种高性能模块出品迅速啊&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;2# Apache 相对Nginx 的优点：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;配置较复杂&lt;/li&gt;
+  &lt;li&gt;rewrite 强大&lt;/li&gt;
+  &lt;li&gt;模块超多&lt;/li&gt;
+  &lt;li&gt;更稳定&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;3# 更多 » &lt;a href=&quot;https://www.zhihu.com/question/19571087/answer/12313829&quot;&gt;&lt;strong&gt;Nginx 和 Apache 各有什么优缺点？- 知乎&lt;/strong&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Nginx的优势是处理静态请求，cpu内存使用率低，Apache适合处理动态请求 - wuhen&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;所以，在LANMP架构下，Apache负责处理动态请求，而Nginx处理静态请求。Nginx作为web服务的入口，
+如果是动态请求，那就反向代理到Apache。&lt;/p&gt;
+
+&lt;p&gt;pic# 我不想画图了，字面意思，脑补一下嘻嘻&lt;/p&gt;
+
+&lt;h4 id=&quot;lnsmp&quot;&gt;LNSMP&lt;/h4&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;LNSMP = Linux Nginx Swoole MySQL PHP （这是我乱起的缩写）&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;什么是Swoole？&lt;/p&gt;
+
+&lt;p&gt;这是官网的介绍：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;PHP的异步、并行、高性能网络通信引擎，使用纯C语言编写，提供了PHP语言的异步多线程服务器，
+异步TCP/UDP网络客户端，异步MySQL，异步Redis，数据库连接池，AsyncTask，
+消息队列，毫秒定时器，异步文件读写，异步DNS查询。
+Swoole内置了Http/WebSocket服务器端/客户端、Http2.0服务器端/客户端。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;这是作者韩天峰的介绍：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;swoole实际上是一个网络通信和异步io的引擎，一个基础库。
+PHPer可以基于swoole去实现过去PHP无法实现的功能。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Swoole内置异步非阻塞多进程的Http服务器，在LNSMP中的作用和LANMP中的Apache一样，处理动态请求。Swoole处理动态请求，涉及到的SAPI
+是CLI(commandline，命令行)模式。&lt;/p&gt;
+
+&lt;p&gt;具体Swoole和php是怎么配合运行的，坦白讲，有点懵逼，就不误导了。&lt;/p&gt;
+
+&lt;h4 id=&quot;对比&quot;&gt;对比&lt;/h4&gt;
+
+&lt;p&gt;从前面的介绍可以看出，每个模式的优点和局限性。需要补充的是，Swoole性能是最好的。这个结论官网有宣传，也有其他同学测试过。有时间，一定好好学习Swoole。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h3 id=&quot;结尾&quot;&gt;结尾&lt;/h3&gt;
+
+&lt;h4 id=&quot;补充&quot;&gt;补充&lt;/h4&gt;
+
+&lt;p&gt;1# PHP-FPM虽然在Nginx上使用较多，但Apache上也可以配置使用。同样，Swoole也可以配合Apache。&lt;/p&gt;
+
+&lt;p&gt;2# MySQL呢？PHP和MySQL的交互，需要通过PHP extension。&lt;/p&gt;
+
+&lt;p&gt;3# 命令行模式（CommandLine），常shell上执行。我自己常用来做一些耗时或定时任务。&lt;/p&gt;
+
+&lt;h4 id=&quot;参考文章&quot;&gt;参考文章&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;http://www.cnblogs.com/zl0372/articles/php_4.html&quot;&gt;mod_php、mod_fastcgi和php-fpm的介绍,对比,和性能数据 - 日落紫荆&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;http://www.cnblogs.com/yujon/p/6209551.html&quot;&gt;深入理解PHP的运行模式 - 余朝忠&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://www.qcloud.com/community/article/385799001490608925&quot;&gt;三种 PHP 运行环境的性能对比 - 石仕海&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;http://article.gitos.cn/2015/Aurthur/PHP-Mod-PHP-And-Fast-CGI-Explain.html&quot;&gt;PHP填坑记之FastCGI与mod_php详解 - Aurthur&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;http://m.php.cn/article/325869.html&quot;&gt;Nginx、CGI、FastCGI、PHP-CGI、PHP-FPM处理流程 - PHP中文网&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://tech.meituan.com/php_success_or_failure_web_dev_is_the_sole_cause.html&quot;&gt;【思考】PHP——成也Web，败也Web - 七月的夏天&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Sun, 15 Oct 2017 16:17:01 +0800</pubDate>
+        <link>https://littlesqx.github.io/2017/10/15/lamp-lnmp-lanmp/</link>
+        <guid isPermaLink="true">https://littlesqx.github.io/2017/10/15/lamp-lnmp-lanmp/</guid>
+        
+        <category>LAMP</category>
+        
+        <category>LNMP</category>
+        
+        <category>LANMP</category>
+        
+        <category>LNSMP</category>
+        
+        <category>PHP</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>MySQL定时备份，要不利用SAE Storage吧</title>
+        <description>&lt;blockquote&gt;
+  &lt;p&gt;这个题目，我挺满意的哈哈。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;前言&quot;&gt;前言&lt;/h3&gt;
+
+&lt;p&gt;其实是很久以前的一个想法了，为什么一直没有实行，大概离不开懒吧。我两年前帮学校社团（我们是卖旧书的，有一个管理书本售卖情况的需要）开发了一个小站，挂在SAE上，那时候免费，比现在良心多了，现在数据库需要收费。当然了，就是那么巧，腾讯云开始了校园宣传，云+校园学生一元主机。对，没办法，我们穷啊，就发展到SAE上挂代码，腾讯云挂数据库的形式。每月的费用也就5块左右吧。为什么不都移到腾讯云上，不就每月1块了吗？因为有考虑到腾讯云服务器是我私人的，带宽也只有1m，SAE上也有挺多实用的辅助功能和工具，所以还是使用SAE。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h3 id=&quot;正文&quot;&gt;正文&lt;/h3&gt;
+
+&lt;h4 id=&quot;怎么备份&quot;&gt;怎么备份&lt;/h4&gt;
+
+&lt;p&gt;前面提到了数据库在腾讯云服务器上，系统是CentOS，那很容易想到使用crontab执行计划定时执行备份脚本，就可以导出到服务器上，其实这就已经达到了备份效果，但是腾讯云这一元主机是需要每月续费的，代金券原来的每月自动发放，最后也变成了需要主动领取，万一我哪天忘了，或者出意外了（咳咳，怎么可能嘛~），这数据也就完蛋了。我想需要一个第三方可靠的存储，邮箱不错啊，一般邮箱都有几个g的空间，每次导出来都往备份邮箱发送就好了。但是管理不是很方便，邮箱迟早也会满。后来选择了SAE的Storage服务，一是还是在SAE上，项目成员可以一起管理。二，根据&lt;a href=&quot;https://www.sinacloud.com/doc/sae/php/storage.html#swift-ming-ling-xing-gong-ju&quot;&gt;Storage文档&lt;/a&gt;，linux上可以使用swift管理，这样，定时脚本的实现，技术上是没有问题了。&lt;/p&gt;
+
+&lt;p&gt;pic# 我画了个图
+&lt;img src=&quot;/img/in-post/sae-storage.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;开始动手&quot;&gt;开始动手&lt;/h4&gt;
+
+&lt;p&gt;1# 安装Swift客户端&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;yum install python-pip
+pip install python-swiftclient
+
+&lt;span class=&quot;c&quot;&gt;# test&lt;/span&gt;
+swift --version
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;2# SAE Storage 创建一个Bucket&lt;/p&gt;
+
+&lt;p&gt;目标SAE应用 &amp;gt; 存储与CDN服务 &amp;gt; Storage &amp;gt; 新建 Bucket
+&lt;img src=&quot;/img/in-post/201710081.png&quot; alt=&quot;img&quot; /&gt;
+务必修改访问权限为私有
+&lt;img src=&quot;/img/in-post/201710082.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;3# 编写Shell脚本&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;vim db_backup.sh
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/sh&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# job setting&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;INTERVAL&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;30 &lt;span class=&quot;c&quot;&gt;# 保留最近三十天的备份数据&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;TODAY&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;date &lt;span class=&quot;s1&quot;&gt;'+%Y%m%d'&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;DROPDAY&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;date -d &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$INTERVAL&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; days ago&quot;&lt;/span&gt; +%Y%m%d&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# db setting&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;DB_USER&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;DB_PASSWD&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;DB_NAME&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# sae storage&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;ST_AUTH&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'https://auth.sinas3.com/v1.0'&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;ST_USER&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;ST_KEY&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;ST_BUCKET&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# 需要先创建&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# path&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;PATH&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;data/&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$DB_NAME&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/&quot;&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# 服务器需要先手动创建该目录，SAE Storage 上传时会自动创建&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# 导出数据到服务器&lt;/span&gt;
+/usr/bin/mysqldump -u&lt;span class=&quot;nv&quot;&gt;$DB_USER&lt;/span&gt; -p&lt;span class=&quot;nv&quot;&gt;$DB_PASSWD&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$DB_NAME&lt;/span&gt; &amp;gt; /&lt;span class=&quot;nv&quot;&gt;$PATH$DB_NAME$TODAY&lt;/span&gt;.sql
+
+&lt;span class=&quot;c&quot;&gt;# 上传当天备份的文件和更新日志&lt;/span&gt;
+/usr/bin/swift -A&lt;span class=&quot;nv&quot;&gt;$ST_AUTH&lt;/span&gt; -U&lt;span class=&quot;nv&quot;&gt;$ST_USER&lt;/span&gt; -K&lt;span class=&quot;nv&quot;&gt;$ST_KEY&lt;/span&gt; upload &lt;span class=&quot;nv&quot;&gt;$ST_BUCKET&lt;/span&gt; /&lt;span class=&quot;nv&quot;&gt;$PATH$DB_NAME$TODAY&lt;/span&gt;.sql --insecure &amp;gt;&amp;gt; /data/&lt;span class=&quot;nv&quot;&gt;$DB_NAME&lt;/span&gt;/backup_logs.log
+/usr/bin/swift -A&lt;span class=&quot;nv&quot;&gt;$ST_AUTH&lt;/span&gt; -U&lt;span class=&quot;nv&quot;&gt;$ST_USER&lt;/span&gt; -K&lt;span class=&quot;nv&quot;&gt;$ST_KEY&lt;/span&gt; upload &lt;span class=&quot;nv&quot;&gt;$ST_BUCKET&lt;/span&gt; /&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PATH&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;backup_logs.log --insecure
+
+&lt;span class=&quot;c&quot;&gt;# 删除${INTERVAL}天以前的旧数据&lt;/span&gt;
+/usr/bin/rm /&lt;span class=&quot;nv&quot;&gt;$PATH$DB_NAME$DROPDAY&lt;/span&gt;.sql
+/usr/bin/swift -A&lt;span class=&quot;nv&quot;&gt;$ST_AUTH&lt;/span&gt; -U&lt;span class=&quot;nv&quot;&gt;$ST_USER&lt;/span&gt; -K&lt;span class=&quot;nv&quot;&gt;$ST_KEY&lt;/span&gt; delete &lt;span class=&quot;nv&quot;&gt;$ST_BUCKET&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$PATH$DB_NAME$DROPDAY&lt;/span&gt;.sql --insecure
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;4# crontab 执行计划&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;crontab -e
+&lt;span class=&quot;c&quot;&gt;# 加入下面的计划，每晚11点30分执行一次，或者其他更加合适的时间&lt;/span&gt;
+30 23 &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt; /usr/bin/sh /data/db_backup.sh
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;h3 id=&quot;结尾&quot;&gt;结尾&lt;/h3&gt;
+&lt;p&gt;这样，一个完整的备份流程也就结束了，还可以更完善，比如日志更加友好，每次备份邮件通知结果，或者还有其他更加优雅的办法吧。总之，心累有木有!!&lt;/p&gt;
+&lt;h4 id=&quot;参考文章&quot;&gt;参考文章&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://blog.csdn.net/u014494705/article/details/38321923&quot;&gt;SAE storage linux管理 - 霹雳书生&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Sun, 08 Oct 2017 19:05:01 +0800</pubDate>
+        <link>https://littlesqx.github.io/2017/10/08/mysql-backup-to-sae-storage/</link>
+        <guid isPermaLink="true">https://littlesqx.github.io/2017/10/08/mysql-backup-to-sae-storage/</guid>
+        
+        <category>crontab</category>
+        
+        <category>MySQL</category>
+        
+        <category>SAE</category>
+        
+        <category>Swift</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>在CentOS 7 上配置 LNMP 环境</title>
+        <description>&lt;blockquote&gt;
+  &lt;p&gt;终于开始了第一篇博客，希望自己可以坚持下去。内容是基本的环境配置，但尽量补充必要知识。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;前言&quot;&gt;前言&lt;/h3&gt;
+
+&lt;p&gt;提到php的运行环境，就想起了第一次接触php，是社团师兄带我们入门web开发。师兄推荐的&lt;a href=&quot;https://zh.wikipedia.org/wiki/XAMPP&quot;&gt;xampp&lt;/a&gt;，类似的还有&lt;a href=&quot;http://www.wampserver.com&quot;&gt;WampServer&lt;/a&gt;，都是windows下集成好的php开发环境（包括Apache，MySQL，还有PHP）。很方便，一键式的配置，之后就可以把时间集中在php代码实现上。但是缺点也很明显，直接跳过了web环境的原理，失去了学习一些必要的知识。就我自己来说，很久之后才对服务器有大体的正确认识。可能还有其他的集成环境，但是都离不开LNMP和LAMP这两种架构。查阅相关资料的过程中，发现还有LNAMP，有空再写一篇他们之间的介绍和对比文章。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h3 id=&quot;正文&quot;&gt;正文&lt;/h3&gt;
+
+&lt;h4 id=&quot;配置源&quot;&gt;配置源&lt;/h4&gt;
+&lt;p&gt;1# 查看系统版本&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;root@VM_157_248_centos ~]# cat /etc/centos-release
+CentOS Linux release 7.4.1708 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Core&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;root@VM_157_248_centos ~]#
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;2# 配置MariaDB官方源&lt;/p&gt;
+
+&lt;p&gt;根据&lt;a href=&quot;https://downloads.mariadb.org/mariadb/repositories/&quot;&gt;MariaDB官方源&lt;/a&gt;，选择系统合适的版本
+CentOS &amp;gt; CentOS 7(x86_64) &amp;gt; 10.2 [Stable] ：&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# MariaDB 10.2 CentOS repository list - created 2017-09-23 09:53 UTC&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# http://downloads.mariadb.org/mariadb/repositories/&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;mariadb]
+name &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; MariaDB
+baseurl &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; http://yum.mariadb.org/10.2/centos7-amd64
+&lt;span class=&quot;nv&quot;&gt;gpgkey&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
+&lt;span class=&quot;nv&quot;&gt;gpgcheck&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;vi /etc/yum.repos.d/MariaDB.repo
+&lt;span class=&quot;c&quot;&gt;# 填入前面的代码段，ESC :wq 保存退出&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;3# 配置Nginx官方源
+根据&lt;a href=&quot;http://nginx.org/en/linux_packages.html#stable&quot;&gt;Nginx官方源&lt;/a&gt;，选择系统合适的版本&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;nginx]
+&lt;span class=&quot;nv&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;nginx repo
+&lt;span class=&quot;nv&quot;&gt;baseurl&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;http://nginx.org/packages/centos/7/&lt;span class=&quot;nv&quot;&gt;$basearch&lt;/span&gt;/
+&lt;span class=&quot;nv&quot;&gt;gpgcheck&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0
+&lt;span class=&quot;nv&quot;&gt;enabled&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;vi /etc/yum.repos.d/nginx.repo
+&lt;span class=&quot;c&quot;&gt;# 填入前面的代码段，ESC :wq 保存退出&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;4# 配置PHP源&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+rpm -Uvh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h4 id=&quot;安装&quot;&gt;安装&lt;/h4&gt;
+
+&lt;p&gt;1# 安装MariaDB&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;yum install MariaDB-server -y
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;2# 安装Nginx&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;yum install nginx -y
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;3# 安装PHP和常用扩展&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;yum install php71w-cli php71w-fpm -y
+yum install php71w-mbstring php71w-pdo -y
+yum install php71w-gd php71w-mcrypt -y
+yum install php71w-mysql php71w-xml -y
+yum install php71w-soap php71w-xmlrpc -y  
+yum install php71w-opcache -y
+&lt;span class=&quot;c&quot;&gt;# 其他&lt;/span&gt;
+yum search php71w
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h4 id=&quot;配置&quot;&gt;配置&lt;/h4&gt;
+&lt;p&gt;1# 设置MariaDB&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mysql_secure_installation
+&lt;span class=&quot;c&quot;&gt;# 默认密码为空，要求键入旧密码时回车即可&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# 拒绝远程访问。如果实在需要外网连接，设置允许单独的ip&lt;/span&gt;
+GRANT ALL PRIVILEGES ON &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;数据库.]&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt; TO &lt;span class=&quot;s1&quot;&gt;'用户名'&lt;/span&gt;@&lt;span class=&quot;s1&quot;&gt;'允许访问的IP地址'&lt;/span&gt; IDENTIFIED BY &lt;span class=&quot;s1&quot;&gt;'密码'&lt;/span&gt; WITH GRANT OPTION;
+FLUSH PRIVILEGES；
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;2# 设置PHP&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;vi /etc/php.ini
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;找到 ;cgi.fix_pathinfo=1 （可通过 /cgi.fix_pathinfo 搜索）&lt;/p&gt;
+
+&lt;p&gt;修改成 &lt;strong&gt;cgi.fix_pathinfo=0&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;原因可参考&lt;a href=&quot;http://www.laruence.com/2010/05/20/1495.html&quot;&gt;Nginx + PHP CGI的一个可能的安全漏洞&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;3# 配置Nginx&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;vi /etc/nginx/conf.d/default.conf
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;修改以下代码段，配置正确的路径&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;
+location ~ &lt;span class=&quot;se&quot;&gt;\.&lt;/span&gt;php&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    root           /usr/share/nginx/html;
+    fastcgi_pass   127.0.0.1:9000;
+    fastcgi_index  index.php;
+    fastcgi_param  SCRIPT_FILENAME  &lt;span class=&quot;nv&quot;&gt;$document_root$fastcgi_script_name&lt;/span&gt;;
+    include        fastcgi_params;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h4 id=&quot;测试&quot;&gt;测试&lt;/h4&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;systemctl restart nginx
+systemctl restart php-fpm
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;img src=&quot;/img/in-post/phpinfo.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h3 id=&quot;结尾&quot;&gt;结尾&lt;/h3&gt;
+
+&lt;h4 id=&quot;关于性能&quot;&gt;关于性能&lt;/h4&gt;
+
+&lt;p&gt;PHP7刚出来时就以性能为主打，确实惊艳了不少PHPer。除了php7本身，鸟哥在自己博客分享了其他的几个技巧&lt;/p&gt;
+
+&lt;p&gt;1# 启用Zend Opcache （貌似7.1是默认开启）&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;vi /etc/php.ini
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;加入以下代码段&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;zend_extension=opcache.so
+opcache.enable=1
+opcache.enable_cli=1&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;ESC :wq 保存退出&lt;/p&gt;
+
+&lt;p&gt;2# 使用新的编译器
+gcc version &amp;gt;= 4.8&lt;/p&gt;
+
+&lt;p&gt;3# HugePage&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sysctl vm.nr_hugepages&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;512
+
+vi /etc/php.ini
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;加入以下代码段&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;opcache.huge_code_pages&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;ESC :wq 保存退出&lt;/p&gt;
+
+&lt;p&gt;4# &lt;a href=&quot;http://www.laruence.com/2015/12/04/3086.html&quot;&gt;更多&lt;/a&gt;&lt;/p&gt;
+&lt;h4 id=&quot;参考文章&quot;&gt;参考文章&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://www.coldawn.com/how-to-install-nginx-mariadb-php-on-centos-7/&quot;&gt;CentOS 7 搭建LNMP服务器环境 - Coldawn&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;http://blog.csdn.net/dengjiexian123/article/details/53358452&quot;&gt;nginx+php的配置与原理 - dengjiexian123&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;http://www.laruence.com/2015/12/04/3086.html&quot;&gt;让PHP7达到最高性能的几个Tips - 风雪之隅&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Sat, 23 Sep 2017 16:26:01 +0800</pubDate>
+        <link>https://littlesqx.github.io/2017/09/23/centos7-lnmp/</link>
+        <guid isPermaLink="true">https://littlesqx.github.io/2017/09/23/centos7-lnmp/</guid>
+        
+        <category>CentOS</category>
+        
+        <category>LNMP</category>
+        
+        <category>Nginx</category>
+        
+        <category>PHP</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>Hello World!</title>
+        <description>&lt;blockquote&gt;
+  &lt;p&gt;keep!&lt;/p&gt;
+&lt;/blockquote&gt;
+</description>
+        <pubDate>Sat, 16 Sep 2017 18:58:01 +0800</pubDate>
+        <link>https://littlesqx.github.io/2017/09/16/hello-world/</link>
+        <guid isPermaLink="true">https://littlesqx.github.io/2017/09/16/hello-world/</guid>
+        
+        <category>博客</category>
+        
+        
+      </item>
+    
+  </channel>
+</rss>
