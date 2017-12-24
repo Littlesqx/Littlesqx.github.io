@@ -182,6 +182,48 @@
   <p>2018年，PHP应用程序安全设计指北～</p>
 </blockquote>
 
+<h3 id="目录">目录</h3>
+<ul>
+  <li><a href="#php-版本">PHP 版本</a></li>
+  <li><a href="#依赖管理">Composer依赖管理</a>
+    <ul>
+      <li><a href="#推荐扩展">推荐扩展</a></li>
+    </ul>
+  </li>
+  <li><a href="#https和浏览器安全">HTTPS和浏览器安全</a>
+    <ul>
+      <li><a href="#安全请求头">安全请求头</a></li>
+      <li>Subresource Integrity</li>
+      <li>Document Relationships</li>
+    </ul>
+  </li>
+  <li>Developing Secure PHP Software
+    <ul>
+      <li>Database Interaction</li>
+      <li>File Uploads</li>
+      <li>Cross-Site Scripting (XSS)</li>
+      <li>Cross-Site Request Forgery (CSRF)</li>
+      <li>XML attacks (XXE, XPath Injection)</li>
+      <li>Deserialization and PHP Object Injection</li>
+      <li>Password Hashing</li>
+      <li>General-Purpose Cryptography</li>
+      <li>Randomness</li>
+      <li>Server-Side HTTPS Requests</li>
+      <li>Things to Avoid</li>
+    </ul>
+  </li>
+  <li>Specialized Use-Cases
+    <ul>
+      <li>Searchable Encryption</li>
+      <li>Token-based Authentication without Side-Channels</li>
+      <li>Developing Secure APIs</li>
+      <li>Security Event Logging with Chronicle</li>
+    </ul>
+  </li>
+  <li>A Word From the Author</li>
+  <li>Resources</li>
+</ul>
+
 <h3 id="前言">前言</h3>
 
 <p>2018年将至，一般程序员（特别是Web开发程序员）应当抛弃过去开发PHP程序的很多不好的习惯和观念了。虽然部分人不以为意，但是这确实是事实。</p>
@@ -220,7 +262,7 @@
 </div>
 <p>如果你正在使用某些专业的，需要使用PHP扩展（C语言编写），那你不能使用Composer管理，而需要PECL。</p>
 
-<h4 id="推荐扩展">推荐扩展</h4>
+<h5 id="推荐扩展">推荐扩展</h5>
 
 <p>不管你正在编写什么，你总会受益于这些依赖。这是除了大多数PHP程序员的推荐（PHPUnit, PHP-CS-Fixer, …）外的补充。</p>
 
@@ -277,7 +319,7 @@ vendor/bin/psalm
 
 <p>如果你希望网站安全，HTTPS(HTTP over TLS)是<a href="https://stackoverflow.com/a/2336738/2224584">绝对不能妥协</a>的。使用HTTPS立刻就能消除多种攻击（中间人攻击、窃听、重放攻击以及若干允许用户模仿的会话形式的攻击）。</p>
 
-<h4 id="安全请求头">安全请求头</h4>
+<h5 id="安全请求头">安全请求头</h5>
 
 <p>在服务器使用HTTPS确实为用户提供了许多安全性和性能方面的好处，但也还能通过利用某些浏览器的安全功能来进一步提升安全性。而这大部分会涉及到与返回内容一起返回的请求头。</p>
 

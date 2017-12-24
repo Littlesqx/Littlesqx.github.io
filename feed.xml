@@ -5,8 +5,8 @@
     <description>littlesqx's blog</description>
     <link>https://littlesqx.github.io/</link>
     <atom:link href="https://littlesqx.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sun, 24 Dec 2017 23:33:25 +0800</pubDate>
-    <lastBuildDate>Sun, 24 Dec 2017 23:33:25 +0800</lastBuildDate>
+    <pubDate>Sun, 24 Dec 2017 23:57:35 +0800</pubDate>
+    <lastBuildDate>Sun, 24 Dec 2017 23:57:35 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
     
       <item>
@@ -14,6 +14,48 @@
         <description>&lt;blockquote&gt;
   &lt;p&gt;2018年，PHP应用程序安全设计指北～&lt;/p&gt;
 &lt;/blockquote&gt;
+
+&lt;h3 id=&quot;目录&quot;&gt;目录&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;#php-版本&quot;&gt;PHP 版本&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#依赖管理&quot;&gt;Composer依赖管理&lt;/a&gt;
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#推荐扩展&quot;&gt;推荐扩展&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#https和浏览器安全&quot;&gt;HTTPS和浏览器安全&lt;/a&gt;
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#安全请求头&quot;&gt;安全请求头&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;Subresource Integrity&lt;/li&gt;
+      &lt;li&gt;Document Relationships&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Developing Secure PHP Software
+    &lt;ul&gt;
+      &lt;li&gt;Database Interaction&lt;/li&gt;
+      &lt;li&gt;File Uploads&lt;/li&gt;
+      &lt;li&gt;Cross-Site Scripting (XSS)&lt;/li&gt;
+      &lt;li&gt;Cross-Site Request Forgery (CSRF)&lt;/li&gt;
+      &lt;li&gt;XML attacks (XXE, XPath Injection)&lt;/li&gt;
+      &lt;li&gt;Deserialization and PHP Object Injection&lt;/li&gt;
+      &lt;li&gt;Password Hashing&lt;/li&gt;
+      &lt;li&gt;General-Purpose Cryptography&lt;/li&gt;
+      &lt;li&gt;Randomness&lt;/li&gt;
+      &lt;li&gt;Server-Side HTTPS Requests&lt;/li&gt;
+      &lt;li&gt;Things to Avoid&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Specialized Use-Cases
+    &lt;ul&gt;
+      &lt;li&gt;Searchable Encryption&lt;/li&gt;
+      &lt;li&gt;Token-based Authentication without Side-Channels&lt;/li&gt;
+      &lt;li&gt;Developing Secure APIs&lt;/li&gt;
+      &lt;li&gt;Security Event Logging with Chronicle&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;A Word From the Author&lt;/li&gt;
+  &lt;li&gt;Resources&lt;/li&gt;
+&lt;/ul&gt;
 
 &lt;h3 id=&quot;前言&quot;&gt;前言&lt;/h3&gt;
 
@@ -53,7 +95,7 @@
 &lt;/div&gt;
 &lt;p&gt;如果你正在使用某些专业的，需要使用PHP扩展（C语言编写），那你不能使用Composer管理，而需要PECL。&lt;/p&gt;
 
-&lt;h4 id=&quot;推荐扩展&quot;&gt;推荐扩展&lt;/h4&gt;
+&lt;h5 id=&quot;推荐扩展&quot;&gt;推荐扩展&lt;/h5&gt;
 
 &lt;p&gt;不管你正在编写什么，你总会受益于这些依赖。这是除了大多数PHP程序员的推荐（PHPUnit, PHP-CS-Fixer, …）外的补充。&lt;/p&gt;
 
@@ -110,7 +152,7 @@ vendor/bin/psalm
 
 &lt;p&gt;如果你希望网站安全，HTTPS(HTTP over TLS)是&lt;a href=&quot;https://stackoverflow.com/a/2336738/2224584&quot;&gt;绝对不能妥协&lt;/a&gt;的。使用HTTPS立刻就能消除多种攻击（中间人攻击、窃听、重放攻击以及若干允许用户模仿的会话形式的攻击）。&lt;/p&gt;
 
-&lt;h4 id=&quot;安全请求头&quot;&gt;安全请求头&lt;/h4&gt;
+&lt;h5 id=&quot;安全请求头&quot;&gt;安全请求头&lt;/h5&gt;
 
 &lt;p&gt;在服务器使用HTTPS确实为用户提供了许多安全性和性能方面的好处，但也还能通过利用某些浏览器的安全功能来进一步提升安全性。而这大部分会涉及到与返回内容一起返回的请求头。&lt;/p&gt;
 
