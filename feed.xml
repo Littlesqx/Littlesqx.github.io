@@ -5,8 +5,8 @@
     <description>littlesqx's blog</description>
     <link>https://littlesqx.github.io/</link>
     <atom:link href="https://littlesqx.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sun, 24 Dec 2017 23:28:54 +0800</pubDate>
-    <lastBuildDate>Sun, 24 Dec 2017 23:28:54 +0800</lastBuildDate>
+    <pubDate>Sun, 24 Dec 2017 23:33:25 +0800</pubDate>
+    <lastBuildDate>Sun, 24 Dec 2017 23:33:25 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
     
       <item>
@@ -68,10 +68,6 @@
 &lt;p&gt;或者，你可以&lt;a href=&quot;https://github.com/FriendsOfPHP/security-advisories#checking-for-vulnerabilities&quot;&gt;上传你的&lt;code class=&quot;highlighter-rouge&quot;&gt;composer.lock&lt;/code&gt;文件到Sensio Labs&lt;/a&gt;，作为例行自动化漏洞评估工作流的一部分，以提醒发现任何过时的软件包。&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;vimeo/psalm&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;Psalm is a static analysis tool that helps identify possible bugs in your code. Although there are other good static analysis tools (such as Phan and PHPStan which are both excellent), if you ever find yourself needing to support PHP 5, Psalm is the go-to static analysis tool for PHP 5.4+.&lt;/p&gt;
-
-&lt;p&gt;Using Psalm is relatively easy:&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://github.com/vimeo/psalm&quot;&gt;Psalm&lt;/a&gt;是一个帮助你识别代码里可能存在bugs的静态分析工具。还有其他很好的静态分析工具（例如&lt;a href=&quot;https://github.com/phan/phan&quot;&gt;Phan&lt;/a&gt;和&lt;a href=&quot;https://github.com/phpstan/phpstan&quot;&gt;PHPStan&lt;/a&gt;都很棒），但当你发现你需要支持PHP 5，Psalms将是PHP 5.4+的首选。&lt;/p&gt;
 
