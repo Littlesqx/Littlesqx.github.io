@@ -5,9 +5,189 @@
     <description>littlesqx's blog</description>
     <link>https://littlesqx.github.io/</link>
     <atom:link href="https://littlesqx.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Tue, 19 Dec 2017 23:15:14 +0800</pubDate>
-    <lastBuildDate>Tue, 19 Dec 2017 23:15:14 +0800</lastBuildDate>
+    <pubDate>Sun, 24 Dec 2017 23:28:54 +0800</pubDate>
+    <lastBuildDate>Sun, 24 Dec 2017 23:28:54 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
+    
+      <item>
+        <title>[译]The 2018 Guide to Building Secure PHP Software</title>
+        <description>&lt;blockquote&gt;
+  &lt;p&gt;2018年，PHP应用程序安全设计指北～&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;前言&quot;&gt;前言&lt;/h3&gt;
+
+&lt;p&gt;2018年将至，一般程序员（特别是Web开发程序员）应当抛弃过去开发PHP程序的很多不好的习惯和观念了。虽然部分人不以为意，但是这确实是事实。&lt;/p&gt;
+
+&lt;p&gt;这个指南应该以重点部分作为&lt;a href=&quot;https://laravel-china.github.io/php-the-right-way/&quot;&gt;PHP之道&lt;/a&gt;安全章节的补充，而不是以一般的PHP编程话题。&lt;/p&gt;
+
+&lt;h3 id=&quot;正文&quot;&gt;正文&lt;/h3&gt;
+
+&lt;h4 id=&quot;php-版本&quot;&gt;PHP 版本&lt;/h4&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;除非逼不得已，否则请在2018年使用PHP 7.2, 并且计划2019年初切换到PHP 7.3。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;PHP 7.2 已于2017年11月30日发布。&lt;/p&gt;
+
+&lt;p&gt;写这篇文章的时候，只有7.1和7.2版本还在被PHP官方积极维护，而5.6和7.0只在大概1年内提供安全补丁更新。&lt;/p&gt;
+
+&lt;p&gt;对于其他官方不维护的PHP版本，虽然某些操作系统会提供长期支持和维护，但这其实通常是有害的。尤其是他们提供安全支持补丁却没有版本号，这使得很难解释系统的安全性（仅仅知道PHP版本）。&lt;/p&gt;
+
+&lt;p&gt;因此，无论其他供应商提出了什么承诺，如果可以，你就应该在任何时候都坚决地使用官方提供支持的PHP版本。这样，尽管最终是一个短暂的安全版本，但一个不断致力于的升级版本，总会让你收获一些意外的惊喜。&lt;/p&gt;
+
+&lt;h4 id=&quot;依赖管理&quot;&gt;依赖管理&lt;/h4&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;人生苦短，请使用Composer。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;在PHP生态中，Composer是最先进的依赖管理方案。我们推荐PHP之道中关于&lt;a href=&quot;https://laravel-china.github.io/php-the-right-way/#dependency_management&quot;&gt;依赖管理&lt;/a&gt;的完整章节。&lt;/p&gt;
+
+&lt;p&gt;如果你没有使用Composer来管理应用的依赖，最终（hopefully later but most likely sooner）会导致应用里某个依赖会严重过时，然后老旧版本中的漏洞会被利用于计算机犯罪。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;重要&lt;/strong&gt;： 开发软件时，时常记得保持依赖的更新。幸运地，这只需一行命令：&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;composer update
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;如果你正在使用某些专业的，需要使用PHP扩展（C语言编写），那你不能使用Composer管理，而需要PECL。&lt;/p&gt;
+
+&lt;h4 id=&quot;推荐扩展&quot;&gt;推荐扩展&lt;/h4&gt;
+
+&lt;p&gt;不管你正在编写什么，你总会受益于这些依赖。这是除了大多数PHP程序员的推荐（PHPUnit, PHP-CS-Fixer, …）外的补充。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;roave/security-advisories&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/Roave/SecurityAdvisories&quot;&gt;Roave’s security-advisories&lt;/a&gt;使用&lt;a href=&quot;https://github.com/FriendsOfPHP/security-advisories&quot;&gt;Friends of PHP repository&lt;/a&gt;确保你的项目没有依赖一些已知易受攻击的依赖。&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;composer require roave/security-advisories:dev-master    
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;或者，你可以&lt;a href=&quot;https://github.com/FriendsOfPHP/security-advisories#checking-for-vulnerabilities&quot;&gt;上传你的&lt;code class=&quot;highlighter-rouge&quot;&gt;composer.lock&lt;/code&gt;文件到Sensio Labs&lt;/a&gt;，作为例行自动化漏洞评估工作流的一部分，以提醒发现任何过时的软件包。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;vimeo/psalm&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Psalm is a static analysis tool that helps identify possible bugs in your code. Although there are other good static analysis tools (such as Phan and PHPStan which are both excellent), if you ever find yourself needing to support PHP 5, Psalm is the go-to static analysis tool for PHP 5.4+.&lt;/p&gt;
+
+&lt;p&gt;Using Psalm is relatively easy:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/vimeo/psalm&quot;&gt;Psalm&lt;/a&gt;是一个帮助你识别代码里可能存在bugs的静态分析工具。还有其他很好的静态分析工具（例如&lt;a href=&quot;https://github.com/phan/phan&quot;&gt;Phan&lt;/a&gt;和&lt;a href=&quot;https://github.com/phpstan/phpstan&quot;&gt;PHPStan&lt;/a&gt;都很棒），但当你发现你需要支持PHP 5，Psalms将是PHP 5.4+的首选。&lt;/p&gt;
+
+&lt;p&gt;使用Psalm挺简单：&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# Version 1 doesn't exist yet, but it will one day:&lt;/span&gt;
+composer require --dev vimeo/psalm:^0
+
+&lt;span class=&quot;c&quot;&gt;# Only do this once:&lt;/span&gt;
+vendor/bin/psalm --init
+
+&lt;span class=&quot;c&quot;&gt;# Do this as often as you need:&lt;/span&gt;
+vendor/bin/psalm
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;如果你是第一次在现有代码库运行，可能会看到很多红色错误。但除非你在构建像WordPress那么大的程序，否则努力通过所有测试绝不是艰巨的。&lt;/p&gt;
+
+&lt;p&gt;无论使用哪种静态分析工具，我们都推荐你能将他加入到&lt;a href=&quot;https://zh.wikipedia.org/wiki/%E6%8C%81%E7%BA%8C%E6%95%B4%E5%90%88&quot;&gt;持续集成工作流&lt;/a&gt;（Continuous Integration workflow）中，以便在每次更改代码中运行。&lt;/p&gt;
+
+&lt;h4 id=&quot;https和浏览器安全&quot;&gt;HTTPS和浏览器安全&lt;/h4&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;HTTPS, &lt;a href=&quot;https://www.ssllabs.com/&quot;&gt;which should be tested&lt;/a&gt;, and &lt;a href=&quot;https://securityheaders.io/&quot;&gt;security headers&lt;/a&gt; .&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;2018年，不安全的HTTP网站将不再被接受。幸运的是，由于ACME 协议 和 &lt;a href=&quot;https://letsencrypt.org/&quot;&gt;Let’s Encrypt certificate authority&lt;/a&gt;，免费的TLS证书成为了可能。&lt;/p&gt;
+
+&lt;p&gt;将 ACME 集成到你的服务器，小菜一碟。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://caddyserver.com/&quot;&gt;Caddy&lt;/a&gt;: 自动加入。&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://letsencrypt.org/2017/10/17/acme-support-in-apache-httpd.html&quot;&gt;Apache&lt;/a&gt;: 很快作为&lt;code class=&quot;highlighter-rouge&quot;&gt;mod_md&lt;/code&gt;可用。在此之前，&lt;a href=&quot;https://www.digitalocean.com/community/tutorials/how-to-secure-apache-with-let-s-encrypt-on-ubuntu-16-04&quot;&gt;网上很多高质量教程&lt;/a&gt;。&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.nginx.com/blog/using-free-ssltls-certificates-from-lets-encrypt-with-nginx/&quot;&gt;Nginx&lt;/a&gt;: 相对简单。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;你也许会想，“好，我已经有TLS证书了，为了网站变得安全和快速，得花些时间折腾配置信息。”&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;不！&lt;/strong&gt;&lt;a href=&quot;https://mozilla.github.io/server-side-tls/ssl-config-generator/&quot;&gt;Mozilla做了好事情！&lt;/a&gt;。你可以根据网站的目标受众，使用配置生成器生成&lt;a href=&quot;https://wiki.mozilla.org/Security/Server_Side_TLS&quot;&gt;推荐套件&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;如果你希望网站安全，HTTPS(HTTP over TLS)是&lt;a href=&quot;https://stackoverflow.com/a/2336738/2224584&quot;&gt;绝对不能妥协&lt;/a&gt;的。使用HTTPS立刻就能消除多种攻击（中间人攻击、窃听、重放攻击以及若干允许用户模仿的会话形式的攻击）。&lt;/p&gt;
+
+&lt;h4 id=&quot;安全请求头&quot;&gt;安全请求头&lt;/h4&gt;
+
+&lt;p&gt;在服务器使用HTTPS确实为用户提供了许多安全性和性能方面的好处，但也还能通过利用某些浏览器的安全功能来进一步提升安全性。而这大部分会涉及到与返回内容一起返回的请求头。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Content-Security-Policy
+    &lt;ul&gt;
+      &lt;li&gt;你需要该请求头，因为它提供了对于浏览器是否允许加载内部和外部资源的细化控制，从而为跨域脚本攻击漏洞提供了有效防御层。&lt;/li&gt;
+      &lt;li&gt;参阅&lt;a href=&quot;https://github.com/paragonie/csp-builder&quot;&gt;CSP-Builder&lt;/a&gt;，以便快速简便地部署/管理内容安全策略（Content Security Policies）。&lt;/li&gt;
+      &lt;li&gt;为了更加深入的分析， Scott Helme’s &lt;a href=&quot;https://scotthelme.co.uk/content-security-policy-an-introduction/&quot;&gt;introduction to Content-Security-Policy headers&lt;/a&gt;，会是一个很好的引导。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Expect-CT
+    &lt;ul&gt;
+      &lt;li&gt;你需要该请求头，因为它能通过强制某些不良行为者将其错误证书的证据颁发到可公开验证的仅可追加的数据结构，从而针对流氓/受损的证书颁发机构增加一层防护。&lt;/li&gt;
+      &lt;li&gt;优先设置为&lt;code class=&quot;highlighter-rouge&quot;&gt;enforce,max-age=30&lt;/code&gt;。只要你有足够的自信该请求头不会造成服务中断，增加&lt;code class=&quot;highlighter-rouge&quot;&gt;max-age&lt;/code&gt;吧。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Referrer-Policy
+    &lt;ul&gt;
+      &lt;li&gt;你需要该请求头，因为它允许你控制用户的行为信息是否泄露给第三方。&lt;/li&gt;
+      &lt;li&gt;同样地，Scott Helme提供了&lt;a href=&quot;https://scotthelme.co.uk/a-new-security-header-referrer-policy/&quot;&gt;一篇关于Referrer-Policy请求头介绍好文&lt;/a&gt;。&lt;/li&gt;
+      &lt;li&gt;除非有理由允许更加宽松的设置，否则请设置为&lt;code class=&quot;highlighter-rouge&quot;&gt;same-origin&lt;/code&gt;或&lt;code class=&quot;highlighter-rouge&quot;&gt;no-referrer&lt;/code&gt;。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Strict-Transport-Security
+    &lt;ul&gt;
+      &lt;li&gt;你需要该请求头，因为它告诉浏览器通过HTTPS而不是不安全的HTTP，将future requests设为同源。&lt;/li&gt;
+      &lt;li&gt;在第一次部署时，将其设置为&lt;code class=&quot;highlighter-rouge&quot;&gt;max-age = 30&lt;/code&gt;，然后当您确信没有任何内容会中断时，将此值增加到某个较大的值（例如31536000）。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;X-Content-Type-Options
+    &lt;ul&gt;
+      &lt;li&gt;你需要该请求头，因为MIME类型的混淆可能会导致不可预知的结果，包括奇怪的允许XSS漏洞的边缘情况。这最好伴随着一个标准的Content-Type请求头。&lt;/li&gt;
+      &lt;li&gt;除非需要默认的行为（例如文件的下载），否则请设置为&lt;code class=&quot;highlighter-rouge&quot;&gt;nosniff&lt;/code&gt;。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;X-Frame-Options
+    &lt;ul&gt;
+      &lt;li&gt;你需要该请求头，因为它允许你防止点击劫持。&lt;/li&gt;
+      &lt;li&gt;设置为&lt;code class=&quot;highlighter-rouge&quot;&gt;DENY&lt;/code&gt; (或者&lt;code class=&quot;highlighter-rouge&quot;&gt;SAMEORIGIN&lt;/code&gt;, 但仅仅当你使用 &lt;frame&gt; 元素的时候)。&lt;/frame&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;X-XSS-Protection
+    &lt;ul&gt;
+      &lt;li&gt;你需要该请求头，因为它启用了一些默认情况下未启用的浏览器反XSS功能。&lt;/li&gt;
+      &lt;li&gt;设置为&lt;code class=&quot;highlighter-rouge&quot;&gt;1; mode=block&lt;/code&gt;。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;同样，如果您使用PHP的内置会话管理功能（建议使用），则可能需要调用session_start()&lt;/p&gt;
+&lt;div class=&quot;language-php highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?php&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;session_start&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;
+    &lt;span class=&quot;s1&quot;&gt;'cookie_httponly'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;s1&quot;&gt;'cookie_secure'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;这会强制你的应用在发送会话标识符时使用HTTP-Only和Secure标志，从而防止XSS攻击窃取用户的Cookie，并强制它们分别通过HTTPS发送。 我们之前在2015年的博客文章中介绍了&lt;a href=&quot;https://paragonie.com/blog/2015/04/fast-track-safe-and-secure-php-sessions&quot;&gt;安全的PHP会话&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;待续…&lt;/p&gt;
+
+</description>
+        <pubDate>Sun, 24 Dec 2017 19:46:01 +0800</pubDate>
+        <link>https://littlesqx.github.io/2017/12/24/the-2018-guide-to-building-secure-php-software/</link>
+        <guid isPermaLink="true">https://littlesqx.github.io/2017/12/24/the-2018-guide-to-building-secure-php-software/</guid>
+        
+        <category>PHP</category>
+        
+        <category>翻译</category>
+        
+        
+      </item>
     
       <item>
         <title>you know, for search - ElasticSearch 学习笔记(1)</title>

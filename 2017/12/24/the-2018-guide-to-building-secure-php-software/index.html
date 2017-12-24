@@ -9,9 +9,9 @@
     <meta name="keyword"  content="git php mysql laravel littlesqx">
     <link rel="shortcut icon" href="https://littlesqx-github-io.b0.upaiyun.com/img/favicon.ico">
 
-    <title>MySQL定时备份，要不利用SAE Storage吧 - Littlesqx Blog</title>
+    <title>[译]The 2018 Guide to Building Secure PHP Software - Littlesqx Blog</title>
 
-    <link rel="canonical" href="https://littlesqx.github.io/2017/10/08/mysql-backup-to-sae-storage/">
+    <link rel="canonical" href="https://littlesqx.github.io/2017/12/24/the-2018-guide-to-building-secure-php-software/">
 
     <!-- nprogress CSS -->
     <link href="https://littlesqx-github-io.b0.upaiyun.com/css/nprogress.min.css" rel="stylesheet">
@@ -150,21 +150,17 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#crontab" title="crontab">crontab</a>
+                        <a class="tag" href="/tags/#PHP" title="PHP">PHP</a>
                         
-                        <a class="tag" href="/tags/#MySQL" title="MySQL">MySQL</a>
-                        
-                        <a class="tag" href="/tags/#SAE" title="SAE">SAE</a>
-                        
-                        <a class="tag" href="/tags/#Swift" title="Swift">Swift</a>
+                        <a class="tag" href="/tags/#翻译" title="翻译">翻译</a>
                         
                     </div>
-                    <h1>MySQL定时备份，要不利用SAE Storage吧</h1>
+                    <h1>[译]The 2018 Guide to Building Secure PHP Software</h1>
                     
                     
                     <h2 class="subheading"></h2>
                     
-                    <span class="meta">Posted by Littlesqx on October 8, 2017</span>
+                    <span class="meta">Posted by Littlesqx on December 24, 2017</span>
                 </div>
             </div>
         </div>
@@ -183,98 +179,171 @@
                 post-container">
 
 				<blockquote>
-  <p>这个题目，我挺满意的哈哈。</p>
+  <p>2018年，PHP应用程序安全设计指北～</p>
 </blockquote>
 
 <h3 id="前言">前言</h3>
 
-<p>其实是很久以前的一个想法了，为什么一直没有实行，大概离不开懒吧。我两年前帮学校社团（我们是卖旧书的，有一个管理书本售卖情况的需要）开发了一个小站，挂在SAE上，那时候免费，比现在良心多了，现在数据库需要收费。当然了，就是那么巧，腾讯云开始了校园宣传，云+校园学生一元主机。对，没办法，我们穷啊，就发展到SAE上挂代码，腾讯云挂数据库的形式。每月的费用也就5块左右吧。为什么不都移到腾讯云上，不就每月1块了吗？因为有考虑到腾讯云服务器是我私人的，带宽也只有1m，SAE上也有挺多实用的辅助功能和工具，所以还是使用SAE。</p>
+<p>2018年将至，一般程序员（特别是Web开发程序员）应当抛弃过去开发PHP程序的很多不好的习惯和观念了。虽然部分人不以为意，但是这确实是事实。</p>
 
-<hr />
+<p>这个指南应该以重点部分作为<a href="https://laravel-china.github.io/php-the-right-way/">PHP之道</a>安全章节的补充，而不是以一般的PHP编程话题。</p>
 
 <h3 id="正文">正文</h3>
 
-<h4 id="怎么备份">怎么备份</h4>
+<h4 id="php-版本">PHP 版本</h4>
 
-<p>前面提到了数据库在腾讯云服务器上，系统是CentOS，那很容易想到使用crontab执行计划定时执行备份脚本，就可以导出到服务器上，其实这就已经达到了备份效果，但是腾讯云这一元主机是需要每月续费的，代金券原来的每月自动发放，最后也变成了需要主动领取，万一我哪天忘了，或者出意外了（咳咳，怎么可能嘛~），这数据也就完蛋了。我想需要一个第三方可靠的存储，邮箱不错啊，一般邮箱都有几个g的空间，每次导出来都往备份邮箱发送就好了。但是管理不是很方便，邮箱迟早也会满。后来选择了SAE的Storage服务，一是还是在SAE上，项目成员可以一起管理。二，根据<a href="https://www.sinacloud.com/doc/sae/php/storage.html#swift-ming-ling-xing-gong-ju">Storage文档</a>，linux上可以使用swift管理，这样，定时脚本的实现，技术上是没有问题了。</p>
+<blockquote>
+  <p>除非逼不得已，否则请在2018年使用PHP 7.2, 并且计划2019年初切换到PHP 7.3。</p>
+</blockquote>
 
-<p>pic# 我画了个图
-<img src="/img/in-post/sae-storage.png" alt="img" /></p>
+<p>PHP 7.2 已于2017年11月30日发布。</p>
 
-<h4 id="开始动手">开始动手</h4>
+<p>写这篇文章的时候，只有7.1和7.2版本还在被PHP官方积极维护，而5.6和7.0只在大概1年内提供安全补丁更新。</p>
 
-<p>1# 安装Swift客户端</p>
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>yum install python-pip
-pip install python-swiftclient
+<p>对于其他官方不维护的PHP版本，虽然某些操作系统会提供长期支持和维护，但这其实通常是有害的。尤其是他们提供安全支持补丁却没有版本号，这使得很难解释系统的安全性（仅仅知道PHP版本）。</p>
 
-<span class="c"># test</span>
-swift --version
+<p>因此，无论其他供应商提出了什么承诺，如果可以，你就应该在任何时候都坚决地使用官方提供支持的PHP版本。这样，尽管最终是一个短暂的安全版本，但一个不断致力于的升级版本，总会让你收获一些意外的惊喜。</p>
+
+<h4 id="依赖管理">依赖管理</h4>
+
+<blockquote>
+  <p>人生苦短，请使用Composer。</p>
+</blockquote>
+
+<p>在PHP生态中，Composer是最先进的依赖管理方案。我们推荐PHP之道中关于<a href="https://laravel-china.github.io/php-the-right-way/#dependency_management">依赖管理</a>的完整章节。</p>
+
+<p>如果你没有使用Composer来管理应用的依赖，最终（hopefully later but most likely sooner）会导致应用里某个依赖会严重过时，然后老旧版本中的漏洞会被利用于计算机犯罪。</p>
+
+<p><strong>重要</strong>： 开发软件时，时常记得保持依赖的更新。幸运地，这只需一行命令：</p>
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>composer update
+</code></pre>
+</div>
+<p>如果你正在使用某些专业的，需要使用PHP扩展（C语言编写），那你不能使用Composer管理，而需要PECL。</p>
+
+<h4 id="推荐扩展">推荐扩展</h4>
+
+<p>不管你正在编写什么，你总会受益于这些依赖。这是除了大多数PHP程序员的推荐（PHPUnit, PHP-CS-Fixer, …）外的补充。</p>
+
+<p><strong>roave/security-advisories</strong></p>
+
+<p><a href="https://github.com/Roave/SecurityAdvisories">Roave’s security-advisories</a>使用<a href="https://github.com/FriendsOfPHP/security-advisories">Friends of PHP repository</a>确保你的项目没有依赖一些已知易受攻击的依赖。</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>composer require roave/security-advisories:dev-master    
 </code></pre>
 </div>
 
-<p>2# SAE Storage 创建一个Bucket</p>
+<p>或者，你可以<a href="https://github.com/FriendsOfPHP/security-advisories#checking-for-vulnerabilities">上传你的<code class="highlighter-rouge">composer.lock</code>文件到Sensio Labs</a>，作为例行自动化漏洞评估工作流的一部分，以提醒发现任何过时的软件包。</p>
 
-<p>目标SAE应用 &gt; 存储与CDN服务 &gt; Storage &gt; 新建 Bucket
-<img src="/img/in-post/201710081.png" alt="img" />
-务必修改访问权限为私有
-<img src="/img/in-post/201710082.png" alt="img" /></p>
+<p><strong>vimeo/psalm</strong></p>
 
-<p>3# 编写Shell脚本</p>
+<p>Psalm is a static analysis tool that helps identify possible bugs in your code. Although there are other good static analysis tools (such as Phan and PHPStan which are both excellent), if you ever find yourself needing to support PHP 5, Psalm is the go-to static analysis tool for PHP 5.4+.</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>vim db_backup.sh
-</code></pre>
-</div>
-<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="c">#!/bin/sh</span>
+<p>Using Psalm is relatively easy:</p>
 
-<span class="c"># job setting</span>
-<span class="nv">INTERVAL</span><span class="o">=</span>30 <span class="c"># 保留最近三十天的备份数据</span>
-<span class="nv">TODAY</span><span class="o">=</span><span class="k">$(</span>date <span class="s1">'+%Y%m%d'</span><span class="k">)</span>
-<span class="nv">DROPDAY</span><span class="o">=</span><span class="k">$(</span>date -d <span class="s2">"</span><span class="nv">$INTERVAL</span><span class="s2"> days ago"</span> +%Y%m%d<span class="k">)</span>
+<p><a href="https://github.com/vimeo/psalm">Psalm</a>是一个帮助你识别代码里可能存在bugs的静态分析工具。还有其他很好的静态分析工具（例如<a href="https://github.com/phan/phan">Phan</a>和<a href="https://github.com/phpstan/phpstan">PHPStan</a>都很棒），但当你发现你需要支持PHP 5，Psalms将是PHP 5.4+的首选。</p>
 
-<span class="c"># db setting</span>
-<span class="nv">DB_USER</span><span class="o">=</span><span class="s1">''</span>
-<span class="nv">DB_PASSWD</span><span class="o">=</span><span class="s1">''</span>
-<span class="nv">DB_NAME</span><span class="o">=</span><span class="s1">''</span>
+<p>使用Psalm挺简单：</p>
 
-<span class="c"># sae storage</span>
-<span class="nv">ST_AUTH</span><span class="o">=</span><span class="s1">'https://auth.sinas3.com/v1.0'</span>
-<span class="nv">ST_USER</span><span class="o">=</span><span class="s1">''</span>
-<span class="nv">ST_KEY</span><span class="o">=</span><span class="s1">''</span>
-<span class="nv">ST_BUCKET</span><span class="o">=</span><span class="s1">''</span> <span class="c"># 需要先创建</span>
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="c"># Version 1 doesn't exist yet, but it will one day:</span>
+composer require --dev vimeo/psalm:^0
 
-<span class="c"># path</span>
-<span class="nv">PATH</span><span class="o">=</span><span class="s2">"data/</span><span class="nv">$DB_NAME</span><span class="s2">/"</span> <span class="c"># 服务器需要先手动创建该目录，SAE Storage 上传时会自动创建</span>
+<span class="c"># Only do this once:</span>
+vendor/bin/psalm --init
 
-<span class="c"># 导出数据到服务器</span>
-/usr/bin/mysqldump -u<span class="nv">$DB_USER</span> -p<span class="nv">$DB_PASSWD</span> <span class="nv">$DB_NAME</span> &gt; /<span class="nv">$PATH$DB_NAME$TODAY</span>.sql
-
-<span class="c"># 上传当天备份的文件和更新日志</span>
-/usr/bin/swift -A<span class="nv">$ST_AUTH</span> -U<span class="nv">$ST_USER</span> -K<span class="nv">$ST_KEY</span> upload <span class="nv">$ST_BUCKET</span> /<span class="nv">$PATH$DB_NAME$TODAY</span>.sql --insecure &gt;&gt; /data/<span class="nv">$DB_NAME</span>/backup_logs.log
-/usr/bin/swift -A<span class="nv">$ST_AUTH</span> -U<span class="nv">$ST_USER</span> -K<span class="nv">$ST_KEY</span> upload <span class="nv">$ST_BUCKET</span> /<span class="k">${</span><span class="nv">PATH</span><span class="k">}</span>backup_logs.log --insecure
-
-<span class="c"># 删除${INTERVAL}天以前的旧数据</span>
-/usr/bin/rm /<span class="nv">$PATH$DB_NAME$DROPDAY</span>.sql
-/usr/bin/swift -A<span class="nv">$ST_AUTH</span> -U<span class="nv">$ST_USER</span> -K<span class="nv">$ST_KEY</span> delete <span class="nv">$ST_BUCKET</span> <span class="nv">$PATH$DB_NAME$DROPDAY</span>.sql --insecure
-
+<span class="c"># Do this as often as you need:</span>
+vendor/bin/psalm
 </code></pre>
 </div>
 
-<p>4# crontab 执行计划</p>
+<p>如果你是第一次在现有代码库运行，可能会看到很多红色错误。但除非你在构建像WordPress那么大的程序，否则努力通过所有测试绝不是艰巨的。</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>crontab -e
-<span class="c"># 加入下面的计划，每晚11点30分执行一次，或者其他更加合适的时间</span>
-30 23 <span class="k">*</span> <span class="k">*</span> <span class="k">*</span> /usr/bin/sh /data/db_backup.sh
-</code></pre>
-</div>
+<p>无论使用哪种静态分析工具，我们都推荐你能将他加入到<a href="https://zh.wikipedia.org/wiki/%E6%8C%81%E7%BA%8C%E6%95%B4%E5%90%88">持续集成工作流</a>（Continuous Integration workflow）中，以便在每次更改代码中运行。</p>
 
-<hr />
+<h4 id="https和浏览器安全">HTTPS和浏览器安全</h4>
 
-<h3 id="结尾">结尾</h3>
-<p>这样，一个完整的备份流程也就结束了，还可以更完善，比如日志更加友好，每次备份邮件通知结果，或者还有其他更加优雅的办法吧。总之，心累有木有!!</p>
-<h4 id="参考文章">参考文章</h4>
+<blockquote>
+  <p>HTTPS, <a href="https://www.ssllabs.com/">which should be tested</a>, and <a href="https://securityheaders.io/">security headers</a> .</p>
+</blockquote>
+
+<p>2018年，不安全的HTTP网站将不再被接受。幸运的是，由于ACME 协议 和 <a href="https://letsencrypt.org/">Let’s Encrypt certificate authority</a>，免费的TLS证书成为了可能。</p>
+
+<p>将 ACME 集成到你的服务器，小菜一碟。</p>
+
 <ul>
-  <li><a href="http://blog.csdn.net/u014494705/article/details/38321923">SAE storage linux管理 - 霹雳书生</a></li>
+  <li><a href="https://caddyserver.com/">Caddy</a>: 自动加入。</li>
+  <li><a href="https://letsencrypt.org/2017/10/17/acme-support-in-apache-httpd.html">Apache</a>: 很快作为<code class="highlighter-rouge">mod_md</code>可用。在此之前，<a href="https://www.digitalocean.com/community/tutorials/how-to-secure-apache-with-let-s-encrypt-on-ubuntu-16-04">网上很多高质量教程</a>。</li>
+  <li><a href="https://www.nginx.com/blog/using-free-ssltls-certificates-from-lets-encrypt-with-nginx/">Nginx</a>: 相对简单。</li>
 </ul>
+
+<p>你也许会想，“好，我已经有TLS证书了，为了网站变得安全和快速，得花些时间折腾配置信息。”</p>
+
+<p><strong>不！</strong><a href="https://mozilla.github.io/server-side-tls/ssl-config-generator/">Mozilla做了好事情！</a>。你可以根据网站的目标受众，使用配置生成器生成<a href="https://wiki.mozilla.org/Security/Server_Side_TLS">推荐套件</a>。</p>
+
+<p>如果你希望网站安全，HTTPS(HTTP over TLS)是<a href="https://stackoverflow.com/a/2336738/2224584">绝对不能妥协</a>的。使用HTTPS立刻就能消除多种攻击（中间人攻击、窃听、重放攻击以及若干允许用户模仿的会话形式的攻击）。</p>
+
+<h4 id="安全请求头">安全请求头</h4>
+
+<p>在服务器使用HTTPS确实为用户提供了许多安全性和性能方面的好处，但也还能通过利用某些浏览器的安全功能来进一步提升安全性。而这大部分会涉及到与返回内容一起返回的请求头。</p>
+
+<ul>
+  <li>Content-Security-Policy
+    <ul>
+      <li>你需要该请求头，因为它提供了对于浏览器是否允许加载内部和外部资源的细化控制，从而为跨域脚本攻击漏洞提供了有效防御层。</li>
+      <li>参阅<a href="https://github.com/paragonie/csp-builder">CSP-Builder</a>，以便快速简便地部署/管理内容安全策略（Content Security Policies）。</li>
+      <li>为了更加深入的分析， Scott Helme’s <a href="https://scotthelme.co.uk/content-security-policy-an-introduction/">introduction to Content-Security-Policy headers</a>，会是一个很好的引导。</li>
+    </ul>
+  </li>
+  <li>Expect-CT
+    <ul>
+      <li>你需要该请求头，因为它能通过强制某些不良行为者将其错误证书的证据颁发到可公开验证的仅可追加的数据结构，从而针对流氓/受损的证书颁发机构增加一层防护。</li>
+      <li>优先设置为<code class="highlighter-rouge">enforce,max-age=30</code>。只要你有足够的自信该请求头不会造成服务中断，增加<code class="highlighter-rouge">max-age</code>吧。</li>
+    </ul>
+  </li>
+  <li>Referrer-Policy
+    <ul>
+      <li>你需要该请求头，因为它允许你控制用户的行为信息是否泄露给第三方。</li>
+      <li>同样地，Scott Helme提供了<a href="https://scotthelme.co.uk/a-new-security-header-referrer-policy/">一篇关于Referrer-Policy请求头介绍好文</a>。</li>
+      <li>除非有理由允许更加宽松的设置，否则请设置为<code class="highlighter-rouge">same-origin</code>或<code class="highlighter-rouge">no-referrer</code>。</li>
+    </ul>
+  </li>
+  <li>Strict-Transport-Security
+    <ul>
+      <li>你需要该请求头，因为它告诉浏览器通过HTTPS而不是不安全的HTTP，将future requests设为同源。</li>
+      <li>在第一次部署时，将其设置为<code class="highlighter-rouge">max-age = 30</code>，然后当您确信没有任何内容会中断时，将此值增加到某个较大的值（例如31536000）。</li>
+    </ul>
+  </li>
+  <li>X-Content-Type-Options
+    <ul>
+      <li>你需要该请求头，因为MIME类型的混淆可能会导致不可预知的结果，包括奇怪的允许XSS漏洞的边缘情况。这最好伴随着一个标准的Content-Type请求头。</li>
+      <li>除非需要默认的行为（例如文件的下载），否则请设置为<code class="highlighter-rouge">nosniff</code>。</li>
+    </ul>
+  </li>
+  <li>X-Frame-Options
+    <ul>
+      <li>你需要该请求头，因为它允许你防止点击劫持。</li>
+      <li>设置为<code class="highlighter-rouge">DENY</code> (或者<code class="highlighter-rouge">SAMEORIGIN</code>, 但仅仅当你使用 <frame> 元素的时候)。</frame></li>
+    </ul>
+  </li>
+  <li>X-XSS-Protection
+    <ul>
+      <li>你需要该请求头，因为它启用了一些默认情况下未启用的浏览器反XSS功能。</li>
+      <li>设置为<code class="highlighter-rouge">1; mode=block</code>。</li>
+    </ul>
+  </li>
+</ul>
+
+<p>同样，如果您使用PHP的内置会话管理功能（建议使用），则可能需要调用session_start()</p>
+<div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="nb">session_start</span><span class="p">([</span>
+    <span class="s1">'cookie_httponly'</span> <span class="o">=&gt;</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="s1">'cookie_secure'</span> <span class="o">=&gt;</span> <span class="kc">true</span>
+<span class="p">]);</span>
+</code></pre>
+</div>
+<p>这会强制你的应用在发送会话标识符时使用HTTP-Only和Secure标志，从而防止XSS攻击窃取用户的Cookie，并强制它们分别通过HTTPS发送。 我们之前在2015年的博客文章中介绍了<a href="https://paragonie.com/blog/2015/04/fast-track-safe-and-secure-php-sessions">安全的PHP会话</a>。</p>
+
+<p>待续…</p>
+
 
 
                 <hr>
@@ -288,13 +357,9 @@ swift --version
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2017/09/23/centos7-lnmp/" data-toggle="tooltip" data-placement="top" title="在CentOS 7 上配置 LNMP 环境">&larr; Previous Post</a>
+                        <a href="/2017/12/08/elasticsearch-learn-notes-1/" data-toggle="tooltip" data-placement="top" title="you know, for search - ElasticSearch 学习笔记(1)">&larr; Previous Post</a>
                     </li>
                     
-                    
-                    <li class="next">
-                        <a href="/2017/10/15/lamp-lnmp-lanmp/" data-toggle="tooltip" data-placement="top" title="写一篇介绍和对比文章，关于 LAMP LNMP LANMP，还有...">Next Post &rarr;</a>
-                    </li>
                     
                 </ul>
 
