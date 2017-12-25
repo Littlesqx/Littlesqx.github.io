@@ -5,8 +5,8 @@
     <description>littlesqx's blog</description>
     <link>https://littlesqx.github.io/</link>
     <atom:link href="https://littlesqx.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Mon, 25 Dec 2017 23:27:24 +0800</pubDate>
-    <lastBuildDate>Mon, 25 Dec 2017 23:27:24 +0800</lastBuildDate>
+    <pubDate>Mon, 25 Dec 2017 23:30:43 +0800</pubDate>
+    <lastBuildDate>Mon, 25 Dec 2017 23:30:43 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
     
       <item>
@@ -86,7 +86,7 @@
   &lt;p&gt;人生苦短，我用Composer&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;在PHP生态中，&lt;a href=&quot;https://getcomposer.org/&quot;&gt;Composer&lt;/a&gt;是最先进的依赖管理方案。我们推荐PHP之道中关于&lt;a href=&quot;http://www.phptherightway.com/#dependency_management&quot;&gt;依赖管理&lt;/a&gt;的完整章节。&lt;/p&gt;
+&lt;p&gt;在PHP生态中，&lt;a href=&quot;https://getcomposer.org/&quot;&gt;Composer&lt;/a&gt;是最先进的依赖管理方案。我们推荐PHP: The Right Way 中关于&lt;a href=&quot;http://www.phptherightway.com/#dependency_management&quot;&gt;依赖管理&lt;/a&gt;的完整章节。&lt;/p&gt;
 
 &lt;p&gt;如果你没有使用Composer来管理应用的依赖，最终（hopefully later but most likely sooner）会导致应用里某个依赖会严重过时，然后老旧版本中的漏洞会被利用于计算机犯罪。&lt;/p&gt;
 
