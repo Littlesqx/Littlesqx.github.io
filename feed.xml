@@ -5,8 +5,8 @@
     <description>littlesqx's blog</description>
     <link>https://littlesqx.github.io/</link>
     <atom:link href="https://littlesqx.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Mon, 25 Dec 2017 22:02:52 +0800</pubDate>
-    <lastBuildDate>Mon, 25 Dec 2017 22:02:52 +0800</lastBuildDate>
+    <pubDate>Mon, 25 Dec 2017 22:14:39 +0800</pubDate>
+    <lastBuildDate>Mon, 25 Dec 2017 22:14:39 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
     
       <item>
@@ -806,6 +806,17 @@ Certainty通过将CACert捆绑在最新的可预测位置来消除这种激励�
     &lt;p&gt;&lt;a href=&quot;https://haveibeenpwned.com/&quot;&gt;Have I Been Pwned?&lt;/a&gt;：帮助用户发现他们的数据是否属于过时数据泄露。&lt;/p&gt;
   &lt;/li&gt;
 &lt;/ul&gt;
+
+&lt;h4 id=&quot;结尾&quot;&gt;结尾&lt;/h4&gt;
+
+&lt;p&gt;原文地址：&lt;a href=&quot;https://paragonie.com/blog/2017/12/2018-guide-building-secure-php-software&quot;&gt;The 2018 Guide to Building Secure PHP Software - P.I.E. Staff&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;为避免歧义，部分专业名词和语句保留了原文。翻译过程借助了Google和Google翻译，本人英文水平有限，如有错误感谢指出修正。&lt;/p&gt;
+
+&lt;p&gt;PHP可以说是一门受争论的语言，有时候也羞愧于自己都大四了还纠结于该问题，迷茫不定。看了作者的努力，特别从&lt;strong&gt;作者的一些话&lt;/strong&gt;中感受到，
+原来有很多人在为改善PHP生态努力，有点感动，多了些坚定。&lt;/p&gt;
+
+&lt;p&gt;共勉吧！&lt;/p&gt;
 </description>
         <pubDate>Sun, 24 Dec 2017 19:46:01 +0800</pubDate>
         <link>https://littlesqx.github.io/2017/12/24/the-2018-guide-to-building-secure-php-software/</link>
