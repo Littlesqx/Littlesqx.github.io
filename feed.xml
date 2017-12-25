@@ -5,8 +5,8 @@
     <description>littlesqx's blog</description>
     <link>https://littlesqx.github.io/</link>
     <atom:link href="https://littlesqx.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Mon, 25 Dec 2017 23:30:43 +0800</pubDate>
-    <lastBuildDate>Mon, 25 Dec 2017 23:30:43 +0800</lastBuildDate>
+    <pubDate>Mon, 25 Dec 2017 23:46:56 +0800</pubDate>
+    <lastBuildDate>Mon, 25 Dec 2017 23:46:56 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
     
       <item>
@@ -69,7 +69,7 @@
 &lt;h4 id=&quot;php-版本&quot;&gt;PHP 版本&lt;/h4&gt;
 
 &lt;blockquote&gt;
-  &lt;p&gt;除非逼不得已，否则请在2018年使用PHP 7.2, 并且计划2019年初切换到PHP 7.3。&lt;/p&gt;
+  &lt;p&gt;请在2018年使用PHP 7.2, 并且计划2019年初切换到PHP 7.3。&lt;/p&gt;
 &lt;/blockquote&gt;
 
 &lt;p&gt;PHP 7.2 已于2017年11月30日发布。&lt;/p&gt;
