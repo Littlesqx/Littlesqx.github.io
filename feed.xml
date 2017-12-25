@@ -5,63 +5,64 @@
     <description>littlesqx's blog</description>
     <link>https://littlesqx.github.io/</link>
     <atom:link href="https://littlesqx.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sun, 24 Dec 2017 23:57:35 +0800</pubDate>
-    <lastBuildDate>Sun, 24 Dec 2017 23:57:35 +0800</lastBuildDate>
+    <pubDate>Mon, 25 Dec 2017 22:02:52 +0800</pubDate>
+    <lastBuildDate>Mon, 25 Dec 2017 22:02:52 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
     
       <item>
         <title>[译]The 2018 Guide to Building Secure PHP Software</title>
         <description>&lt;blockquote&gt;
-  &lt;p&gt;2018年，PHP应用程序安全设计指北～&lt;/p&gt;
+  &lt;p&gt;2018PHP应用程序安全设计指北！&lt;/p&gt;
 &lt;/blockquote&gt;
 
 &lt;h3 id=&quot;目录&quot;&gt;目录&lt;/h3&gt;
 &lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;#php-版本&quot;&gt;PHP 版本&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#依赖管理&quot;&gt;Composer依赖管理&lt;/a&gt;
+  &lt;li&gt;&lt;a href=&quot;#前言&quot;&gt;前言&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#php-版本&quot;&gt;PHP 版本 / PHP Versions&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#依赖管理&quot;&gt;Composer依赖管理 / Dependency Management with Composer&lt;/a&gt;
     &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;#推荐扩展&quot;&gt;推荐扩展&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#推荐扩展&quot;&gt;推荐扩展 / Recommended Packages&lt;/a&gt;&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#https和浏览器安全&quot;&gt;HTTPS和浏览器安全&lt;/a&gt;
+  &lt;li&gt;&lt;a href=&quot;#https和浏览器安全&quot;&gt;HTTPS和浏览器安全 / HTTPS and Browser Security&lt;/a&gt;
     &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;#安全请求头&quot;&gt;安全请求头&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;Subresource Integrity&lt;/li&gt;
-      &lt;li&gt;Document Relationships&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#安全请求头&quot;&gt;安全请求头 / Security Headers&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#子资源完整性&quot;&gt;子资源完整性 / Subresource Integrity&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#文档关系&quot;&gt;文档关系 / Document Relationships&lt;/a&gt;&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
-  &lt;li&gt;Developing Secure PHP Software
+  &lt;li&gt;&lt;a href=&quot;#开发安全的php程序&quot;&gt;开发安全的PHP程序 / Developing Secure PHP Software&lt;/a&gt;
     &lt;ul&gt;
-      &lt;li&gt;Database Interaction&lt;/li&gt;
-      &lt;li&gt;File Uploads&lt;/li&gt;
-      &lt;li&gt;Cross-Site Scripting (XSS)&lt;/li&gt;
-      &lt;li&gt;Cross-Site Request Forgery (CSRF)&lt;/li&gt;
-      &lt;li&gt;XML attacks (XXE, XPath Injection)&lt;/li&gt;
-      &lt;li&gt;Deserialization and PHP Object Injection&lt;/li&gt;
-      &lt;li&gt;Password Hashing&lt;/li&gt;
-      &lt;li&gt;General-Purpose Cryptography&lt;/li&gt;
-      &lt;li&gt;Randomness&lt;/li&gt;
-      &lt;li&gt;Server-Side HTTPS Requests&lt;/li&gt;
-      &lt;li&gt;Things to Avoid&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#数据库注入&quot;&gt;数据库注入 / Database Interaction&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#文件上传&quot;&gt;文件上传 / File Uploads&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#跨站脚本&quot;&gt;跨站脚本 / Cross-Site Scripting (XSS)&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#跨站请求伪造&quot;&gt;跨站请求伪造 / Cross-Site Request Forgery (CSRF)&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#xml-攻击-xxe-xpath-injection&quot;&gt;XML 攻击 / XML attacks (XXE, XPath Injection)&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#反序列化和php对象注入&quot;&gt;反序列化和PHP对象注入 / Deserialization and PHP Object Injection&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#密码散列&quot;&gt;密码散列 / Password Hashing&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#通用加密&quot;&gt;通用加密 / General-Purpose Cryptography&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#随机性&quot;&gt;随机性 / Randomness&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#服务器端https请求&quot;&gt;服务器端HTTPS请求 / Server-Side HTTPS Requests&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#避免的事情&quot;&gt;避免的事情 / Things to Avoid&lt;/a&gt;&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
-  &lt;li&gt;Specialized Use-Cases
+  &lt;li&gt;&lt;a href=&quot;#专业用法&quot;&gt;专业用法 / Specialized Use-Cases&lt;/a&gt;
     &lt;ul&gt;
-      &lt;li&gt;Searchable Encryption&lt;/li&gt;
-      &lt;li&gt;Token-based Authentication without Side-Channels&lt;/li&gt;
-      &lt;li&gt;Developing Secure APIs&lt;/li&gt;
-      &lt;li&gt;Security Event Logging with Chronicle&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#可搜索的加密&quot;&gt;可搜索的加密 / Searchable Encryption&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#没有side-channels的基于令牌的身份验证&quot;&gt;没有Side-Channels的基于令牌的身份验证 / Token-based Authentication without Side-Channels&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#开发安全的api&quot;&gt;开发安全的API / Developing Secure APIs&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#使用chronicle记录安全事件&quot;&gt;使用Chronicle记录安全事件 / Security Event Logging with Chronicle&lt;/a&gt;&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
-  &lt;li&gt;A Word From the Author&lt;/li&gt;
-  &lt;li&gt;Resources&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#作者的一些话&quot;&gt;作者的一些话 / A Word From the Author&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#资源&quot;&gt;资源 / Resources&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h3 id=&quot;前言&quot;&gt;前言&lt;/h3&gt;
 
 &lt;p&gt;2018年将至，一般程序员（特别是Web开发程序员）应当抛弃过去开发PHP程序的很多不好的习惯和观念了。虽然部分人不以为意，但是这确实是事实。&lt;/p&gt;
 
-&lt;p&gt;这个指南应该以重点部分作为&lt;a href=&quot;https://laravel-china.github.io/php-the-right-way/&quot;&gt;PHP之道&lt;/a&gt;安全章节的补充，而不是以一般的PHP编程话题。&lt;/p&gt;
+&lt;p&gt;这个指南应该以重点部分作为&lt;a href=&quot;http://www.phptherightway.com/&quot;&gt;PHP: The Right Way&lt;/a&gt;安全章节的补充，而不是以一般的PHP编程话题。&lt;/p&gt;
 
 &lt;h3 id=&quot;正文&quot;&gt;正文&lt;/h3&gt;
 
@@ -77,19 +78,19 @@
 
 &lt;p&gt;对于其他官方不维护的PHP版本，虽然某些操作系统会提供长期支持和维护，但这其实通常是有害的。尤其是他们提供安全支持补丁却没有版本号，这使得很难解释系统的安全性（仅仅知道PHP版本）。&lt;/p&gt;
 
-&lt;p&gt;因此，无论其他供应商提出了什么承诺，如果可以，你就应该在任何时候都坚决地使用官方提供支持的PHP版本。这样，尽管最终是一个短暂的安全版本，但一个不断致力于的升级版本，总会让你收获一些意外的惊喜。&lt;/p&gt;
+&lt;p&gt;因此，无论其他供应商提出了什么承诺，如果可以，你就应该在任何时候都坚决地使用&lt;a href=&quot;http://php.net/supported-versions.php&quot;&gt;官方提供支持的PHP版本&lt;/a&gt;。这样，尽管最终是一个短暂的安全版本，但一个不断致力于的升级版本，总会让你收获一些意外的惊喜。&lt;/p&gt;
 
 &lt;h4 id=&quot;依赖管理&quot;&gt;依赖管理&lt;/h4&gt;
 
 &lt;blockquote&gt;
-  &lt;p&gt;人生苦短，请使用Composer。&lt;/p&gt;
+  &lt;p&gt;人生苦短，我用Composer&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;在PHP生态中，Composer是最先进的依赖管理方案。我们推荐PHP之道中关于&lt;a href=&quot;https://laravel-china.github.io/php-the-right-way/#dependency_management&quot;&gt;依赖管理&lt;/a&gt;的完整章节。&lt;/p&gt;
+&lt;p&gt;在PHP生态中，&lt;a href=&quot;https://getcomposer.org/&quot;&gt;Composer&lt;/a&gt;是最先进的依赖管理方案。我们推荐PHP之道中关于&lt;a href=&quot;http://www.phptherightway.com/#dependency_management&quot;&gt;依赖管理&lt;/a&gt;的完整章节。&lt;/p&gt;
 
 &lt;p&gt;如果你没有使用Composer来管理应用的依赖，最终（hopefully later but most likely sooner）会导致应用里某个依赖会严重过时，然后老旧版本中的漏洞会被利用于计算机犯罪。&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;重要&lt;/strong&gt;： 开发软件时，时常记得保持依赖的更新。幸运地，这只需一行命令：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;重要&lt;/strong&gt;： 开发软件时，时常记得&lt;a href=&quot;http://www.phptherightway.com/#updating-your-dependencies&quot;&gt;保持依赖的更新&lt;/a&gt;。幸运地，这只需一行命令：&lt;/p&gt;
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;composer update
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
@@ -157,45 +158,45 @@ vendor/bin/psalm
 &lt;p&gt;在服务器使用HTTPS确实为用户提供了许多安全性和性能方面的好处，但也还能通过利用某些浏览器的安全功能来进一步提升安全性。而这大部分会涉及到与返回内容一起返回的请求头。&lt;/p&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;Content-Security-Policy
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Content-Security-Policy&lt;/code&gt;
     &lt;ul&gt;
       &lt;li&gt;你需要该请求头，因为它提供了对于浏览器是否允许加载内部和外部资源的细化控制，从而为跨域脚本攻击漏洞提供了有效防御层。&lt;/li&gt;
       &lt;li&gt;参阅&lt;a href=&quot;https://github.com/paragonie/csp-builder&quot;&gt;CSP-Builder&lt;/a&gt;，以便快速简便地部署/管理内容安全策略（Content Security Policies）。&lt;/li&gt;
       &lt;li&gt;为了更加深入的分析， Scott Helme’s &lt;a href=&quot;https://scotthelme.co.uk/content-security-policy-an-introduction/&quot;&gt;introduction to Content-Security-Policy headers&lt;/a&gt;，会是一个很好的引导。&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
-  &lt;li&gt;Expect-CT
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Expect-CT&lt;/code&gt;
     &lt;ul&gt;
       &lt;li&gt;你需要该请求头，因为它能通过强制某些不良行为者将其错误证书的证据颁发到可公开验证的仅可追加的数据结构，从而针对流氓/受损的证书颁发机构增加一层防护。&lt;/li&gt;
       &lt;li&gt;优先设置为&lt;code class=&quot;highlighter-rouge&quot;&gt;enforce,max-age=30&lt;/code&gt;。只要你有足够的自信该请求头不会造成服务中断，增加&lt;code class=&quot;highlighter-rouge&quot;&gt;max-age&lt;/code&gt;吧。&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
-  &lt;li&gt;Referrer-Policy
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Referrer-Policy&lt;/code&gt;
     &lt;ul&gt;
       &lt;li&gt;你需要该请求头，因为它允许你控制用户的行为信息是否泄露给第三方。&lt;/li&gt;
       &lt;li&gt;同样地，Scott Helme提供了&lt;a href=&quot;https://scotthelme.co.uk/a-new-security-header-referrer-policy/&quot;&gt;一篇关于Referrer-Policy请求头介绍好文&lt;/a&gt;。&lt;/li&gt;
       &lt;li&gt;除非有理由允许更加宽松的设置，否则请设置为&lt;code class=&quot;highlighter-rouge&quot;&gt;same-origin&lt;/code&gt;或&lt;code class=&quot;highlighter-rouge&quot;&gt;no-referrer&lt;/code&gt;。&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
-  &lt;li&gt;Strict-Transport-Security
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Strict-Transport-Security&lt;/code&gt;
     &lt;ul&gt;
       &lt;li&gt;你需要该请求头，因为它告诉浏览器通过HTTPS而不是不安全的HTTP，将future requests设为同源。&lt;/li&gt;
-      &lt;li&gt;在第一次部署时，将其设置为&lt;code class=&quot;highlighter-rouge&quot;&gt;max-age = 30&lt;/code&gt;，然后当您确信没有任何内容会中断时，将此值增加到某个较大的值（例如31536000）。&lt;/li&gt;
+      &lt;li&gt;在第一次部署时，将其设置为&lt;code class=&quot;highlighter-rouge&quot;&gt;max-age = 30&lt;/code&gt;，然后当你确信没有任何内容会中断时，将此值增加到某个较大的值（例如31536000）。&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
-  &lt;li&gt;X-Content-Type-Options
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;X-Content-Type-Options&lt;/code&gt;
     &lt;ul&gt;
       &lt;li&gt;你需要该请求头，因为MIME类型的混淆可能会导致不可预知的结果，包括奇怪的允许XSS漏洞的边缘情况。这最好伴随着一个标准的Content-Type请求头。&lt;/li&gt;
       &lt;li&gt;除非需要默认的行为（例如文件的下载），否则请设置为&lt;code class=&quot;highlighter-rouge&quot;&gt;nosniff&lt;/code&gt;。&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
-  &lt;li&gt;X-Frame-Options
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;X-Frame-Options&lt;/code&gt;
     &lt;ul&gt;
       &lt;li&gt;你需要该请求头，因为它允许你防止点击劫持。&lt;/li&gt;
       &lt;li&gt;设置为&lt;code class=&quot;highlighter-rouge&quot;&gt;DENY&lt;/code&gt; (或者&lt;code class=&quot;highlighter-rouge&quot;&gt;SAMEORIGIN&lt;/code&gt;, 但仅仅当你使用 &lt;frame&gt; 元素的时候)。&lt;/frame&gt;&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
-  &lt;li&gt;X-XSS-Protection
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;X-XSS-Protection&lt;/code&gt;
     &lt;ul&gt;
       &lt;li&gt;你需要该请求头，因为它启用了一些默认情况下未启用的浏览器反XSS功能。&lt;/li&gt;
       &lt;li&gt;设置为&lt;code class=&quot;highlighter-rouge&quot;&gt;1; mode=block&lt;/code&gt;。&lt;/li&gt;
@@ -203,7 +204,7 @@ vendor/bin/psalm
   &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;同样，如果您使用PHP的内置会话管理功能（建议使用），则可能需要调用session_start()&lt;/p&gt;
+&lt;p&gt;同样，如果你使用PHP的内置会话管理功能（建议使用），则可能需要调用&lt;code class=&quot;highlighter-rouge&quot;&gt;session_start()&lt;/code&gt;&lt;/p&gt;
 &lt;div class=&quot;language-php highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?php&lt;/span&gt;
 &lt;span class=&quot;nb&quot;&gt;session_start&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;
     &lt;span class=&quot;s1&quot;&gt;'cookie_httponly'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
@@ -213,8 +214,598 @@ vendor/bin/psalm
 &lt;/div&gt;
 &lt;p&gt;这会强制你的应用在发送会话标识符时使用HTTP-Only和Secure标志，从而防止XSS攻击窃取用户的Cookie，并强制它们分别通过HTTPS发送。 我们之前在2015年的博客文章中介绍了&lt;a href=&quot;https://paragonie.com/blog/2015/04/fast-track-safe-and-secure-php-sessions&quot;&gt;安全的PHP会话&lt;/a&gt;。&lt;/p&gt;
 
-&lt;p&gt;待续…&lt;/p&gt;
+&lt;h5 id=&quot;子资源完整性&quot;&gt;子资源完整性&lt;/h5&gt;
 
+&lt;p&gt;在将来的某个时候，你也许会使用CDN来加载网站的公共JavaScript/CSS库。安全工程师已经遇见了这存在一个明显的风险，如果很多网站使用CDN提供内容，Hack和替换CDN（获得了CDN的控制权），则可以注入（恶意）代码到成千上万的网站。&lt;/p&gt;
+
+&lt;p&gt;查阅&lt;a href=&quot;https://developer.mozilla.org/zh-CN/docs/Web/Security/%E5%AD%90%E8%B5%84%E6%BA%90%E5%AE%8C%E6%95%B4%E6%80%A7&quot;&gt;子资源完整性&lt;/a&gt;吧。&lt;/p&gt;
+
+&lt;p&gt;子资源完整性（SRI，Subresource integrity）允许你将希望CDN服务的文件的内容进行哈希处理。目前实行的SRI只允许使用安全的密码散列函数，这意味着攻击者不可能生成与原始文件哈希相同的恶意版本资源。&lt;/p&gt;
+
+&lt;p&gt;一个真实例子: &lt;a href=&quot;https://v4-alpha.getbootstrap.com/&quot;&gt;Bootstrap v4-alpha uses SRI in their CDN example snippet&lt;/a&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-html highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;link&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;rel=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;stylesheet&quot;&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;href=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css&quot;&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;integrity=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ&quot;&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;crossorigin=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;anonymous&quot;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;/&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;script
+    &lt;/span&gt;&lt;span class=&quot;na&quot;&gt;src=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js&quot;&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;integrity=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn&quot;&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;crossorigin=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;anonymous&quot;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;/script&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h5 id=&quot;文档关系&quot;&gt;文档关系&lt;/h5&gt;
+
+&lt;p&gt;Web开发人员经常在超链接上设置目标属性（例如，&lt;code class=&quot;highlighter-rouge&quot;&gt;target =&quot;_ blank&quot;&lt;/code&gt;在新窗口中打开链接）。但是，如果你没有传递&lt;code class=&quot;highlighter-rouge&quot;&gt;rel =&quot;noopener&quot;&lt;/code&gt;标签，则可以&lt;a href=&quot;https://mathiasbynens.github.io/rel-noopener/&quot;&gt;允许目标页面控制当前页面&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;不要这样做：&lt;/p&gt;
+
+&lt;div class=&quot;language-html highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;a&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;href=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;http://example.com&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;target=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;_blank&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;Click here&lt;span class=&quot;nt&quot;&gt;&amp;lt;/a&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;这会让&lt;code class=&quot;highlighter-rouge&quot;&gt;http://example.com&lt;/code&gt;页面能控制当前页面。&lt;/p&gt;
+
+&lt;p&gt;而应该这样做：&lt;/p&gt;
+
+&lt;div class=&quot;language-html highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;a&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;href=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;https://example.com&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;target=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;_blank&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;rel=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;noopener noreferrer&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;Click here&lt;span class=&quot;nt&quot;&gt;&amp;lt;/a&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;通过这样在新窗口打开&lt;code class=&quot;highlighter-rouge&quot;&gt;https://example.com&lt;/code&gt;，当前窗口的控制权也不会授予可能的恶意第三方。&lt;/p&gt;
+
+&lt;p&gt;可以更加&lt;a href=&quot;https://www.jitbit.com/alexblog/256-targetblank---the-most-underestimated-vulnerability-ever&quot;&gt;深入研究&lt;/a&gt;。&lt;/p&gt;
+
+&lt;h4 id=&quot;开发安全的php程序&quot;&gt;开发安全的PHP程序&lt;/h4&gt;
+
+&lt;p&gt;如果应用程序安全性对你来说是一个新话题，请从&lt;a href=&quot;https://paragonie.com/blog/2015/08/gentle-introduction-application-security&quot;&gt;应用程序安全性简介&lt;/a&gt;开始吧。&lt;/p&gt;
+
+&lt;p&gt;大多数安全专家指出，开发者可以使用&lt;a href=&quot;https://www.owasp.org/index.php/Top_10_2017-Top_10&quot;&gt;OWASP Top 10&lt;/a&gt;等资源开始着手。&lt;/p&gt;
+
+&lt;p&gt;但是，大多数常见的漏洞也可以是相同高等级的安全问题（例如代码和数据没有完全分离、逻辑不严谨和健全、操作环境不安全或是可破译的密码协议等）。&lt;/p&gt;
+
+&lt;p&gt;我们的假设是，应该授予安全新手知道一些更简单、基础的安全知识和问题，并如何解决这些问题，应该是一个更好的、长远的安全工程。&lt;/p&gt;
+
+&lt;p&gt;因此，&lt;a href=&quot;https://paragonie.com/blog/2017/04/checklist-driven-security-considered-harmful&quot;&gt;我们避免推荐十大或二十大安全清单&lt;/a&gt;。&lt;/p&gt;
+
+&lt;h5 id=&quot;数据库注入&quot;&gt;数据库注入&lt;/h5&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;a href=&quot;https://paragonie.com/blog/2015/05/preventing-sql-injection-in-php-applications-easy-and-definitive-guide&quot;&gt;避免PHP程序存在SQL注入。&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;如果你是自己编写SQL代码，请确保使用&lt;code class=&quot;highlighter-rouge&quot;&gt;prepared语句&lt;/code&gt;，并且从网络或文件系统提供的信息都作为参数传递，而不是字符串拼接的形式。此外，确保你&lt;a href=&quot;https://stackoverflow.com/a/12202218&quot;&gt;没有使用模拟的prepared语句&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;为了达到好的效果，可以使用&lt;a href=&quot;https://github.com/paragonie/easydb&quot;&gt;EasyDB&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;不要这样做：&lt;/p&gt;
+
+&lt;div class=&quot;language-php highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?php&lt;/span&gt;
+&lt;span class=&quot;cm&quot;&gt;/* Insecure code: */&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$query&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$pdo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;query&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;SELECT * FROM users WHERE username = '&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$_GET&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'username'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;'&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;应该这样做：&lt;/p&gt;
+
+&lt;div class=&quot;language-php highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?php&lt;/span&gt;
+&lt;span class=&quot;cm&quot;&gt;/* Secure against SQL injection: */&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$results&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$easydb&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;row&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;SELECT * FROM users WHERE username = ?&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$_GET&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'username'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;还有其他数据库抽象层提供了相同的安全性（EasyDB实际上是在使用PDO，但在实际的&lt;code class=&quot;highlighter-rouge&quot;&gt;prepare&lt;/code&gt;语句前避免了&lt;code class=&quot;highlighter-rouge&quot;&gt;prepared&lt;/code&gt;语句模拟）。 只要用户输入不会影响查询的结构，就很安全（包括存储过程）。&lt;/p&gt;
+
+&lt;h5 id=&quot;文件上传&quot;&gt;文件上传&lt;/h5&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;深入：&lt;a href=&quot;https://paragonie.com/blog/2015/10/how-securely-allow-users-upload-files&quot;&gt;如何安全地允许用户上传文件？&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;接受文件上传是一个冒险的提议，但只要采取一些基本的预防措施，是能保证安全的。也就是说，允许文件直接上传的话，这些文件可能会被意外的允许执行或解释。上传的文件应该是只读(read-only)或读写(read-write)的，永远不应该可执行(executable)。&lt;/p&gt;
+
+&lt;p&gt;如果你的网站根目录是&lt;code class=&quot;highlighter-rouge&quot;&gt;/var/www/example.com&lt;/code&gt;，请不要保存上传文件在&lt;code class=&quot;highlighter-rouge&quot;&gt;/var/www/example.com/uploaded_files&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;而应该保存到一个不能直接访问的目录（例如：&lt;code class=&quot;highlighter-rouge&quot;&gt;/var/www/example.com-uploaded/&lt;/code&gt;），以免意外地将其作为服务器端脚本执行，并获得执行远程代码的后门。&lt;/p&gt;
+
+&lt;p&gt;一个更加简洁的方法是将网站根目录往下移动一个层级（即：&lt;code class=&quot;highlighter-rouge&quot;&gt;/var/www/example.com/public&lt;/code&gt;）。&lt;/p&gt;
+
+&lt;p&gt;如何安全地下载这些上传文件也是一个问题。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;直接访问SVG图像类型时，将在用户浏览器执行JavaScript代码。尽管&lt;a href=&quot;https://github.com/w3c/svgwg/issues/266&quot;&gt;它的MIME类型中的&lt;code class=&quot;highlighter-rouge&quot;&gt;image/&lt;/code&gt;前缀具有误导性&lt;/a&gt;，但是这是正确的。&lt;/li&gt;
+  &lt;li&gt;正如前面提及的，MIME类型嗅探可能导致类型混淆攻击。请参阅&lt;a href=&quot;#安全请求头&quot;&gt;X-Content-Type-Options&lt;/a&gt;。&lt;/li&gt;
+  &lt;li&gt;如果你放弃前面关于如何安全地存储上传文件的建议，攻击者就会通过上传.php或.phtml文件，直接在浏览器中访问文件来执行任意代码，从而完全控制服务器。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;跨站脚本&quot;&gt;跨站脚本&lt;/h5&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;a href=&quot;https://paragonie.com/blog/2015/06/preventing-xss-vulnerabilities-in-php-everything-you-need-know&quot;&gt;关于PHP中的跨站脚本攻击，你想知道的都在这里&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;同样地，预防XSS和SQL注入是一样简单的。我们有简单而易用的API来分离文档结构（structure of a document）和填充的数据。&lt;/p&gt;
+
+&lt;p&gt;然而，实际上还有很多Web开发程序员仍是通过生成一大串HTML代码作为响应的形式开发。并且，这不是PHP独有的现实，这是所有Web开发程序员都应该重视的。&lt;/p&gt;
+
+&lt;p&gt;减少XSS漏洞不失为一个好方法。总之，前面谈及的&lt;a href=&quot;#浏览器安全&quot;&gt;浏览器安全的章节&lt;/a&gt;就显得十分相关了。简言之：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;尽量避免输出和输入（&lt;code class=&quot;highlighter-rouge&quot;&gt;Always escape on output, never on input&lt;/code&gt;）。如果你把已清洗的数据（sanitized data）保存在数据库，然后在其它地方被发现了SQL注入漏洞，攻击者将通过恶意程序污染这些受信任的已清洗数据（trusted-to-be-sanitized record），从而绕开XSS保护。&lt;/li&gt;
+  &lt;li&gt;如果你的框架有一个提供自动上下文过滤的模板引擎，那就使用它吧。这些工作可由框架安全地做到。&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;echo htmlentities（$ string，ENT_QUOTES | ENT_HTML5，'UTF-8'）&lt;/code&gt; 是一种安全、有效的方法阻止UTF-8编码的网页上的所有XSS攻击，但不是任何HTML都有效。&lt;/li&gt;
+  &lt;li&gt;如果你的环境要求你使用Markdown而不是HTML，那就不要使用HTML了。&lt;/li&gt;
+  &lt;li&gt;如果你需要使用原生HTML（没有使用模板引擎），参阅第一点，并且使用&lt;a href=&quot;http://htmlpurifier.org/&quot;&gt;HTML Purifier&lt;/a&gt;吧。HTML Purifier不适合转义为HTML属性上下文（HTML attribute context）。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;跨站请求伪造&quot;&gt;跨站请求伪造&lt;/h5&gt;
+
+&lt;p&gt;跨站请求伪造（CSRF）是一种混淆的代理攻击，通过诱导用户的浏览器代表攻击者执行恶意的HTTP请求（使用的是该用户的权限）。&lt;/p&gt;
+
+&lt;p&gt;这在一般情况下是很容易解决的，只需两步：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;使用HTTPS。这是先决条件。没有HTTPS的话，任何保护措施都是脆弱的，虽然HTTPS本身并不防御CSRF。&lt;/li&gt;
+  &lt;li&gt;增加基本的Challenge-response authentication。
+    &lt;ul&gt;
+      &lt;li&gt;为每个表单添加一个隐藏的表单属性。&lt;/li&gt;
+      &lt;li&gt;填充一个密码安全的随机值（称为令牌）。&lt;/li&gt;
+      &lt;li&gt;验证是否提供了隐藏的表单属性，以及是否匹配上期望值。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;我们写了一个名为&lt;a href=&quot;https://github.com/paragonie/anti-csrf&quot;&gt;Anti-CSRF&lt;/a&gt;的库，并且：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;你可以使每个令牌只能使用一次，以防止重放攻击。
+    &lt;ul&gt;
+      &lt;li&gt;多个令牌存储在后端。&lt;/li&gt;
+      &lt;li&gt;一旦令牌获取完，令牌会循环使用。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;每个令牌可以绑定特定的URL。
+    &lt;ul&gt;
+      &lt;li&gt;如果某个令牌泄露了，它不能在不同的上下文使用。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;令牌可以绑定特定的IP地址。&lt;/li&gt;
+  &lt;li&gt;v2.1后，令牌可以重复使用（例如供Ajax使用）。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;如果你没有使用防止CSRF漏洞的框架，请将Anti-CSRF放在一边。在不久的将来，&lt;a href=&quot;https://www.sjoerdlangkemper.nl/2016/04/14/preventing-csrf-with-samesite-cookie-attribute/&quot;&gt;SameSite cookies将允许我们更简单地避免CSRF攻击&lt;/a&gt;。&lt;/p&gt;
+
+&lt;h5 id=&quot;xml-攻击-xxe-xpath-injection&quot;&gt;XML 攻击 (XXE, XPath Injection)&lt;/h5&gt;
+
+&lt;p&gt;在处理大量XML的应用程序中存在两个主要的漏洞：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;XML External Entities (XXE)&lt;/li&gt;
+  &lt;li&gt;XPath注入&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.owasp.org/index.php/XML_External_Entity_(XXE)_Processing&quot;&gt;除此之外&lt;/a&gt;，XXE攻击可用作包含攻击代码的本地/远程文件的启动器。&lt;/p&gt;
+
+&lt;p&gt;早期版本的Google Docs被着名于XXE，但除了在很大程度上使用XML的商业应用程序之外，基本闻所未闻。&lt;/p&gt;
+
+&lt;p&gt;针对XXE袭击的主要缓解措施:&lt;/p&gt;
+
+&lt;div class=&quot;language-php highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?php&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;libxml_disable_entity_loader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;除XML文档外，&lt;a href=&quot;https://www.owasp.org/index.php/XPATH_Injection&quot;&gt;XPath注入&lt;/a&gt;与SQL注入非常相似。&lt;/p&gt;
+
+&lt;p&gt;幸运的是，将用户输入传递给XPath查询的情况在PHP生态中非常罕见。&lt;/p&gt;
+
+&lt;p&gt;而不幸的是，这也意味着PHP生态中不存在可用的最佳避免措施（预编译和参数化XPath查询）。最好的办法是在任何涉及XPath查询的数据上设置允许使用的字符白名单。&lt;/p&gt;
+
+&lt;div class=&quot;language-php highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?php&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;declare&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;strict_types&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;SafeXPathEscaper&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;sd&quot;&gt;/**
+     * @param string $input
+     * @return string
+     */&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;allowAlphaNumeric&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$input&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;string&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;\preg_replace&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'#[^A-Za-z0-9]#'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$input&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    
+    &lt;span class=&quot;sd&quot;&gt;/**
+     * @param string $input
+     * @return string
+     */&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;allowNumeric&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$input&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;string&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;\preg_replace&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'#[^0-9]#'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$input&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// Usage:
+&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$selected&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$xml&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;xpath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&quot;/user/username/&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;SafeXPathEscaper&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;allowAlphaNumeric&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+        &lt;span class=&quot;nv&quot;&gt;$_GET&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'username'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;白名单总会比黑名单更安全。&lt;/p&gt;
+
+&lt;h5 id=&quot;反序列化和php对象注入&quot;&gt;反序列化和PHP对象注入&lt;/h5&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;深入探究： &lt;a href=&quot;https://paragonie.com/blog/2016/04/securely-implementing-de-serialization-in-php&quot;&gt;在PHP中安全地实现（反）序列化&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;如果你将不可信的数据传递给&lt;code class=&quot;highlighter-rouge&quot;&gt;unserialize()&lt;/code&gt;，则通常是这两个结果之一：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;PHP对象注入，它能用于启动POP链（POP chain）并触发其他误用对象的漏洞。&lt;/li&gt;
+  &lt;li&gt;PHP解释器本身的内存损坏。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;大多数开发人员更喜欢使用JSON序列化，这是对其软件安全状况的显著改进。但请记住，&lt;a href=&quot;http://lukasmartinelli.ch/web/2014/11/17/php-dos-attack-revisited.html&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;json_decode()&lt;/code&gt;容易受到散列冲突拒绝服务（Hash-DoS）攻击&lt;/a&gt;。不幸的是，&lt;a href=&quot;https://bugs.php.net/bug.php?id=70644&quot;&gt;PHP的Hash-DOS问题还没有得到彻底解决&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;从&lt;code class=&quot;highlighter-rouge&quot;&gt;djb33&lt;/code&gt;迁移到&lt;code class=&quot;highlighter-rouge&quot;&gt;Siphash&lt;/code&gt;，对于字符串输入，哈希输出的最高位设置为1，对于整数输入设置为0，使用&lt;code class=&quot;highlighter-rouge&quot;&gt;CSPRNG&lt;/code&gt;提供的请求密钥将完全解决这些攻击。&lt;/p&gt;
+
+&lt;p&gt;不幸的是，PHP团队还没有准备好放弃他们已经在PHP 7系列中取得的性能提升，所以很难说服他们放弃djb33（这是非常快但不安全的） 赞成SipHash（这也是快速的，但不像djb33那么快，但更安全）。 
+如果性能受到重大影响，可能会阻碍未来版本的采用，但也影响了安全性。&lt;/p&gt;
+
+&lt;p&gt;因此，最好的办法是：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;使用&lt;code class=&quot;highlighter-rouge&quot;&gt;JSON&lt;/code&gt;，因为它比&lt;code class=&quot;highlighter-rouge&quot;&gt;unserialize()&lt;/code&gt;更安全。&lt;/li&gt;
+  &lt;li&gt;在任何可能的地方，确保输入在反序列化之前被认证。
+    &lt;ul&gt;
+      &lt;li&gt;对于提供给用户的数据，通过一个只有服务器知道的秘钥使用&lt;code class=&quot;highlighter-rouge&quot;&gt;sodium_crypto_auth()&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;sodium_crypto_auth_verify()&lt;/code&gt;验证。&lt;/li&gt;
+      &lt;li&gt;对于第三方提供的数据，让他们使用&lt;code class=&quot;highlighter-rouge&quot;&gt;sodium_crypto_sign()&lt;/code&gt;签名他们的JSON消息，然后使用&lt;code class=&quot;highlighter-rouge&quot;&gt;sodium_crypto_sign_open()&lt;/code&gt;和第三方公钥验证消息。
+        &lt;ul&gt;
+          &lt;li&gt;如果你需要对传输的签名进行十六进制或Base64位编码，也可以使用分离的签名API。&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;如果你无法验证JSON字符串，请严格限制速度并阻止IP地址，以减轻重复的违规者。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;密码散列&quot;&gt;密码散列&lt;/h5&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;深入探究：&lt;a href=&quot;https://paragonie.com/blog/2016/02/how-safely-store-password-in-2016&quot;&gt;2016年，如何安全地保存用户密码&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;安全的密码存储曾经是一个激烈争论的话题，但现在实现起来相当微不足道，特别是在PHP中：&lt;/p&gt;
+
+&lt;div class=&quot;language-php highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?php&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$hash&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;\password_hash&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$password&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;PASSWORD_DEFAULT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;\password_verify&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$password&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$hash&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;// Authenticated.
+&lt;/span&gt;    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;\password_needs_rehash&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$hash&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;PASSWORD_DEFAULT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;// Rehash, update database.
+&lt;/span&gt;    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;你甚至不需要知道在后台使用什么算法，因为如果你使用最新版本的PHP，你也将使用当前最新的技术，用户的密码将会自动进行升级（只要有新的默认算法可用）。&lt;/p&gt;
+
+&lt;p&gt;无论你做什么，都&lt;a href=&quot;https://paragonie.com/blog/2016/08/on-insecurity-popular-open-source-php-cms-platforms#wordpress-password-storage&quot;&gt;不要做WordPress所做的事情&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;你可能会好奇，从PHP 5.5到7.2，默认算法是Bcrypt。在未来，它可能会切换到获得&lt;a href=&quot;https://password-hashing.net/&quot;&gt;密码哈希大赛冠军&lt;/a&gt;的Argon2。&lt;/p&gt;
+
+&lt;p&gt;如果你以前没有使用&lt;code class=&quot;highlighter-rouge&quot;&gt;password_*&lt;/code&gt; API，那需要迁移遗留哈希，请确保&lt;a href=&quot;https://paragonie.com/blog/2016/02/how-safely-store-password-in-2016#legacy-hashes&quot;&gt;以这种方式进行&lt;/a&gt;。
+很多公司搞错了， 最有名的是&lt;a href=&quot;https://www.theregister.co.uk/2016/12/15/yahoos_password_hash/&quot;&gt;雅虎&lt;/a&gt;。 最近，错误地实施传统哈希升级似乎导致了&lt;a href=&quot;https://objective-see.com/blog/blog_0x24.html&quot;&gt;苹果的iamroot错误&lt;/a&gt;。&lt;/p&gt;
+
+&lt;h5 id=&quot;通用加密&quot;&gt;通用加密&lt;/h5&gt;
+
+&lt;p&gt;这是一些我们详细写了的话题：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://paragonie.com/blog/2015/05/using-encryption-and-authentication-correctly&quot;&gt;Using Encryption and Authentication Correctly&lt;/a&gt; (2015)&lt;/li&gt;
+  &lt;li&gt;Recommended: &lt;a href=&quot;https://paragonie.com/blog/2015/11/choosing-right-cryptography-library-for-your-php-project-guide&quot;&gt;Choosing the Right Cryptography Library for your PHP Project: A Guide&lt;/a&gt; (2015)&lt;/li&gt;
+  &lt;li&gt;Recommended: &lt;a href=&quot;https://paragonie.com/blog/2015/08/you-wouldnt-base64-a-password-cryptography-decoded&quot;&gt;You Wouldn’t Base64 a Password - Cryptography Decoded&lt;/a&gt; (2015)&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://paragonie.com/blog/2017/02/cryptographically-secure-php-development&quot;&gt;Cryptographically Secure PHP Development&lt;/a&gt; (2017)&lt;/li&gt;
+  &lt;li&gt;Recommended: &lt;a href=&quot;https://paragonie.com/blog/2017/06/libsodium-quick-reference-quick-comparison-similar-functions-and-which-one-use&quot;&gt;Libsodium Quick Reference: Similarly-Named Functions and Their Use-Cases&lt;/a&gt; (2017)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;一般来说，你总是希望使用Sodium cryptography library（libsodium）进行应用层加密
+如果你需要支持早于7.2的PHP版本（像5.2.4），你可以使用&lt;a href=&quot;https://github.com/paragonie/sodium_compat&quot;&gt;sodium_compat&lt;/a&gt;，基本上可以假设你的用户也是7.2。&lt;/p&gt;
+
+&lt;p&gt;在特定情况下，由于严格的算法选择和互操作性，你可能需要不同的库。
+如有疑问，请咨询密码专家和密码工程师，了解密码选择是否安全（&lt;a href=&quot;https://paragonie.com/services&quot;&gt;这是我们提供的服务之一&lt;/a&gt;）。&lt;/p&gt;
+
+&lt;h5 id=&quot;随机性&quot;&gt;随机性&lt;/h5&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;深入探究：&lt;a href=&quot;https://paragonie.com/blog/2015/07/how-safely-generate-random-strings-and-integers-in-php&quot;&gt;如何在PHP中生成安全的整数和字符串？&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;如果你需要随机数字，请使用&lt;code class=&quot;highlighter-rouge&quot;&gt;random_int()&lt;/code&gt;。
+如果你需要随机字节字符串，请使用&lt;code class=&quot;highlighter-rouge&quot;&gt;random_bytes()&lt;/code&gt;。不要使用&lt;code class=&quot;highlighter-rouge&quot;&gt;mt_rand()&lt;/code&gt;，&lt;code class=&quot;highlighter-rouge&quot;&gt;rand()&lt;/code&gt;或&lt;code class=&quot;highlighter-rouge&quot;&gt;uniqid()&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;如果你需要从秘密种子生成伪随机数，而不是&lt;code class=&quot;highlighter-rouge&quot;&gt;srand()&lt;/code&gt;或&lt;code class=&quot;highlighter-rouge&quot;&gt;mt_srand()&lt;/code&gt;，请查阅&lt;a href=&quot;https://github.com/paragonie/seedspring&quot;&gt;SeedSpring&lt;/a&gt;。&lt;/p&gt;
+
+&lt;div class=&quot;language-php highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?php&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;use&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ParagonIE\SeedSpring\SeedSpring&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;nv&quot;&gt;$seed&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;random_bytes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;16&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$rng&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;SeedSpring&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$seed&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;nv&quot;&gt;$data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$rng&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getBytes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1024&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$int&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$rng&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getInt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h5 id=&quot;服务器端https请求&quot;&gt;服务器端HTTPS请求&lt;/h5&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;确保TLS证书验证没有被禁用&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;随意使用你已经熟悉的任何兼容PSR-7的HTTP客户端。 
+我们喜欢Guzzle，有些人喜欢直接使用cURL。&lt;/p&gt;
+
+&lt;p&gt;无论你最终使用什么，请确保使用的确定性，以&lt;a href=&quot;https://paragonie.com/blog/2017/10/certainty-automated-cacert-pem-management-for-php-software&quot;&gt;确保始终可以拥有最新的CACert软件包&lt;/a&gt;，
+从而允许启用最严格的TLS证书验证设置并保护服务器的出站HTTPS请求。&lt;/p&gt;
+
+&lt;p&gt;安装Certainty很简单：&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;composer require paragonie/certainty:^1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;使用Certainty也很简单：&lt;/p&gt;
+
+&lt;div class=&quot;language-php highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?php&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;use&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ParagonIE\Certainty\RemoteFetch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;nv&quot;&gt;$latestCACertBundle&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;RemoteFetch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getLatestBundle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+
+    &lt;span class=&quot;c1&quot;&gt;# cURL users:
+&lt;/span&gt;    &lt;span class=&quot;nv&quot;&gt;$ch&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;curl_init&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;curl_setopt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$ch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;CURLOPT_SSL_VERIFYHOST&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;curl_setopt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$ch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;CURLOPT_SSL_VERIFYPEER&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;curl_setopt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$ch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;CURLOPT_CAINFO&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$latestCACertBundle&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getFilePath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;());&lt;/span&gt;
+
+    &lt;span class=&quot;c1&quot;&gt;# Guzzle users:
+&lt;/span&gt;    &lt;span class=&quot;sd&quot;&gt;/** @var \GuzzleHttp\Client $http */&lt;/span&gt;
+    &lt;span class=&quot;nv&quot;&gt;$repsonse&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$http&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+        &lt;span class=&quot;s1&quot;&gt;'https://example.com'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; 
+        &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+            &lt;span class=&quot;s1&quot;&gt;'verify'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$latestCACertBundle&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getFilePath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;这样可以保护你免受网络服务器与集成的任何第三方API之间的中间人攻击。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;我们真的需要Certainty吗？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;保护你的系统，Certainty并不是严格的要求。缺少它并不是什么漏洞。
+但如果没有Certainty，开源软件必须猜测操作系统的CACert软件包的存在位置，如果猜测错误，它往往会失败并导致可用性问题。
+从历史上看，这激励了许多开发人员只是禁用证书验证，以便他们的代码“正常工作”，却没有意识到他们只是将应用程序变成主动攻击。
+Certainty通过将CACert捆绑在最新的可预测位置来消除这种激励。Certainty还为希望&lt;a href=&quot;https://github.com/paragonie/certainty/blob/master/docs/features/LocalCACertBuilder.md&quot;&gt;运行自己的内部CA&lt;/a&gt;为企业提供大量的工具。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;谁禁用证书验证？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;为流行的内容管理系统（WordPress，Magento等）的插件/扩展开发者！
+这是我们试图在生态系统层面上解决的一个巨大的问题。 
+它不是孤立的任何特定的CMS，你会发现这些不安全的插件等都是类似的。&lt;/p&gt;
+
+&lt;p&gt;如果使用了类似的CMS，请在插件中搜索&lt;code class=&quot;highlighter-rouge&quot;&gt;CURLOPT_SSL_VERIFYPEER&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;CURLOPT_SSL_VERIFYHOST&lt;/code&gt;，你可能会发现有几个将这些值设置为&lt;code class=&quot;highlighter-rouge&quot;&gt;FALSE&lt;/code&gt;。&lt;/p&gt;
+
+&lt;h5 id=&quot;避免的事情&quot;&gt;避免的事情&lt;/h5&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://paragonie.com/blog/2015/05/if-you-re-typing-word-mcrypt-into-your-code-you-re-doing-it-wrong&quot;&gt;不要使用&lt;code class=&quot;highlighter-rouge&quot;&gt;mcrypt&lt;/code&gt;&lt;/a&gt;。这是一个十多年来没有开发出来的密码学库。如果你遵循我们的PHP版本建议，这应该是一个容易避免的错误，因为&lt;code class=&quot;highlighter-rouge&quot;&gt;mcrypt&lt;/code&gt;不再被PHP 7.2和更新的版本支持。&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://paragonie.com/blog/2017/01/configuration-driven-php-security-advice-considered-harmful&quot;&gt;配置驱动的安全建议&lt;/a&gt;应该大部分地忽略。
+如果你正在阅读PHP安全性指南，并告诉你更改php.ini设置而不是编写更好的代码，那么你可能正在阅读过时的建议。关闭窗口并转到一些和&lt;code class=&quot;highlighter-rouge&quot;&gt;register_globals&lt;/code&gt;无关的文章上吧。&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://paragonie.com/blog/2017/03/jwt-json-web-tokens-is-bad-standard-that-everyone-should-avoid&quot;&gt;不要使用JOSE（JWT，JWS，JWE）&lt;/a&gt;，这是一套互联网标准，它编纂了一系列容易出错的密码设计。尽管由于某种原因，被写入了标准，也吸引了很多传道人。&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://paragonie.com/blog/2015/09/comprehensive-guide-url-parameter-encryption-in-php&quot;&gt;加密URL参数&lt;/a&gt;是公司常用来模糊元数据的反模式（例如，我们有多少用户？）。 
+它带来了实施错误的高风险，也造成了错误的安全感。
+我们在链接的文章中提出了一个更安全的选择。&lt;/li&gt;
+  &lt;li&gt;除非迫不得已，否则&lt;a href=&quot;https://paragonie.com/blog/2016/09/untangling-forget-me-knot-secure-account-recovery-made-simple&quot;&gt;不要提供“我忘记了我的密码”的功能&lt;/a&gt;。
+不要讳言：密码重置功能是一个后门。 
+有一些方法可以实施以抵御合理的威胁模型，
+但高风险用户应该不被考虑。&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://paragonie.com/blog/2016/12/everything-you-know-about-public-key-encryption-in-php-is-wrong&quot;&gt;避免使用RSA&lt;/a&gt;，改用libsodium。如果你必须使用RSA，请确保指定OAEP填充。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-php highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; &lt;span class=&quot;cp&quot;&gt;&amp;lt;?php&lt;/span&gt;
+
+ &lt;span class=&quot;nb&quot;&gt;openssl_private_decrypt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;nv&quot;&gt;$ciphertext&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;nv&quot;&gt;$decrypted&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// Plaintext gets written to this variable upon success,
+&lt;/span&gt;    &lt;span class=&quot;nv&quot;&gt;$privateKey&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;OPENSSL_PKCS1_OAEP_PADDING&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// Important: DO NOT OMIT THIS!
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;如果你不得不使用PKCS＃1 v1.5填充，那么无论你与哪个集成在一起，
+几乎肯定会受到&lt;a href=&quot;https://robotattack.org/&quot;&gt;ROBOT&lt;/a&gt;的影响，
+请以允许明文泄露和签名伪造的漏洞将其报告给相应的供应商（或US-CERT）。&lt;/p&gt;
+
+&lt;h4 id=&quot;专业用法&quot;&gt;专业用法&lt;/h4&gt;
+
+&lt;p&gt;现在你已经掌握了在2018年及以后构建安全PHP应用程序的基础知识，接下来我们来看一些更专业的用法。&lt;/p&gt;
+
+&lt;h5 id=&quot;可搜索的加密&quot;&gt;可搜索的加密&lt;/h5&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;深入探究：&lt;a href=&quot;https://paragonie.com/blog/2017/05/building-searchable-encrypted-databases-with-php-and-sql&quot;&gt;使用PHP和SQL构建可搜索的加密数据库&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;可搜索的加密数据库是可取的，但被广泛认为是不太可能实现的。
+上面链接的博客文章试图通过改进我们解决方案来实现，但本质上是这样的：&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;设计你的架构，以便数据库（database compromise）不会让攻击者访问你的加密密钥。&lt;/li&gt;
+  &lt;li&gt;用一个密钥加密数据。&lt;/li&gt;
+  &lt;li&gt;基于HMAC或具有静态盐的安全KDF（secure KDF with a static salt）创建多个索引（具有自己独特的密钥）&lt;/li&gt;
+  &lt;li&gt;可选：截断步骤3的输出，将其用作布隆过滤器（Bloom filter）&lt;/li&gt;
+  &lt;li&gt;在SELECT查询中使用步骤3或4的输出&lt;/li&gt;
+  &lt;li&gt;解密结果。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;在这个过程中的任何一步，你都可以根据实际使用情况进行不同的权衡。&lt;/p&gt;
+
+&lt;h5 id=&quot;没有side-channels的基于令牌的身份验证&quot;&gt;没有Side-Channels的基于令牌的身份验证&lt;/h5&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;深入探究： &lt;a href=&quot;https://paragonie.com/blog/2017/02/split-tokens-token-based-authentication-protocols-without-side-channels&quot;&gt;Split Tokens: Token-Based Authentication Protocols without Side-Channels&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;说到数据库（上一节），你是否知道SELECT查询理论上可能是定时信息泄漏的来源？&lt;/p&gt;
+
+&lt;p&gt;简单的缓解措施：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;把你的认证令牌分为两半&lt;/li&gt;
+  &lt;li&gt;一半在SELECT查询中使用&lt;/li&gt;
+  &lt;li&gt;后一半在恒定的时间（constant-time）验证
+    &lt;ul&gt;
+      &lt;li&gt;可以选择将后半部分的散列存储在数据库中。这对于只能使用一次的令牌是有意义的，例如 密码重置或“在此计算机上记住我”的令牌&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;即使可以使用定时泄漏来窃取一半的令牌，剩下的也需要暴力破解才能成功。&lt;/p&gt;
+
+&lt;h5 id=&quot;开发安全的api&quot;&gt;开发安全的API&lt;/h5&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;深入探究： &lt;a href=&quot;https://paragonie.com/blog/2017/06/hardening-your-php-powered-apis-with-sapient&quot;&gt;Hardening Your PHP-Powered APIs with Sapient&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;我们写了&lt;a href=&quot;https://github.com/paragonie/sapient&quot;&gt;SAPIENT&lt;/a&gt;（the &lt;strong&gt;S&lt;/strong&gt;ecure &lt;strong&gt;API&lt;/strong&gt; &lt;strong&gt;EN&lt;/strong&gt;gineering &lt;strong&gt;T&lt;/strong&gt;oolkit），
+让服务器到服务器验证的消息传递变得简单易行。
+除了HTTPS提供的安全性之外，
+&lt;code class=&quot;highlighter-rouge&quot;&gt;Sapient&lt;/code&gt;允许你使用共享密钥或公钥来加密和验证消息。 
+这使得即使存在中间攻击者，并设有流氓证书颁发机构，
+你也可以使用&lt;code class=&quot;highlighter-rouge&quot;&gt;Ed25519&lt;/code&gt;对API请求和响应进行身份验证，
+或者将消息加密到只能由接收方服务器的密钥解密的目标服务器。 
+由于每个HTTP消息体都通过安全密码进行身份验证，
+所以可以安全地使用它来代替&lt;code class=&quot;highlighter-rouge&quot;&gt;stateful token juggling protocols&lt;/code&gt;（例如 OAuth）。
+但是，在密码学方面，在做任何不规范的事情之前，
+总要确保他们的实现是由专家研究的。&lt;/p&gt;
+
+&lt;p&gt;所有&lt;code class=&quot;highlighter-rouge&quot;&gt;Sapient&lt;/code&gt;使用的密码算法都由&lt;code class=&quot;highlighter-rouge&quot;&gt;Sodium cryptography library&lt;/code&gt;提供。&lt;/p&gt;
+
+&lt;p&gt;进一步阅读：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/paragonie/sapient/tree/master/docs&quot;&gt;Sapient Documentation&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/paragonie/sapient/blob/master/docs/Tutorial.md&quot;&gt;Sapient Tutorial&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/paragonie/sapient/blob/master/docs/Specification.md&quot;&gt;Sapient Specification&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Paragon Initiative Enterprises&lt;/code&gt;已经在其许多产品（包括许多开源软件项目）中使用了&lt;code class=&quot;highlighter-rouge&quot;&gt;Sapient&lt;/code&gt;，
+并将继续添加软件项目到&lt;code class=&quot;highlighter-rouge&quot;&gt;Sapient&lt;/code&gt;用户群中。&lt;/p&gt;
+
+&lt;h5 id=&quot;使用chronicle记录安全事件&quot;&gt;使用Chronicle记录安全事件&lt;/h5&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;深入探究： &lt;a href=&quot;https://paragonie.com/blog/2017/07/chronicle-will-make-you-question-need-for-blockchain-technology&quot;&gt;Chronicle Will Make You Question the Need for Blockchain Technology&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/paragonie/chronicle&quot;&gt;Chronicle&lt;/a&gt;是一个基于散列链数据结构的仅追加密码分类账（append-only cryptographic ledger），
+具有很多吸引公司“区块链”技术的属性，而不会过分矫枉过正。&lt;/p&gt;
+
+&lt;p&gt;除了仅追加密码分类账（append-only cryptographic ledger）这个具有创造性的用例之外，
+&lt;code class=&quot;highlighter-rouge&quot;&gt;Chronicle&lt;/code&gt;集成到SIEM中时，也可以十分有亮点，
+因为你可以将安全关键事件发送到私人&lt;code class=&quot;highlighter-rouge&quot;&gt;Chronicle&lt;/code&gt;中，并且它们是不能被改变的。&lt;/p&gt;
+
+&lt;p&gt;如果你的&lt;code class=&quot;highlighter-rouge&quot;&gt;Chronicle&lt;/code&gt;设置为将其摘要散列交叉签名到其他&lt;code class=&quot;highlighter-rouge&quot;&gt;Chronicle&lt;/code&gt;实例，
+或者如果有其他实例配置为复制你的&lt;code class=&quot;highlighter-rouge&quot;&gt;Chronicle&lt;/code&gt;内容，攻击者就很难篡改你的安全事件日志。&lt;/p&gt;
+
+&lt;p&gt;在&lt;code class=&quot;highlighter-rouge&quot;&gt;Chronicle&lt;/code&gt;的帮助下，你可以获得区块链所承诺的弹性特性（resilience），而没有任何隐私，性能或可伸缩性问题。&lt;/p&gt;
+
+&lt;p&gt;要将数据发布到本地&lt;code class=&quot;highlighter-rouge&quot;&gt;Chronicle&lt;/code&gt;，你可以使用任何与&lt;a href=&quot;https://paragonie.com/blog/2017/12/2018-guide-building-secure-php-software#secure-api-sapient&quot;&gt;Sapient-compatible API&lt;/a&gt;，
+但最简单的解决方案称为&lt;a href=&quot;https://github.com/paragonie/quill&quot;&gt;Quill&lt;/a&gt;。&lt;/p&gt;
+
+&lt;h4 id=&quot;作者的一些话&quot;&gt;作者的一些话&lt;/h4&gt;
+
+&lt;p&gt;一些聪明的读者可能注意到我们引用了很多我们自己的工作（博客文章和开源软件），当然也不仅仅引用了我们自己的工作。&lt;/p&gt;
+
+&lt;p&gt;这绝不是偶然的。&lt;/p&gt;
+
+&lt;p&gt;自从我们在2015年初成立以来，一直在编写安全库并参与提高PHP生态系统安全性的工作。
+我们已经涉足了很多领域，而且我们的安全工程师（他们最近推动了更安全的加密技术加入PHP核心，就在最近的PHP 7.2中）
+自我担保地说，并不擅长自我炒作，或是对已经做过的工作持续热情。
+你很可能没有听说我们多年来开发的工具或库。对于这个，深感抱歉。&lt;/p&gt;
+
+&lt;p&gt;但是，我们也不可能成为各方面的先行者，所以我们尽可能地选择，重视公共利益而不是贪图小利的行业专家工作。
+这也是为什么浏览器安全的许多章节都参考了&lt;a href=&quot;https://scotthelme.co.uk/&quot;&gt;Scott Helme&lt;/a&gt;和公司的工作，
+他们在为开发人员提供这些新的安全功能方面具有可访问性和可理解性。&lt;/p&gt;
+
+&lt;p&gt;本指南当然不会是详尽的。
+编写不安全代码的方法几乎和编写代码的方法一样多。
+&lt;strong&gt;安全是一种心态，而不是目的地。&lt;/strong&gt;
+随着上面所写的一切，以及后面涉及的资源，我们希望这将有助于全世界的开发人员，
+从今天开始用PHP编写安全的软件。&lt;/p&gt;
+
+&lt;h4 id=&quot;资源&quot;&gt;资源&lt;/h4&gt;
+
+&lt;p&gt;如果你已经按照本页上的所有内容进行了操作，
+并且需要更多内容，则可能会对我们策划的阅读列表感兴趣，以便学习应用程序安全性。&lt;/p&gt;
+
+&lt;p&gt;如果你认为自己编写的代码足够安全，并希望我们从安全工程师的角度对其进行评判，
+这也是我们为客户提供的服务。&lt;/p&gt;
+
+&lt;p&gt;你如果为一家要进行合规性测试（PCI-DSS，ISO 27001等）的公司工作，可能还想聘请我们公司来审核你的源代码。
+我们的流程比其他安全咨询公司更适合开发者。&lt;/p&gt;
+
+&lt;p&gt;接下来是PHP和信息安全社区提供的资源列表，这些资源帮助互联网更加安全。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;http://www.phptherightway.com/&quot;&gt;PHP: The Right Way&lt;/a&gt;：现代PHP开发的实用指南，免费在线。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://mozilla.github.io/server-side-tls/ssl-config-generator/&quot;&gt;Mozilla’s SSL Config Generator&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://letsencrypt.org/&quot;&gt;Let’s Encrypt&lt;/a&gt;：证书颁发机构，通过提供免费TLS证书，为创建更安全的Internet做了很多。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://www.ssllabs.com/ssltest&quot;&gt;Qualys SSL Labs&lt;/a&gt;：为TLS配置提供了一个快速而简单的测试套件。
+几乎每个人都使用这个来解决他们的密码组和证书问题，理由很充分：&lt;strong&gt;It does its job well.&lt;/strong&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://securityheaders.io/&quot;&gt;Security Headers&lt;/a&gt;：可以检验你的网站在使用浏览器安全功能来保护用户方面的表现如何。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://report-uri.com/&quot;&gt;Report-URI&lt;/a&gt;：一个很好的免费资源，提供监控 CSP/HPKP 等安全策略的实时安全报告服务。
+他们给你一个Report-URI，你可以传递给你的用户的浏览器，
+如果有什么事情发生或有人发现XSS攻击媒介，他们会投诉Report-URI。 Report-URI会汇总这些错误，
+并允许你更好地对这些报告进行疑难解答和分类。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://www.ripstech.com/php-security-calendar-2017&quot;&gt;PHP Security Advent Calenda&lt;/a&gt;：&lt;a href=&quot;https://www.ripstech.com/&quot;&gt;RIPSTech&lt;/a&gt;旗下的团队负责。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://snuffleupagus.readthedocs.io/&quot;&gt;Snuffleupagus&lt;/a&gt;：一个面向安全的PHP模块（&lt;a href=&quot;https://github.com/sektioneins/suhosin&quot;&gt;Suhosin&lt;/a&gt;的精神继承者，似乎在很大程度上会被放弃）&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://phpdelusions.net/&quot;&gt;PHP Delusions&lt;/a&gt;：一个致力于更好地使用PHP的网站。
+大部分的口吻是非常有见地的，
+作者对技术的准确性和清晰度的奉献使得值得一读，特别是对于那些不太喜欢PDO功能的人来说。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://haveibeenpwned.com/&quot;&gt;Have I Been Pwned?&lt;/a&gt;：帮助用户发现他们的数据是否属于过时数据泄露。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
 </description>
         <pubDate>Sun, 24 Dec 2017 19:46:01 +0800</pubDate>
         <link>https://littlesqx.github.io/2017/12/24/the-2018-guide-to-building-secure-php-software/</link>
