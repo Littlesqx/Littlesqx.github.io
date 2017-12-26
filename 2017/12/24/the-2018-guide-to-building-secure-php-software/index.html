@@ -193,7 +193,7 @@
   </li>
   <li><a href="#https和浏览器安全">HTTPS和浏览器安全 / HTTPS and Browser Security</a>
     <ul>
-      <li><a href="#安全请求头">安全请求头 / Security Headers</a></li>
+      <li><a href="#安全头">安全头 / Security Headers</a></li>
       <li><a href="#子资源完整性">子资源完整性 / Subresource Integrity</a></li>
       <li><a href="#文档关系">文档关系 / Document Relationships</a></li>
     </ul>
@@ -320,52 +320,52 @@ vendor/bin/psalm
 
 <p>如果你希望网站安全，HTTPS(HTTP over TLS)是<a href="https://stackoverflow.com/a/2336738/2224584">绝对不能妥协</a>的。使用HTTPS立刻就能消除多种攻击（中间人攻击、窃听、重放攻击以及若干允许用户模仿的会话形式的攻击）。</p>
 
-<h5 id="安全请求头">安全请求头</h5>
+<h5 id="安全头">安全头</h5>
 
-<p>在服务器使用HTTPS确实为用户提供了许多安全性和性能方面的好处，但也还能通过利用某些浏览器的安全功能来进一步提升安全性。而这大部分会涉及到与返回内容一起返回的请求头。</p>
+<p>在服务器使用HTTPS确实为用户提供了许多安全性和性能方面的好处，但也还能通过利用某些浏览器的安全功能来进一步提升安全性。而这大部分会涉及到与返回内容一起返回的 Header 。</p>
 
 <ul>
   <li><code class="highlighter-rouge">Content-Security-Policy</code>
     <ul>
-      <li>你需要该请求头，因为它提供了对于浏览器是否允许加载内部和外部资源的细化控制，从而为跨域脚本攻击漏洞提供了有效防御层。</li>
+      <li>你需要该 Header ，因为它提供了对于浏览器是否允许加载内部和外部资源的细化控制，从而为跨域脚本攻击漏洞提供了有效防御层。</li>
       <li>参阅<a href="https://github.com/paragonie/csp-builder">CSP-Builder</a>，以便快速简便地部署/管理内容安全策略（Content Security Policies）。</li>
       <li>为了更加深入的分析， Scott Helme’s <a href="https://scotthelme.co.uk/content-security-policy-an-introduction/">introduction to Content-Security-Policy headers</a>，会是一个很好的引导。</li>
     </ul>
   </li>
   <li><code class="highlighter-rouge">Expect-CT</code>
     <ul>
-      <li>你需要该请求头，因为它能通过强制某些不良行为者将其错误证书的证据颁发到可公开验证的仅可追加的数据结构，从而针对流氓/受损的证书颁发机构增加一层防护。</li>
-      <li>优先设置为<code class="highlighter-rouge">enforce,max-age=30</code>。只要你有足够的自信该请求头不会造成服务中断，增加<code class="highlighter-rouge">max-age</code>吧。</li>
+      <li>你需要该 Header ，因为它能通过强制某些不良行为者将其错误证书的证据颁发到可公开验证的仅可追加的数据结构，从而针对流氓/受损的证书颁发机构增加一层防护。</li>
+      <li>优先设置为<code class="highlighter-rouge">enforce,max-age=30</code>。只要你有足够的自信该 Header 不会造成服务中断，增加<code class="highlighter-rouge">max-age</code>吧。</li>
     </ul>
   </li>
   <li><code class="highlighter-rouge">Referrer-Policy</code>
     <ul>
-      <li>你需要该请求头，因为它允许你控制用户的行为信息是否泄露给第三方。</li>
-      <li>同样地，Scott Helme提供了<a href="https://scotthelme.co.uk/a-new-security-header-referrer-policy/">一篇关于Referrer-Policy请求头介绍好文</a>。</li>
+      <li>你需要该 Header ，因为它允许你控制用户的行为信息是否泄露给第三方。</li>
+      <li>同样地，Scott Helme提供了<a href="https://scotthelme.co.uk/a-new-security-header-referrer-policy/">一篇关于Referrer-Policy Header 介绍好文</a>。</li>
       <li>除非有理由允许更加宽松的设置，否则请设置为<code class="highlighter-rouge">same-origin</code>或<code class="highlighter-rouge">no-referrer</code>。</li>
     </ul>
   </li>
   <li><code class="highlighter-rouge">Strict-Transport-Security</code>
     <ul>
-      <li>你需要该请求头，因为它告诉浏览器通过HTTPS而不是不安全的HTTP，将future requests设为同源。</li>
+      <li>你需要该 Header ，因为它告诉浏览器通过HTTPS而不是不安全的HTTP，将future requests设为同源。</li>
       <li>在第一次部署时，将其设置为<code class="highlighter-rouge">max-age = 30</code>，然后当你确信没有任何内容会中断时，将此值增加到某个较大的值（例如31536000）。</li>
     </ul>
   </li>
   <li><code class="highlighter-rouge">X-Content-Type-Options</code>
     <ul>
-      <li>你需要该请求头，因为MIME类型的混淆可能会导致不可预知的结果，包括奇怪的允许XSS漏洞的边缘情况。这最好伴随着一个标准的Content-Type请求头。</li>
+      <li>你需要该 Header ，因为MIME类型的混淆可能会导致不可预知的结果，包括奇怪的允许XSS漏洞的边缘情况。这最好伴随着一个标准的Content-Type Header 。</li>
       <li>除非需要默认的行为（例如文件的下载），否则请设置为<code class="highlighter-rouge">nosniff</code>。</li>
     </ul>
   </li>
   <li><code class="highlighter-rouge">X-Frame-Options</code>
     <ul>
-      <li>你需要该请求头，因为它允许你防止点击劫持。</li>
+      <li>你需要该 Header ，因为它允许你防止点击劫持。</li>
       <li>设置为<code class="highlighter-rouge">DENY</code> (或者<code class="highlighter-rouge">SAMEORIGIN</code>, 但仅仅当你使用<code class="highlighter-rouge">&lt;frame&gt;</code>元素的时候)。</li>
     </ul>
   </li>
   <li><code class="highlighter-rouge">X-XSS-Protection</code>
     <ul>
-      <li>你需要该请求头，因为它启用了一些默认情况下未启用的浏览器反XSS功能。</li>
+      <li>你需要该 Header ，因为它启用了一些默认情况下未启用的浏览器反XSS功能。</li>
       <li>设置为<code class="highlighter-rouge">1; mode=block</code>。</li>
     </ul>
   </li>
@@ -485,7 +485,7 @@ vendor/bin/psalm
 
 <ul>
   <li>直接访问SVG图像类型时，将在用户浏览器执行JavaScript代码。尽管<a href="https://github.com/w3c/svgwg/issues/266">它的MIME类型中的<code class="highlighter-rouge">image/</code>前缀具有误导性</a>，但是这是正确的。</li>
-  <li>正如前面提及的，MIME类型嗅探可能导致类型混淆攻击。请参阅<a href="#安全请求头">X-Content-Type-Options</a>。</li>
+  <li>正如前面提及的，MIME类型嗅探可能导致类型混淆攻击。请参阅<a href="#安全头">X-Content-Type-Options</a>。</li>
   <li>如果你放弃前面关于如何安全地存储上传文件的建议，攻击者就会通过上传.php或.phtml文件，直接在浏览器中访问文件来执行任意代码，从而完全控制服务器。</li>
 </ul>
 

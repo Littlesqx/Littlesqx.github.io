@@ -5,8 +5,8 @@
     <description>littlesqx's blog</description>
     <link>https://littlesqx.github.io/</link>
     <atom:link href="https://littlesqx.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Tue, 26 Dec 2017 11:54:48 +0800</pubDate>
-    <lastBuildDate>Tue, 26 Dec 2017 11:54:48 +0800</lastBuildDate>
+    <pubDate>Tue, 26 Dec 2017 15:22:57 +0800</pubDate>
+    <lastBuildDate>Tue, 26 Dec 2017 15:22:57 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
     
       <item>
@@ -26,7 +26,7 @@
   &lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;#https和浏览器安全&quot;&gt;HTTPS和浏览器安全 / HTTPS and Browser Security&lt;/a&gt;
     &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;#安全请求头&quot;&gt;安全请求头 / Security Headers&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#安全头&quot;&gt;安全头 / Security Headers&lt;/a&gt;&lt;/li&gt;
       &lt;li&gt;&lt;a href=&quot;#子资源完整性&quot;&gt;子资源完整性 / Subresource Integrity&lt;/a&gt;&lt;/li&gt;
       &lt;li&gt;&lt;a href=&quot;#文档关系&quot;&gt;文档关系 / Document Relationships&lt;/a&gt;&lt;/li&gt;
     &lt;/ul&gt;
@@ -153,52 +153,52 @@ vendor/bin/psalm
 
 &lt;p&gt;如果你希望网站安全，HTTPS(HTTP over TLS)是&lt;a href=&quot;https://stackoverflow.com/a/2336738/2224584&quot;&gt;绝对不能妥协&lt;/a&gt;的。使用HTTPS立刻就能消除多种攻击（中间人攻击、窃听、重放攻击以及若干允许用户模仿的会话形式的攻击）。&lt;/p&gt;
 
-&lt;h5 id=&quot;安全请求头&quot;&gt;安全请求头&lt;/h5&gt;
+&lt;h5 id=&quot;安全头&quot;&gt;安全头&lt;/h5&gt;
 
-&lt;p&gt;在服务器使用HTTPS确实为用户提供了许多安全性和性能方面的好处，但也还能通过利用某些浏览器的安全功能来进一步提升安全性。而这大部分会涉及到与返回内容一起返回的请求头。&lt;/p&gt;
+&lt;p&gt;在服务器使用HTTPS确实为用户提供了许多安全性和性能方面的好处，但也还能通过利用某些浏览器的安全功能来进一步提升安全性。而这大部分会涉及到与返回内容一起返回的 Header 。&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Content-Security-Policy&lt;/code&gt;
     &lt;ul&gt;
-      &lt;li&gt;你需要该请求头，因为它提供了对于浏览器是否允许加载内部和外部资源的细化控制，从而为跨域脚本攻击漏洞提供了有效防御层。&lt;/li&gt;
+      &lt;li&gt;你需要该 Header ，因为它提供了对于浏览器是否允许加载内部和外部资源的细化控制，从而为跨域脚本攻击漏洞提供了有效防御层。&lt;/li&gt;
       &lt;li&gt;参阅&lt;a href=&quot;https://github.com/paragonie/csp-builder&quot;&gt;CSP-Builder&lt;/a&gt;，以便快速简便地部署/管理内容安全策略（Content Security Policies）。&lt;/li&gt;
       &lt;li&gt;为了更加深入的分析， Scott Helme’s &lt;a href=&quot;https://scotthelme.co.uk/content-security-policy-an-introduction/&quot;&gt;introduction to Content-Security-Policy headers&lt;/a&gt;，会是一个很好的引导。&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
   &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Expect-CT&lt;/code&gt;
     &lt;ul&gt;
-      &lt;li&gt;你需要该请求头，因为它能通过强制某些不良行为者将其错误证书的证据颁发到可公开验证的仅可追加的数据结构，从而针对流氓/受损的证书颁发机构增加一层防护。&lt;/li&gt;
-      &lt;li&gt;优先设置为&lt;code class=&quot;highlighter-rouge&quot;&gt;enforce,max-age=30&lt;/code&gt;。只要你有足够的自信该请求头不会造成服务中断，增加&lt;code class=&quot;highlighter-rouge&quot;&gt;max-age&lt;/code&gt;吧。&lt;/li&gt;
+      &lt;li&gt;你需要该 Header ，因为它能通过强制某些不良行为者将其错误证书的证据颁发到可公开验证的仅可追加的数据结构，从而针对流氓/受损的证书颁发机构增加一层防护。&lt;/li&gt;
+      &lt;li&gt;优先设置为&lt;code class=&quot;highlighter-rouge&quot;&gt;enforce,max-age=30&lt;/code&gt;。只要你有足够的自信该 Header 不会造成服务中断，增加&lt;code class=&quot;highlighter-rouge&quot;&gt;max-age&lt;/code&gt;吧。&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
   &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Referrer-Policy&lt;/code&gt;
     &lt;ul&gt;
-      &lt;li&gt;你需要该请求头，因为它允许你控制用户的行为信息是否泄露给第三方。&lt;/li&gt;
-      &lt;li&gt;同样地，Scott Helme提供了&lt;a href=&quot;https://scotthelme.co.uk/a-new-security-header-referrer-policy/&quot;&gt;一篇关于Referrer-Policy请求头介绍好文&lt;/a&gt;。&lt;/li&gt;
+      &lt;li&gt;你需要该 Header ，因为它允许你控制用户的行为信息是否泄露给第三方。&lt;/li&gt;
+      &lt;li&gt;同样地，Scott Helme提供了&lt;a href=&quot;https://scotthelme.co.uk/a-new-security-header-referrer-policy/&quot;&gt;一篇关于Referrer-Policy Header 介绍好文&lt;/a&gt;。&lt;/li&gt;
       &lt;li&gt;除非有理由允许更加宽松的设置，否则请设置为&lt;code class=&quot;highlighter-rouge&quot;&gt;same-origin&lt;/code&gt;或&lt;code class=&quot;highlighter-rouge&quot;&gt;no-referrer&lt;/code&gt;。&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
   &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Strict-Transport-Security&lt;/code&gt;
     &lt;ul&gt;
-      &lt;li&gt;你需要该请求头，因为它告诉浏览器通过HTTPS而不是不安全的HTTP，将future requests设为同源。&lt;/li&gt;
+      &lt;li&gt;你需要该 Header ，因为它告诉浏览器通过HTTPS而不是不安全的HTTP，将future requests设为同源。&lt;/li&gt;
       &lt;li&gt;在第一次部署时，将其设置为&lt;code class=&quot;highlighter-rouge&quot;&gt;max-age = 30&lt;/code&gt;，然后当你确信没有任何内容会中断时，将此值增加到某个较大的值（例如31536000）。&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
   &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;X-Content-Type-Options&lt;/code&gt;
     &lt;ul&gt;
-      &lt;li&gt;你需要该请求头，因为MIME类型的混淆可能会导致不可预知的结果，包括奇怪的允许XSS漏洞的边缘情况。这最好伴随着一个标准的Content-Type请求头。&lt;/li&gt;
+      &lt;li&gt;你需要该 Header ，因为MIME类型的混淆可能会导致不可预知的结果，包括奇怪的允许XSS漏洞的边缘情况。这最好伴随着一个标准的Content-Type Header 。&lt;/li&gt;
       &lt;li&gt;除非需要默认的行为（例如文件的下载），否则请设置为&lt;code class=&quot;highlighter-rouge&quot;&gt;nosniff&lt;/code&gt;。&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
   &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;X-Frame-Options&lt;/code&gt;
     &lt;ul&gt;
-      &lt;li&gt;你需要该请求头，因为它允许你防止点击劫持。&lt;/li&gt;
+      &lt;li&gt;你需要该 Header ，因为它允许你防止点击劫持。&lt;/li&gt;
       &lt;li&gt;设置为&lt;code class=&quot;highlighter-rouge&quot;&gt;DENY&lt;/code&gt; (或者&lt;code class=&quot;highlighter-rouge&quot;&gt;SAMEORIGIN&lt;/code&gt;, 但仅仅当你使用&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;frame&amp;gt;&lt;/code&gt;元素的时候)。&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
   &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;X-XSS-Protection&lt;/code&gt;
     &lt;ul&gt;
-      &lt;li&gt;你需要该请求头，因为它启用了一些默认情况下未启用的浏览器反XSS功能。&lt;/li&gt;
+      &lt;li&gt;你需要该 Header ，因为它启用了一些默认情况下未启用的浏览器反XSS功能。&lt;/li&gt;
       &lt;li&gt;设置为&lt;code class=&quot;highlighter-rouge&quot;&gt;1; mode=block&lt;/code&gt;。&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
@@ -318,7 +318,7 @@ vendor/bin/psalm
 
 &lt;ul&gt;
   &lt;li&gt;直接访问SVG图像类型时，将在用户浏览器执行JavaScript代码。尽管&lt;a href=&quot;https://github.com/w3c/svgwg/issues/266&quot;&gt;它的MIME类型中的&lt;code class=&quot;highlighter-rouge&quot;&gt;image/&lt;/code&gt;前缀具有误导性&lt;/a&gt;，但是这是正确的。&lt;/li&gt;
-  &lt;li&gt;正如前面提及的，MIME类型嗅探可能导致类型混淆攻击。请参阅&lt;a href=&quot;#安全请求头&quot;&gt;X-Content-Type-Options&lt;/a&gt;。&lt;/li&gt;
+  &lt;li&gt;正如前面提及的，MIME类型嗅探可能导致类型混淆攻击。请参阅&lt;a href=&quot;#安全头&quot;&gt;X-Content-Type-Options&lt;/a&gt;。&lt;/li&gt;
   &lt;li&gt;如果你放弃前面关于如何安全地存储上传文件的建议，攻击者就会通过上传.php或.phtml文件，直接在浏览器中访问文件来执行任意代码，从而完全控制服务器。&lt;/li&gt;
 &lt;/ul&gt;
 
