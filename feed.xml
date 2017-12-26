@@ -5,8 +5,8 @@
     <description>littlesqx's blog</description>
     <link>https://littlesqx.github.io/</link>
     <atom:link href="https://littlesqx.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Mon, 25 Dec 2017 23:46:56 +0800</pubDate>
-    <lastBuildDate>Mon, 25 Dec 2017 23:46:56 +0800</lastBuildDate>
+    <pubDate>Tue, 26 Dec 2017 11:54:48 +0800</pubDate>
+    <lastBuildDate>Tue, 26 Dec 2017 11:54:48 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
     
       <item>
@@ -193,7 +193,7 @@ vendor/bin/psalm
   &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;X-Frame-Options&lt;/code&gt;
     &lt;ul&gt;
       &lt;li&gt;你需要该请求头，因为它允许你防止点击劫持。&lt;/li&gt;
-      &lt;li&gt;设置为&lt;code class=&quot;highlighter-rouge&quot;&gt;DENY&lt;/code&gt; (或者&lt;code class=&quot;highlighter-rouge&quot;&gt;SAMEORIGIN&lt;/code&gt;, 但仅仅当你使用 &lt;frame&gt; 元素的时候)。&lt;/frame&gt;&lt;/li&gt;
+      &lt;li&gt;设置为&lt;code class=&quot;highlighter-rouge&quot;&gt;DENY&lt;/code&gt; (或者&lt;code class=&quot;highlighter-rouge&quot;&gt;SAMEORIGIN&lt;/code&gt;, 但仅仅当你使用&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;frame&amp;gt;&lt;/code&gt;元素的时候)。&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
   &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;X-XSS-Protection&lt;/code&gt;
@@ -278,7 +278,7 @@ vendor/bin/psalm
   &lt;p&gt;&lt;a href=&quot;https://paragonie.com/blog/2015/05/preventing-sql-injection-in-php-applications-easy-and-definitive-guide&quot;&gt;避免PHP程序存在SQL注入。&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;如果你是自己编写SQL代码，请确保使用&lt;code class=&quot;highlighter-rouge&quot;&gt;prepared语句&lt;/code&gt;，并且从网络或文件系统提供的信息都作为参数传递，而不是字符串拼接的形式。此外，确保你&lt;a href=&quot;https://stackoverflow.com/a/12202218&quot;&gt;没有使用模拟的prepared语句&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;如果你是自己编写SQL代码，请确保使用&lt;code class=&quot;highlighter-rouge&quot;&gt;prepared&lt;/code&gt;语句，并且从网络或文件系统提供的信息都作为参数传递，而不是字符串拼接的形式。此外，确保你&lt;a href=&quot;https://stackoverflow.com/a/12202218&quot;&gt;没有使用模拟的prepared语句&lt;/a&gt;。&lt;/p&gt;
 
 &lt;p&gt;为了达到好的效果，可以使用&lt;a href=&quot;https://github.com/paragonie/easydb&quot;&gt;EasyDB&lt;/a&gt;。&lt;/p&gt;
 
@@ -599,7 +599,7 @@ Certainty通过将CACert捆绑在最新的可预测位置来消除这种激励�
 
 &lt;p&gt;&lt;strong&gt;谁禁用证书验证？&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;为流行的内容管理系统（WordPress，Magento等）的插件/扩展开发者！
+&lt;p&gt;流行的内容管理系统（WordPress，Magento等）的插件/扩展开发者！
 这是我们试图在生态系统层面上解决的一个巨大的问题。 
 它不是孤立的任何特定的CMS，你会发现这些不安全的插件等都是类似的。&lt;/p&gt;
 
@@ -811,7 +811,7 @@ Certainty通过将CACert捆绑在最新的可预测位置来消除这种激励�
 
 &lt;p&gt;原文地址：&lt;a href=&quot;https://paragonie.com/blog/2017/12/2018-guide-building-secure-php-software&quot;&gt;The 2018 Guide to Building Secure PHP Software - P.I.E. Staff&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;为避免歧义，部分专业名词和语句保留了原文。翻译过程借助了Google和Google翻译，本人英文水平有限，如有错误感谢指出修正。&lt;/p&gt;
+&lt;p&gt;为避免歧义，部分专业名词和语句保留了原文。翻译过程借助了Google和Google翻译，本人英文和相关专业水平有限，如有错误感谢指出修正。&lt;/p&gt;
 
 &lt;p&gt;PHP可以说是一门受争论的语言，有时候也羞愧于自己都大四了还纠结于该问题，迷茫不定。看了作者的努力，特别从&lt;strong&gt;作者的一些话&lt;/strong&gt;中感受到，
 原来有很多人在为改善PHP生态努力，有点感动，多了些坚定。&lt;/p&gt;

@@ -360,7 +360,7 @@ vendor/bin/psalm
   <li><code class="highlighter-rouge">X-Frame-Options</code>
     <ul>
       <li>你需要该请求头，因为它允许你防止点击劫持。</li>
-      <li>设置为<code class="highlighter-rouge">DENY</code> (或者<code class="highlighter-rouge">SAMEORIGIN</code>, 但仅仅当你使用 <frame> 元素的时候)。</frame></li>
+      <li>设置为<code class="highlighter-rouge">DENY</code> (或者<code class="highlighter-rouge">SAMEORIGIN</code>, 但仅仅当你使用<code class="highlighter-rouge">&lt;frame&gt;</code>元素的时候)。</li>
     </ul>
   </li>
   <li><code class="highlighter-rouge">X-XSS-Protection</code>
@@ -445,7 +445,7 @@ vendor/bin/psalm
   <p><a href="https://paragonie.com/blog/2015/05/preventing-sql-injection-in-php-applications-easy-and-definitive-guide">避免PHP程序存在SQL注入。</a></p>
 </blockquote>
 
-<p>如果你是自己编写SQL代码，请确保使用<code class="highlighter-rouge">prepared语句</code>，并且从网络或文件系统提供的信息都作为参数传递，而不是字符串拼接的形式。此外，确保你<a href="https://stackoverflow.com/a/12202218">没有使用模拟的prepared语句</a>。</p>
+<p>如果你是自己编写SQL代码，请确保使用<code class="highlighter-rouge">prepared</code>语句，并且从网络或文件系统提供的信息都作为参数传递，而不是字符串拼接的形式。此外，确保你<a href="https://stackoverflow.com/a/12202218">没有使用模拟的prepared语句</a>。</p>
 
 <p>为了达到好的效果，可以使用<a href="https://github.com/paragonie/easydb">EasyDB</a>。</p>
 
@@ -766,7 +766,7 @@ Certainty通过将CACert捆绑在最新的可预测位置来消除这种激励�
 
 <p><strong>谁禁用证书验证？</strong></p>
 
-<p>为流行的内容管理系统（WordPress，Magento等）的插件/扩展开发者！
+<p>流行的内容管理系统（WordPress，Magento等）的插件/扩展开发者！
 这是我们试图在生态系统层面上解决的一个巨大的问题。 
 它不是孤立的任何特定的CMS，你会发现这些不安全的插件等都是类似的。</p>
 
@@ -978,7 +978,7 @@ Certainty通过将CACert捆绑在最新的可预测位置来消除这种激励�
 
 <p>原文地址：<a href="https://paragonie.com/blog/2017/12/2018-guide-building-secure-php-software">The 2018 Guide to Building Secure PHP Software - P.I.E. Staff</a></p>
 
-<p>为避免歧义，部分专业名词和语句保留了原文。翻译过程借助了Google和Google翻译，本人英文水平有限，如有错误感谢指出修正。</p>
+<p>为避免歧义，部分专业名词和语句保留了原文。翻译过程借助了Google和Google翻译，本人英文和相关专业水平有限，如有错误感谢指出修正。</p>
 
 <p>PHP可以说是一门受争论的语言，有时候也羞愧于自己都大四了还纠结于该问题，迷茫不定。看了作者的努力，特别从<strong>作者的一些话</strong>中感受到，
 原来有很多人在为改善PHP生态努力，有点感动，多了些坚定。</p>
