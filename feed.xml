@@ -5,8 +5,8 @@
     <description>littlesqx's blog</description>
     <link>https://littlesqx.github.io/</link>
     <atom:link href="https://littlesqx.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Tue, 26 Dec 2017 16:54:40 +0800</pubDate>
-    <lastBuildDate>Tue, 26 Dec 2017 16:54:40 +0800</lastBuildDate>
+    <pubDate>Tue, 26 Dec 2017 22:38:51 +0800</pubDate>
+    <lastBuildDate>Tue, 26 Dec 2017 22:38:51 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
     
       <item>
@@ -995,7 +995,7 @@ In an Elasticsearch index, fields that have the same name in different mapping t
 
 &lt;p&gt;JAVA API 和 RESTful API。推荐后者，详细见官方文档。&lt;/p&gt;
 
-&lt;h4 id=&quot;参考文章&quot;&gt;参考文章&lt;/h4&gt;
+&lt;h3 id=&quot;参考文章&quot;&gt;参考文章&lt;/h3&gt;
 
 &lt;ul&gt;
   &lt;li&gt;
