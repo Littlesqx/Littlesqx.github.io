@@ -5,8 +5,8 @@
     <description>littlesqx's blog</description>
     <link>https://littlesqx.github.io/</link>
     <atom:link href="https://littlesqx.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sun, 07 Jan 2018 21:38:58 +0800</pubDate>
-    <lastBuildDate>Sun, 07 Jan 2018 21:38:58 +0800</lastBuildDate>
+    <pubDate>Sun, 07 Jan 2018 21:52:45 +0800</pubDate>
+    <lastBuildDate>Sun, 07 Jan 2018 21:52:45 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
     
       <item>
@@ -90,7 +90,7 @@
 
 &lt;p&gt;如果每个类都需要实现单例模式，那不是每个类都重写一遍这些代码？当然不能这样做，也当然有办法解决这个问题。&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;办法一、使用 Trait&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;方法一、使用 Trait&lt;/strong&gt;&lt;/p&gt;
 
 &lt;p&gt;Trait 是为类似 PHP 的单继承语言而准备的一种代码复用机制。&lt;/p&gt;
 
@@ -215,7 +215,7 @@ Book
 
 &lt;h3 id=&quot;补充&quot;&gt;补充&lt;/h3&gt;
 
-&lt;p&gt;PHP 语言内大概就这样，但在其他多线程语言（比如JAVA）就需要更加小心。当两个线程并发请求生成，就有可能重复生成实例，所以需要给生成实例的代码加互斥锁，使得其运行能够线程同步。&lt;/p&gt;
+&lt;p&gt;PHP 语言内大概就这样，但在其他多线程语言（比如 JAVA ）就需要更加小心。当两个线程并发请求生成，就有可能重复生成实例，所以需要给生成实例的代码加互斥锁，使得其运行能够线程同步。&lt;/p&gt;
 
 &lt;p&gt;使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;synchronized&lt;/code&gt; 关键字便是最常用的方法：&lt;/p&gt;
 
