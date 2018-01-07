@@ -9,9 +9,9 @@
     <meta name="keyword"  content="git php mysql laravel littlesqx">
     <link rel="shortcut icon" href="https://littlesqx-github-io.b0.upaiyun.com/img/favicon.ico">
 
-    <title>写一篇介绍和对比文章，关于 LAMP LNMP LANMP，还有... - Littlesqx Blog</title>
+    <title>设计模式 (1) - 单例模式 - Littlesqx Blog</title>
 
-    <link rel="canonical" href="https://littlesqx.github.io/2017/10/15/lamp-lnmp-lanmp/">
+    <link rel="canonical" href="https://littlesqx.github.io/2018/01/07/design-pattern-singleton/">
 
     <!-- nprogress CSS -->
     <link href="https://littlesqx-github-io.b0.upaiyun.com/css/nprogress.min.css" rel="stylesheet">
@@ -150,23 +150,17 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#LAMP" title="LAMP">LAMP</a>
-                        
-                        <a class="tag" href="/tags/#LNMP" title="LNMP">LNMP</a>
-                        
-                        <a class="tag" href="/tags/#LANMP" title="LANMP">LANMP</a>
-                        
-                        <a class="tag" href="/tags/#LNSMP" title="LNSMP">LNSMP</a>
-                        
                         <a class="tag" href="/tags/#PHP" title="PHP">PHP</a>
                         
+                        <a class="tag" href="/tags/#设计模式" title="设计模式">设计模式</a>
+                        
                     </div>
-                    <h1>写一篇介绍和对比文章，关于 LAMP LNMP LANMP，还有...</h1>
+                    <h1>设计模式 (1) - 单例模式</h1>
                     
                     
                     <h2 class="subheading"></h2>
                     
-                    <span class="meta">Posted by Littlesqx on October 15, 2017</span>
+                    <span class="meta">Posted by Littlesqx on January 7, 2018</span>
                 </div>
             </div>
         </div>
@@ -185,212 +179,226 @@
                 post-container">
 
 				<blockquote>
-  <p>LAMP = Linux Apache MySQL PHP</p>
-
-  <p>LNMP = Linux Nginx MySQL PHP</p>
-
-  <p>LANMP = Linux Apache Nginx MySQL PHP</p>
-
-  <p>LNSMP = Linux Nginx Swoole MySQL PHP （这是我乱起的缩写）</p>
+  <p>好颓好颓~</p>
 </blockquote>
 
-<h3 id="前言">前言</h3>
-<p>在第一篇文章《<a href="https://littlesqx.github.io/2017/09/23/centos7-lnmp/">在CentOS 7 上配置 LNMP 环境
-</a>》提到过，有时间对比一下LAMP
-和LNMP的区别，现在把php可能的web运行环境都做一次说明，也就是加上了LANMP和LNSMP，前者好说，
-后者是有关于重新定义PHP的<a href="https://www.swoole.com/">Swoole</a>，其实我还没学过哈哈哈。</p>
+<h3 id="简单介绍">简单介绍</h3>
 
-<h3 id="正文">正文</h3>
+<p>单例模式保证了应用在生命周期间一个类只生成一个实例对象，实现思路是类只能返回对象一个引用和一个获得该实例的方法。它的好处是避免频繁重复实例化同一个类，而造成系统资源的消耗和浪费。</p>
 
-<h4 id="lamp-和-lnmp">LAMP 和 LNMP</h4>
+<h3 id="php-实现">PHP 实现</h3>
 
-<blockquote>
-  <p>LAMP = Linux Apache MySQL PHP</p>
+<h4 id="一个栗子">一个栗子</h4>
 
-  <p>LNMP = Linux Nginx MySQL PHP</p>
-</blockquote>
+<p>直接上代码。</p>
 
-<h5 id="概述">概述</h5>
+<div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
 
-<p>区别在于A和N，也就是同是web服务器，原本是没有解析动态网页（包括php Python等）的能力。那他们
-是如何实现可以解析php程序呢？</p>
+<span class="k">class</span> <span class="nc">Product</span> <span class="p">{</span>
 
-<p>pic# 我画了个图</p>
+	<span class="k">private</span> <span class="k">static</span> <span class="nv">$instance</span><span class="p">;</span>
 
-<p><img src="/img/in-post/201710151.png" alt="img" /></p>
+	<span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">getInstance</span><span class="p">()</span><span class="o">:</span> <span class="nx">Product</span>
+	<span class="p">{</span>
+		<span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nx">self</span><span class="o">::</span><span class="nv">$instance</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">self</span><span class="o">::</span><span class="nv">$instance</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">self</span><span class="p">();</span>
+		<span class="p">}</span>
+		<span class="k">return</span> <span class="nx">self</span><span class="o">::</span><span class="nv">$instance</span><span class="p">;</span>
+	<span class="p">}</span>
+<span class="p">}</span>
 
-<p>这个图简化了整个过程，表达的是web服务器会判断用户请求的文件类型，如果是php，那会交给PHP处理器
-（PHP handler）处理，处理结果返回给web服务器，再由web服务器响应给请求方。但是，
-实际的过程应该更加复杂。
-需要先引出一些名词：SAPI，mod_php，mod_fastcgi，CGI，FastCGI，PHP-CGI，PHP-FPM。</p>
+<span class="nv">$product</span> <span class="o">=</span> <span class="nx">Product</span><span class="o">::</span><span class="na">getInstance</span><span class="p">();</span>
+<span class="nv">$product2</span> <span class="o">=</span> <span class="nx">Product</span><span class="o">::</span><span class="na">getInstance</span><span class="p">();</span>
 
-<h5 id="sapi">SAPI</h5>
+<span class="nb">var_dump</span><span class="p">(</span><span class="nv">$product</span> <span class="o">===</span> <span class="nv">$product2</span><span class="p">);</span>
 
-<p>pic# 这个图不是我画的</p>
+</code></pre>
+</div>
 
-<p><img src="/img/in-post/201710152.jpg" alt="img" /></p>
+<p>上面程序的运行结果是：</p>
 
-<p>上图是PHP架构图，可以看到实际的应用程序和PHP之间有一层SAPI
-（Server Application Programming Interface：
-the API used by PHP to interface with Web Servers），
-<strong>SAPI提供了一个和外部通信的接口，使得PHP可以和其他应用进行交互数据。</strong>
-PHP提供了很多种SAPI，Apache的mod_php，Nginx的mod_fastcgi，还有Shell的CLI。</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>bool(true)
+</code></pre>
+</div>
 
-<p>那我们就来谈谈Apache的mod_php，Nginx的mod_fastcgi。</p>
+<p>说明了 <code class="highlighter-rouge">$product</code> 实例和 <code class="highlighter-rouge">$product2</code> 实例是同一个引用。</p>
 
-<h5 id="mod_php">mod_php</h5>
+<h4 id="改进一下">改进一下</h4>
 
-<p>在这种模式下，php被编译为apache的一个内置模块，在启动时加载。当有一个php请求过来时，
-直接在httpd进程里完成php的解释运行，将结果返回。</p>
+<p>上面的例子虽然说是已经实现了单例模式的效果，但还是可以直接通过 <code class="highlighter-rouge">new Product()</code> 的方式实例化对象，又或者使用 <code class="highlighter-rouge">clone</code> 关键字复制对象，这样都会重新生成新对象，违反了单例模式中实例唯一的原则。</p>
 
-<p>pic# 我画了个图，扩展了前面的图</p>
+<div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
 
-<p><img src="/img/in-post/201710153.png" alt="img" /></p>
+<span class="k">class</span> <span class="nc">Product</span> <span class="p">{</span>
 
-<h5 id="mod_fastcgi">mod_fastcgi</h5>
+	<span class="k">private</span> <span class="k">static</span> <span class="nv">$instance</span><span class="p">;</span>
 
-<p>这是另一种SAPI，在LAMP中常见，涉及到CGI，FastCGI，PHP-CGI，PHP-FPM这几个名词。</p>
+	<span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">getInstance</span><span class="p">()</span><span class="o">:</span> <span class="nx">Product</span>
+	<span class="p">{</span>
+		<span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nx">self</span><span class="o">::</span><span class="nv">$instance</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">self</span><span class="o">::</span><span class="nv">$instance</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">self</span><span class="p">();</span>
+		<span class="p">}</span>
+		<span class="k">return</span> <span class="nx">self</span><span class="o">::</span><span class="nv">$instance</span><span class="p">;</span>
+	<span class="p">}</span>
+    
+        <span class="c1">// 防止直接 new Product() 生成对象
+</span>
+	<span class="k">private</span> <span class="k">function</span> <span class="nf">__construct</span><span class="p">()</span> <span class="p">{}</span>
+    
+        <span class="c1">// 防止直接 clone $product 生成对象
+</span>
+	<span class="k">private</span> <span class="k">function</span> <span class="nf">__clone</span><span class="p">()</span> <span class="p">{}</span>
 
-<p>1# 什么是CGI？</p>
+<span class="p">}</span>
+</code></pre>
+</div>
 
-<p>CGI(Common Gateway Interface)，即公共网关接口，web服务器和脚本语言通信的一个标准、
-接口、协议。CGI规范允许Web服务器执行外部程序，并将它们的输出发送给Web浏览器，
-CGI将Web的一组简单的静态超媒体文档变成一个完整的新的交互式媒体。</p>
+<h4 id="栗子升级">栗子升级</h4>
 
-<p>2# 什么是FastCGI？</p>
+<p>如果每个类都需要实现单例模式，那不是每个类都重写一遍这些代码？当然不能这样做，也当然有办法解决这个问题。</p>
 
-<p>CGI的升级版。FastCGI像是一个常驻(long-live)型的CGI，它可以一直执行着，只要激活后，
-不会每次都要花费时间去fork一次(这是CGI最为人诟病的fork-and-execute 模式)。
-它还支持分布式的运算, 即 FastCGI 程序可以在网站服务器以外的主机上执行并且接受
-来自其它网站服务器来的请求。</p>
+<p><strong>办法一、使用 Trait</strong></p>
 
-<p>FastCGI是语言无关的、可伸缩架构的CGI开放扩展，其主要行为是将CGI解释器进程保持在内存中并因此
-获得较高的性能。众所周知，CGI解释器的反复加载是CGI性能低下的主要原因，
-如果CGI解释器保持在内存中并接受FastCGI进程管理器调度，
-则可以提供良好的性能、伸缩性、Fail- Over特性等等。</p>
+<p>Trait 是为类似 PHP 的单继承语言而准备的一种代码复用机制。</p>
 
-<p>3# 什么是PHP-CGI？</p>
+<div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
 
-<p>实现了CGI接口协议的PHP脚本解析器。</p>
+<span class="nx">trait</span> <span class="nx">Singleton</span> <span class="p">{</span>
 
-<p>4# 什么是PHP-FPM？</p>
+	<span class="k">private</span> <span class="k">static</span> <span class="nv">$instance</span><span class="p">;</span>
 
-<p>管理和调度php-cgi进程，进而实现了FastCGI接口协议的程序。</p>
+	<span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">getInstance</span><span class="p">()</span>
+	<span class="p">{</span>
+		<span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nx">self</span><span class="o">::</span><span class="nv">$instance</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">self</span><span class="o">::</span><span class="nv">$instance</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">self</span><span class="p">();</span>
+		<span class="p">}</span>
+		<span class="k">return</span> <span class="nx">self</span><span class="o">::</span><span class="nv">$instance</span><span class="p">;</span>
+	<span class="p">}</span>
 
-<p>现在的LAMP一般采用FastCGI+PHP-FPM的组合。Nginx通过FastCGI协议将php脚本请求转发到PHP-FPM管理的
-php-cgi进程。</p>
+	<span class="k">private</span> <span class="k">function</span> <span class="nf">__construct</span><span class="p">()</span> <span class="p">{}</span>
 
-<p>pic# 我画了个图，也是扩展第一张图。</p>
+	<span class="k">private</span> <span class="k">function</span> <span class="nf">__clone</span><span class="p">()</span> <span class="p">{}</span>
 
-<p><img src="/img/in-post/201710154.png" alt="img" /></p>
+<span class="p">}</span>
 
-<h4 id="lanmp">LANMP</h4>
+<span class="k">class</span> <span class="nc">Pan</span> <span class="p">{</span>
 
-<blockquote>
-  <p>LANMP = Linux Apache Nginx MySQL PHP</p>
-</blockquote>
+	<span class="k">use</span> <span class="nx">Singleton</span><span class="p">;</span>
 
-<p>为什么同时使用Apache和Nginx？</p>
+	<span class="k">private</span> <span class="nv">$name</span> <span class="o">=</span> <span class="s1">'Pan'</span><span class="p">;</span>
 
-<p><strong>对比一下两者的优缺点：</strong></p>
+	<span class="k">public</span> <span class="k">function</span> <span class="nf">getName</span><span class="p">()</span><span class="o">:</span> <span class="nx">string</span>
+	<span class="p">{</span>
+		<span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">name</span><span class="p">;</span>
+	<span class="p">}</span>
+<span class="p">}</span>
 
-<p>1# Nginx 相对 Apache 的优点：</p>
+<span class="k">class</span> <span class="nc">Book</span> <span class="p">{</span>
 
-<ul>
-  <li>轻量级，占用更少的资源</li>
-  <li>抗并发，nginx 处理请求是异步非阻塞的，而apache 则是阻塞型的，
-在高并发下nginx 能保持低资源低消耗高性能</li>
-  <li>高度模块化的设计，编写模块相对简单</li>
-  <li>社区活跃，各种高性能模块出品迅速啊</li>
-</ul>
+	<span class="k">use</span> <span class="nx">Singleton</span><span class="p">;</span>
 
-<p>2# Apache 相对Nginx 的优点：</p>
+	<span class="k">private</span> <span class="nv">$name</span> <span class="o">=</span> <span class="s1">'Book'</span><span class="p">;</span>
 
-<ul>
-  <li>配置较复杂</li>
-  <li>rewrite 强大</li>
-  <li>模块超多</li>
-  <li>更稳定</li>
-</ul>
+	<span class="k">public</span> <span class="k">function</span> <span class="nf">getName</span><span class="p">()</span><span class="o">:</span> <span class="nx">string</span>
+	<span class="p">{</span>
+		<span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">name</span><span class="p">;</span>
+	<span class="p">}</span>
+<span class="p">}</span>
 
-<p>3# 更多 » <a href="https://www.zhihu.com/question/19571087/answer/12313829"><strong>Nginx 和 Apache 各有什么优缺点？- 知乎</strong></a></p>
+<span class="k">echo</span> <span class="nx">Pan</span><span class="o">::</span><span class="na">getInstance</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getName</span><span class="p">(),</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">;</span>
 
-<blockquote>
-  <p>Nginx的优势是处理静态请求，cpu内存使用率低，Apache适合处理动态请求 - wuhen</p>
-</blockquote>
+<span class="k">echo</span> <span class="nx">Book</span><span class="o">::</span><span class="na">getInstance</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getName</span><span class="p">(),</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">;</span>
 
-<p>所以，在LANMP架构下，Apache负责处理动态请求，而Nginx处理静态请求。Nginx作为web服务的入口，
-如果是动态请求，那就反向代理到Apache。</p>
+</code></pre>
+</div>
 
-<p>pic# 我不想画图了，字面意思，脑补一下嘻嘻</p>
+<p>上面的程序的运行结果是：</p>
 
-<h4 id="lnsmp">LNSMP</h4>
+<div class="highlighter-rouge"><pre class="highlight"><code>Pan
+Book
+</code></pre>
+</div>
 
-<blockquote>
-  <p>LNSMP = Linux Nginx Swoole MySQL PHP （这是我乱起的缩写）</p>
-</blockquote>
+<p><strong>方法二、使用继承</strong></p>
 
-<p>什么是Swoole？</p>
+<p>这里面涉及到了后期静态绑定， <code class="highlighter-rouge">static</code> 关键字的使用。同时，存实例的 <code class="highlighter-rouge">$instance</code> 变量变成了数组类型，用于管理多个子类的单例。</p>
 
-<p>这是官网的介绍：</p>
+<div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
 
-<blockquote>
-  <p>PHP的异步、并行、高性能网络通信引擎，使用纯C语言编写，提供了PHP语言的异步多线程服务器，
-异步TCP/UDP网络客户端，异步MySQL，异步Redis，数据库连接池，AsyncTask，
-消息队列，毫秒定时器，异步文件读写，异步DNS查询。
-Swoole内置了Http/WebSocket服务器端/客户端、Http2.0服务器端/客户端。</p>
-</blockquote>
+<span class="k">abstract</span> <span class="k">class</span> <span class="nc">Product</span> <span class="p">{</span>
 
-<p>这是作者韩天峰的介绍：</p>
+	<span class="k">private</span> <span class="k">static</span> <span class="nv">$instances</span><span class="p">;</span>
 
-<blockquote>
-  <p>swoole实际上是一个网络通信和异步io的引擎，一个基础库。
-PHPer可以基于swoole去实现过去PHP无法实现的功能。</p>
-</blockquote>
+	<span class="k">private</span> <span class="nv">$name</span><span class="p">;</span>
 
-<p>Swoole内置异步非阻塞多进程的Http服务器，在LNSMP中的作用和LANMP中的Apache一样，处理动态请求。Swoole处理动态请求，涉及到的SAPI
-是CLI(commandline，命令行)模式。</p>
+	<span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">getInstance</span><span class="p">()</span>
+	<span class="p">{</span>
+                <span class="c1">// 也可以使用 $class = static::class;
+</span>		<span class="nv">$class</span> <span class="o">=</span> <span class="nb">get_called_class</span><span class="p">();</span>
+		<span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nb">isset</span><span class="p">(</span><span class="nx">self</span><span class="o">::</span><span class="nv">$instances</span><span class="p">[</span><span class="nv">$class</span><span class="p">]))</span> <span class="p">{</span>
+                        <span class="c1">// 也可以使用 new $class;
+</span>			<span class="nx">self</span><span class="o">::</span><span class="nv">$instances</span><span class="p">[</span><span class="nv">$class</span><span class="p">]</span> <span class="o">=</span> <span class="k">new</span> <span class="k">static</span><span class="p">();</span>
+		<span class="p">}</span>
+		<span class="k">return</span> <span class="nx">self</span><span class="o">::</span><span class="nv">$instances</span><span class="p">[</span><span class="nv">$class</span><span class="p">];</span>
+	<span class="p">}</span>
 
-<p>具体Swoole和php是怎么配合运行的，坦白讲，有点懵逼，就不误导了。</p>
+	<span class="k">public</span> <span class="k">abstract</span> <span class="k">function</span> <span class="nf">getName</span><span class="p">();</span>
+<span class="p">}</span>
 
-<h4 id="对比">对比</h4>
 
-<p>从前面的介绍可以看出，每个模式的优点和局限性。需要补充的是，Swoole性能是最好的。这个结论官网有宣传，也有其他同学测试过。有时间，一定好好学习Swoole。</p>
+<span class="k">class</span> <span class="nc">Pan</span> <span class="k">extends</span> <span class="nx">Product</span> <span class="p">{</span>
 
-<hr />
+	<span class="k">private</span> <span class="nv">$name</span> <span class="o">=</span> <span class="s1">'Pan'</span><span class="p">;</span>
 
-<h3 id="结尾">结尾</h3>
+	<span class="k">public</span> <span class="k">function</span> <span class="nf">getName</span><span class="p">()</span><span class="o">:</span> <span class="nx">string</span>
+	<span class="p">{</span>
+		<span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">name</span><span class="p">;</span>
+	<span class="p">}</span>
+<span class="p">}</span>
 
-<h4 id="补充">补充</h4>
+<span class="k">class</span> <span class="nc">Book</span> <span class="k">extends</span> <span class="nx">Product</span> <span class="p">{</span>
 
-<p>1# PHP-FPM虽然在Nginx上使用较多，但Apache上也可以配置使用。同样，Swoole也可以配合Apache。</p>
+	<span class="k">private</span> <span class="nv">$name</span> <span class="o">=</span> <span class="s1">'Book'</span><span class="p">;</span>
 
-<p>2# MySQL呢？PHP和MySQL的交互，需要通过PHP extension。</p>
+	<span class="k">public</span> <span class="k">function</span> <span class="nf">getName</span><span class="p">()</span><span class="o">:</span> <span class="nx">string</span>
+	<span class="p">{</span>
+		<span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">name</span><span class="p">;</span>
+	<span class="p">}</span>
+<span class="p">}</span>
 
-<p>3# 命令行模式（CommandLine），常shell上执行。我自己常用来做一些耗时或定时任务。</p>
+<span class="k">echo</span> <span class="nx">Pan</span><span class="o">::</span><span class="na">getInstance</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getName</span><span class="p">(),</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">;</span>
 
-<h4 id="参考文章">参考文章</h4>
+<span class="k">echo</span> <span class="nx">Book</span><span class="o">::</span><span class="na">getInstance</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getName</span><span class="p">(),</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">;</span>
 
-<ul>
-  <li>
-    <p><a href="http://www.cnblogs.com/zl0372/articles/php_4.html">mod_php、mod_fastcgi和php-fpm的介绍,对比,和性能数据 - 日落紫荆</a></p>
-  </li>
-  <li>
-    <p><a href="http://www.cnblogs.com/yujon/p/6209551.html">深入理解PHP的运行模式 - 余朝忠</a></p>
-  </li>
-  <li>
-    <p><a href="https://www.qcloud.com/community/article/385799001490608925">三种 PHP 运行环境的性能对比 - 石仕海</a></p>
-  </li>
-  <li>
-    <p><a href="http://article.gitos.cn/2015/Aurthur/PHP-Mod-PHP-And-Fast-CGI-Explain.html">PHP填坑记之FastCGI与mod_php详解 - Aurthur</a></p>
-  </li>
-  <li>
-    <p><a href="http://m.php.cn/article/325869.html">Nginx、CGI、FastCGI、PHP-CGI、PHP-FPM处理流程 - PHP中文网</a></p>
-  </li>
-  <li>
-    <p><a href="https://tech.meituan.com/php_success_or_failure_web_dev_is_the_sole_cause.html">【思考】PHP——成也Web，败也Web - 七月的夏天</a></p>
-  </li>
-</ul>
+</code></pre>
+</div>
+
+<p>同样地，上面的程序输出也是：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Pan
+Book
+</code></pre>
+</div>
+
+<h3 id="补充">补充</h3>
+
+<p>PHP 语言内大概就这样，但在其他多线程语言（比如JAVA）就需要更加小心。当两个线程并发请求生成，就有可能重复生成实例，所以需要给生成实例的代码加互斥锁，使得其运行能够线程同步。</p>
+
+<p>使用 <code class="highlighter-rouge">synchronized</code> 关键字便是最常用的方法：</p>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Singleton</span> <span class="o">{</span>  
+    <span class="kd">private</span> <span class="kd">static</span> <span class="n">Singleton</span> <span class="n">instance</span><span class="o">;</span>  
+    <span class="kd">private</span> <span class="nf">Singleton</span> <span class="o">(){}</span>  
+  
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">synchronized</span> <span class="n">Singleton</span> <span class="nf">getInstance</span><span class="o">()</span> <span class="o">{</span>  
+        <span class="k">if</span> <span class="o">(</span><span class="n">instance</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>  
+            <span class="n">instance</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Singleton</span><span class="o">();</span>  
+        <span class="o">}</span>  
+        <span class="k">return</span> <span class="n">instance</span><span class="o">;</span>  
+    <span class="o">}</span>  
+<span class="o">}</span>  
+</code></pre>
+</div>
 
 
                 <hr>
@@ -404,13 +412,9 @@ PHPer可以基于swoole去实现过去PHP无法实现的功能。</p>
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2017/10/08/mysql-backup-to-sae-storage/" data-toggle="tooltip" data-placement="top" title="MySQL定时备份，要不利用SAE Storage吧">&larr; Previous Post</a>
+                        <a href="/2017/12/24/the-2018-guide-to-building-secure-php-software/" data-toggle="tooltip" data-placement="top" title="[译]The 2018 Guide to Building Secure PHP Software">&larr; Previous Post</a>
                     </li>
                     
-                    
-                    <li class="next">
-                        <a href="/2017/10/24/axios-packaging-notes/" data-toggle="tooltip" data-placement="top" title="记一次axios封装">Next Post &rarr;</a>
-                    </li>
                     
                 </ul>
 
