@@ -9,9 +9,9 @@
     <meta name="keyword"  content="git php mysql laravel littlesqx">
     <link rel="shortcut icon" href="https://littlesqx-github-io.b0.upaiyun.com/img/favicon.ico">
 
-    <title>设计模式 (3) - 建造者模式 - Littlesqx Blog</title>
+    <title>设计模式 (4) - 适配器模式 - Littlesqx Blog</title>
 
-    <link rel="canonical" href="https://littlesqx.github.io/2018/01/08/design-pattern-builder-pattern/">
+    <link rel="canonical" href="https://littlesqx.github.io/2018/01/08/design-pattern-adapter/">
 
     <!-- nprogress CSS -->
     <link href="https://littlesqx-github-io.b0.upaiyun.com/css/nprogress.min.css" rel="stylesheet">
@@ -155,7 +155,7 @@
                         <a class="tag" href="/tags/#设计模式" title="设计模式">设计模式</a>
                         
                     </div>
-                    <h1>设计模式 (3) - 建造者模式</h1>
+                    <h1>设计模式 (4) - 适配器模式</h1>
                     
                     
                     <h2 class="subheading"></h2>
@@ -184,126 +184,115 @@
 
 <h3 id="简单介绍">简单介绍</h3>
 
-<p>造者模式(Builder Pattern)：将一个复杂对象的构建与它的表示分离，使得同样的构建过程可以创建不同的表示。</p>
-
-<p>主要角色：</p>
-
-<ul>
-  <li>
-    <p>Builder：抽象建造者</p>
-  </li>
-  <li>
-    <p>ConcreteBuilder：具体建造者</p>
-  </li>
-  <li>
-    <p>Director：指挥者</p>
-  </li>
-  <li>
-    <p>Product：产品角色</p>
-  </li>
-</ul>
+<p>适配器模式(Adapter Pattern) ：是作为两个不兼容的接口之间的桥梁，将一个接口转换成客户希望的另一个接口，适配器模式使接口不兼容的那些类可以一起工作，其别名为包装器(Wrapper)。</p>
 
 <h3 id="php-实现">PHP 实现</h3>
 
+<p>假设旧系统都是采用 MySQLi 的方式连接数据库，当项目移植到另一个系统，新环境不支持 MySQLi ，而支持 PDO ，适配器的作用就体现了；反之也是类似的。</p>
+
+<p>这是旧代码：</p>
+
 <div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
 
-<span class="k">class</span> <span class="nc">Product</span>
+<span class="nv">$config</span> <span class="o">=</span> <span class="p">[</span>
+	<span class="s1">'host'</span> <span class="o">=&gt;</span> <span class="s1">'localhost'</span><span class="p">,</span>
+	<span class="s1">'dbname'</span> <span class="o">=&gt;</span> <span class="s1">'test'</span><span class="p">,</span>
+	<span class="s1">'username'</span> <span class="o">=&gt;</span> <span class="s1">'homestead'</span><span class="p">,</span>
+	<span class="s1">'password'</span> <span class="o">=&gt;</span> <span class="s1">'secret'</span>
+<span class="p">];</span>
+
+<span class="k">interface</span> <span class="nx">MySQLi</span> <span class="p">{</span>
+	<span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">connection</span><span class="p">(</span><span class="nv">$config</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">class</span> <span class="nc">Db</span> <span class="k">implements</span> <span class="nx">MySQLi</span>
 <span class="p">{</span>
-	<span class="k">private</span> <span class="nv">$name</span><span class="p">;</span>
-
-	<span class="k">private</span> <span class="nv">$description</span><span class="p">;</span>
-
-	<span class="k">public</span> <span class="k">function</span> <span class="nf">setName</span><span class="p">(</span><span class="nv">$name</span> <span class="o">=</span> <span class="s1">'default name'</span><span class="p">)</span><span class="o">:</span> <span class="nx">Product</span>
+	<span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">connection</span><span class="p">(</span><span class="nv">$config</span><span class="p">)</span>
 	<span class="p">{</span>
-		<span class="nv">$this</span><span class="o">-&gt;</span><span class="na">name</span> <span class="o">=</span> <span class="nv">$name</span><span class="p">;</span>
-		<span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
-	<span class="p">}</span>
-
-	<span class="k">public</span> <span class="k">function</span> <span class="nf">setDescription</span><span class="p">(</span><span class="nv">$description</span> <span class="o">=</span> <span class="s1">'default description'</span><span class="p">)</span><span class="o">:</span> <span class="nx">Product</span>
-	<span class="p">{</span>
-		<span class="nv">$this</span><span class="o">-&gt;</span><span class="na">description</span> <span class="o">=</span> <span class="nv">$description</span><span class="p">;</span>
-		<span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+		<span class="k">return</span> <span class="k">new</span> <span class="nx">mysqli</span><span class="p">(</span>
+			<span class="nv">$config</span><span class="p">[</span><span class="s1">'host'</span><span class="p">],</span>
+			<span class="nv">$config</span><span class="p">[</span><span class="s1">'username'</span><span class="p">],</span>
+			<span class="nv">$config</span><span class="p">[</span><span class="s1">'password'</span><span class="p">],</span>
+			<span class="nv">$config</span><span class="p">[</span><span class="s1">'dbname'</span><span class="p">]</span>
+		<span class="p">);</span>
 	<span class="p">}</span>
 <span class="p">}</span>
 
-<span class="k">abstract</span> <span class="k">class</span> <span class="nc">Builder</span> <span class="p">{</span>
-	<span class="k">public</span> <span class="k">abstract</span> <span class="k">function</span> <span class="nf">setFields</span><span class="p">(</span><span class="nv">$name</span><span class="p">,</span> <span class="nv">$description</span><span class="p">);</span>
-	<span class="k">public</span> <span class="k">abstract</span> <span class="k">function</span> <span class="nf">getProduct</span><span class="p">();</span>
+<span class="nv">$db</span> <span class="o">=</span> <span class="nx">Db</span><span class="o">::</span><span class="na">connection</span><span class="p">(</span><span class="nv">$config</span><span class="p">);</span>
+</code></pre>
+</div>
+
+<p>这是新代码：</p>
+
+<div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+
+<span class="nv">$config</span> <span class="o">=</span> <span class="p">[</span>
+	<span class="s1">'host'</span> <span class="o">=&gt;</span> <span class="s1">'localhost'</span><span class="p">,</span>
+	<span class="s1">'dbname'</span> <span class="o">=&gt;</span> <span class="s1">'test'</span><span class="p">,</span>
+	<span class="s1">'username'</span> <span class="o">=&gt;</span> <span class="s1">'homestead'</span><span class="p">,</span>
+	<span class="s1">'password'</span> <span class="o">=&gt;</span> <span class="s1">'secret'</span>
+<span class="p">];</span>
+
+<span class="k">interface</span> <span class="nx">IMySQLi</span> <span class="p">{</span>
+	<span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">connection</span><span class="p">(</span><span class="nv">$config</span><span class="p">);</span>
 <span class="p">}</span>
 
-<span class="k">class</span> <span class="nc">ConcreteBuilder</span> <span class="k">extends</span> <span class="nx">Builder</span>
+<span class="k">interface</span> <span class="nx">IPDO</span> <span class="p">{</span>
+	<span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">connection</span><span class="p">(</span><span class="nv">$config</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">class</span> <span class="nc">Db</span> <span class="k">implements</span> <span class="nx">IMySQLi</span>
 <span class="p">{</span>
-	<span class="k">private</span> <span class="nv">$product</span><span class="p">;</span>
-
-	<span class="k">public</span> <span class="k">function</span> <span class="nf">__construct</span><span class="p">()</span>
+	<span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">connection</span><span class="p">(</span><span class="nv">$config</span><span class="p">)</span>
 	<span class="p">{</span>
-		<span class="nv">$this</span><span class="o">-&gt;</span><span class="na">product</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Product</span><span class="p">;</span>
-	<span class="p">}</span>
-
-	<span class="k">public</span> <span class="k">function</span> <span class="nf">setFields</span><span class="p">(</span><span class="nv">$name</span><span class="p">,</span> <span class="nv">$description</span><span class="p">)</span><span class="o">:</span> <span class="nx">ConcreteBuilder</span>
-	<span class="p">{</span>
-		<span class="nv">$this</span><span class="o">-&gt;</span><span class="na">product</span><span class="o">-&gt;</span><span class="na">setName</span><span class="p">(</span><span class="nv">$name</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">setDescription</span><span class="p">(</span><span class="nv">$description</span><span class="p">);</span>
-		<span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
-	<span class="p">}</span>
-
-	<span class="k">public</span> <span class="k">function</span> <span class="nf">getProduct</span><span class="p">()</span><span class="o">:</span> <span class="nx">Product</span>
-	<span class="p">{</span>
-		<span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">product</span><span class="p">;</span>
+		<span class="k">return</span> <span class="k">new</span> <span class="nx">mysqli</span><span class="p">(</span>
+			<span class="nv">$config</span><span class="p">[</span><span class="s1">'host'</span><span class="p">],</span>
+			<span class="nv">$config</span><span class="p">[</span><span class="s1">'username'</span><span class="p">],</span>
+			<span class="nv">$config</span><span class="p">[</span><span class="s1">'password'</span><span class="p">],</span>
+			<span class="nv">$config</span><span class="p">[</span><span class="s1">'dbname'</span><span class="p">]</span>
+		<span class="p">);</span>
 	<span class="p">}</span>
 <span class="p">}</span>
 
-<span class="k">class</span> <span class="nc">Director</span>
+<span class="k">class</span> <span class="nc">PdoDb</span> <span class="k">implements</span> <span class="nx">IPDO</span>
 <span class="p">{</span>
-	<span class="k">private</span> <span class="nv">$buider</span><span class="p">;</span>
-
-	<span class="k">public</span> <span class="k">function</span> <span class="nf">__construct</span><span class="p">()</span>
+	<span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">connection</span><span class="p">(</span><span class="nv">$config</span><span class="p">)</span>
 	<span class="p">{</span>
-		<span class="nv">$this</span><span class="o">-&gt;</span><span class="na">buider</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ConcreteBuilder</span><span class="p">;</span>
-	<span class="p">}</span>
-
-	<span class="k">public</span> <span class="k">function</span> <span class="nf">getPan</span><span class="p">()</span><span class="o">:</span> <span class="nx">Product</span>
-	<span class="p">{</span>
-		<span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">buider</span><span class="o">-&gt;</span><span class="na">setFields</span><span class="p">(</span>
-			<span class="s1">'pan'</span><span class="p">,</span>
-			<span class="s1">'i am a pan!'</span>
-		<span class="p">)</span><span class="o">-&gt;</span><span class="na">getProduct</span><span class="p">();</span>
-	<span class="p">}</span>
-
-	<span class="k">public</span> <span class="k">function</span> <span class="nf">getBook</span><span class="p">()</span><span class="o">:</span> <span class="nx">Product</span>
-	<span class="p">{</span>
-		<span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">buider</span><span class="o">-&gt;</span><span class="na">setFields</span><span class="p">(</span>
-			<span class="s1">'Book'</span><span class="p">,</span>
-			<span class="s1">'i am a book!'</span>
-		<span class="p">)</span><span class="o">-&gt;</span><span class="na">getProduct</span><span class="p">();</span>
+		<span class="k">return</span> <span class="k">new</span> <span class="nx">PDO</span><span class="p">(</span><span class="s1">'host='</span><span class="o">.</span><span class="nv">$config</span><span class="p">[</span><span class="s1">'host'</span><span class="p">]</span><span class="o">.</span><span class="s1">';dbname='</span><span class="o">.</span><span class="nv">$config</span><span class="p">[</span><span class="s1">'dbname'</span><span class="p">],</span> <span class="nv">$config</span><span class="p">[</span><span class="s1">'username'</span><span class="p">],</span> <span class="nv">$config</span><span class="p">[</span><span class="s1">'password'</span><span class="p">]);</span>
 	<span class="p">}</span>
 <span class="p">}</span>
 
+<span class="k">class</span> <span class="nc">DbAdapter</span> <span class="k">implements</span> <span class="nx">IMySQLi</span>
+<span class="p">{</span>
+	<span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">connection</span><span class="p">(</span><span class="nv">$config</span><span class="p">)</span>
+	<span class="p">{</span>
+		<span class="nv">$driver</span> <span class="o">=</span> <span class="nv">$config</span><span class="p">[</span><span class="s1">'driver'</span><span class="p">]</span> <span class="o">??</span> <span class="s1">'mysqli'</span><span class="p">;</span>
 
-<span class="p">(</span><span class="k">new</span> <span class="nx">Director</span><span class="p">())</span><span class="o">-&gt;</span><span class="na">getPan</span><span class="p">();</span>
+		<span class="k">if</span> <span class="p">(</span><span class="nv">$driver</span> <span class="o">===</span> <span class="s1">'pdo'</span><span class="p">)</span> <span class="p">{</span>
+			<span class="k">return</span> <span class="nx">PdoDb</span><span class="o">::</span><span class="na">connection</span><span class="p">(</span><span class="nv">$config</span><span class="p">);</span>
+		<span class="p">}</span>
 
-<span class="p">(</span><span class="k">new</span> <span class="nx">Director</span><span class="p">())</span><span class="o">-&gt;</span><span class="na">getBook</span><span class="p">();</span>
+		<span class="k">return</span> <span class="nx">Db</span><span class="o">::</span><span class="na">connection</span><span class="p">(</span><span class="nv">$config</span><span class="p">);</span>
+	<span class="p">}</span>
+<span class="p">}</span>
 
+<span class="k">class</span> <span class="nc">Client</span> <span class="k">implements</span> <span class="nx">IMySQLi</span>
+<span class="p">{</span>
+
+	<span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">connection</span><span class="p">(</span><span class="nv">$config</span><span class="p">)</span>
+	<span class="p">{</span>
+		<span class="k">return</span> <span class="nx">DbAdapter</span><span class="o">::</span><span class="na">connection</span><span class="p">(</span><span class="nv">$config</span><span class="p">);</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nv">$db</span> <span class="o">=</span> <span class="nx">Client</span><span class="o">::</span><span class="na">connection</span><span class="p">(</span><span class="nv">$config</span><span class="p">);</span>
 </code></pre>
 </div>
 
 <h3 id="补充">补充</h3>
 
-<p><strong>建造者模式的简化:</strong></p>
+<p>其他场景，例如 Cache 驱动的适配（文件、 Redis、memcache等）。</p>
 
-<ul>
-  <li>
-    <p>省略抽象建造者角色：如果系统中只需要一个具体建造者的话，可以省略掉抽象建造者。</p>
-  </li>
-  <li>
-    <p>省略指挥者角色：在具体建造者只有一个的情况下，如果抽象建造者角色已经被省略掉，那么还可以省略指挥者角色，让
-Builder角色扮演指挥者与建造者双重角色。</p>
-  </li>
-</ul>
-
-<p><strong>建造者模式与抽象工厂模式的比较:</strong></p>
-
-<p>与抽象工厂模式相比， 建造者模式返回一个组装好的完整产品 ，而 抽象工厂模式返回一系列相关的产品，这些产品位于不同的产品等级结构，构成了一个产品族。
-在抽象工厂模式中，客户端实例化工厂类，然后调用工厂方法获取所需产品对象，而在建造者模式中，客户端可以不直接调用建造者的相关方法，而是通过指挥者类来指导如何生成对象，包括对象的组装过程和建造步骤，它侧重于一步步构造一个复杂对象，返回一个完整的对象。</p>
 
 
                 <hr>
@@ -317,13 +306,9 @@ Builder角色扮演指挥者与建造者双重角色。</p>
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2018/01/08/design-pattern-factory-pattern/" data-toggle="tooltip" data-placement="top" title="设计模式 (2) - 工厂模式">&larr; Previous Post</a>
+                        <a href="/2018/01/08/design-pattern-builder-pattern/" data-toggle="tooltip" data-placement="top" title="设计模式 (3) - 建造者模式">&larr; Previous Post</a>
                     </li>
                     
-                    
-                    <li class="next">
-                        <a href="/2018/01/08/design-pattern-adapter/" data-toggle="tooltip" data-placement="top" title="设计模式 (4) - 适配器模式">Next Post &rarr;</a>
-                    </li>
                     
                 </ul>
 
