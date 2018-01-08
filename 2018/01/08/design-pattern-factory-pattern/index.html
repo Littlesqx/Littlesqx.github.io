@@ -9,9 +9,9 @@
     <meta name="keyword"  content="git php mysql laravel littlesqx">
     <link rel="shortcut icon" href="https://littlesqx-github-io.b0.upaiyun.com/img/favicon.ico">
 
-    <title>Hello World! - Littlesqx Blog</title>
+    <title>设计模式 (2) - 工厂模式 - Littlesqx Blog</title>
 
-    <link rel="canonical" href="https://littlesqx.github.io/2017/09/16/hello-world/">
+    <link rel="canonical" href="https://littlesqx.github.io/2018/01/08/design-pattern-factory-pattern/">
 
     <!-- nprogress CSS -->
     <link href="https://littlesqx-github-io.b0.upaiyun.com/css/nprogress.min.css" rel="stylesheet">
@@ -150,15 +150,17 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#博客" title="博客">博客</a>
+                        <a class="tag" href="/tags/#PHP" title="PHP">PHP</a>
+                        
+                        <a class="tag" href="/tags/#设计模式" title="设计模式">设计模式</a>
                         
                     </div>
-                    <h1>Hello World!</h1>
+                    <h1>设计模式 (2) - 工厂模式</h1>
                     
                     
-                    <h2 class="subheading">it's never too late to start studing anything</h2>
+                    <h2 class="subheading"></h2>
                     
-                    <span class="meta">Posted by Littlesqx on September 16, 2017</span>
+                    <span class="meta">Posted by Littlesqx on January 8, 2018</span>
                 </div>
             </div>
         </div>
@@ -177,8 +179,87 @@
                 post-container">
 
 				<blockquote>
-  <p>keep!</p>
+  <p>好颓好颓~</p>
 </blockquote>
+
+<h3 id="简单介绍">简单介绍</h3>
+
+<p>工厂模式提供了一种创建对象的最佳方式，在创建对象时不暴露具体创建逻辑，而是提供公共的创建接口。
+工厂模式又分为简单工厂模式（静态工厂模式）、工厂方法模式和抽象工厂模式，它们其实大同小异，
+最终目的都是为了解耦，只是抽象程度：简单工厂模式 &lt; 工厂方法模式 &lt; 抽象工厂模式。</p>
+
+<h3 id="php-实现">PHP 实现</h3>
+
+<p>以实现 MySQL 数据库连接的封装为例。</p>
+
+<h4 id="工厂方法">工厂方法</h4>
+
+<div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="k">interface</span> <span class="nx">DbFactory</span> <span class="p">{</span>
+	<span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">createConnection</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="k">class</span> <span class="nc">DbManager</span> <span class="k">implements</span> <span class="nx">DbFactory</span>
+<span class="p">{</span>
+	<span class="k">private</span> <span class="k">static</span> <span class="nv">$config</span> <span class="o">=</span> <span class="p">[</span>
+		<span class="s1">'dsn'</span> <span class="o">=&gt;</span> <span class="s1">'mysql:host=localhost;dbname=test'</span><span class="p">,</span>
+		<span class="s1">'username'</span> <span class="o">=&gt;</span> <span class="s1">'homestead'</span><span class="p">,</span>
+		<span class="s1">'password'</span> <span class="o">=&gt;</span> <span class="s1">'secret'</span>
+	<span class="p">];</span>
+	<span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">createConnection</span><span class="p">()</span><span class="o">:</span> <span class="nx">PDO</span>
+	<span class="p">{</span>
+		<span class="k">return</span> <span class="k">new</span> <span class="nx">PDO</span><span class="p">(</span><span class="nx">self</span><span class="o">::</span><span class="nv">$config</span><span class="p">[</span><span class="s1">'dsn'</span><span class="p">],</span> <span class="nx">self</span><span class="o">::</span><span class="nv">$config</span><span class="p">[</span><span class="s1">'username'</span><span class="p">],</span> <span class="nx">self</span><span class="o">::</span><span class="nv">$config</span><span class="p">[</span><span class="s1">'password'</span><span class="p">]);</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nv">$pdo</span> <span class="o">=</span> <span class="nx">DbManager</span><span class="o">::</span><span class="na">createConnection</span><span class="p">();</span>
+
+<span class="k">foreach</span> <span class="p">(</span><span class="nv">$pdo</span><span class="o">-&gt;</span><span class="na">query</span><span class="p">(</span><span class="s1">'show tables'</span><span class="p">)</span> <span class="k">as</span> <span class="nv">$row</span><span class="p">)</span> <span class="p">{</span>
+	<span class="c1">// ...
+</span><span class="p">}</span>
+</code></pre>
+</div>
+<h4 id="抽象工厂">抽象工厂</h4>
+
+<div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+
+<span class="k">interface</span> <span class="nx">DbFactory</span> <span class="p">{</span>
+	<span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">createPdoConnection</span><span class="p">();</span>
+	<span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">createMysqliConnection</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="k">class</span> <span class="nc">DbManager</span> <span class="k">implements</span> <span class="nx">DbFactory</span>
+<span class="p">{</span>
+	<span class="k">private</span> <span class="k">static</span> <span class="nv">$config</span> <span class="o">=</span> <span class="p">[</span>
+		<span class="s1">'host'</span> <span class="o">=&gt;</span> <span class="s1">'localhost'</span><span class="p">,</span>
+		<span class="s1">'dbname'</span> <span class="o">=&gt;</span> <span class="s1">'test'</span><span class="p">,</span>
+		<span class="s1">'username'</span> <span class="o">=&gt;</span> <span class="s1">'homestead'</span><span class="p">,</span>
+		<span class="s1">'password'</span> <span class="o">=&gt;</span> <span class="s1">'secret'</span>
+	<span class="p">];</span>
+	<span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">createPdoConnection</span><span class="p">()</span><span class="o">:</span> <span class="nx">PDO</span>
+	<span class="p">{</span>
+		<span class="k">return</span> <span class="k">new</span> <span class="nx">PDO</span><span class="p">(</span><span class="s1">'mysql:host='</span> <span class="o">.</span> <span class="nx">self</span><span class="o">::</span><span class="nv">$config</span><span class="p">[</span><span class="s1">'host'</span><span class="p">]</span> <span class="o">.</span> <span class="s1">';dbname='</span> <span class="o">.</span> <span class="nx">self</span><span class="o">::</span><span class="nv">$config</span><span class="p">[</span><span class="s1">'dbname'</span><span class="p">],</span> <span class="nx">self</span><span class="o">::</span><span class="nv">$config</span><span class="p">[</span><span class="s1">'username'</span><span class="p">],</span> <span class="nx">self</span><span class="o">::</span><span class="nv">$config</span><span class="p">[</span><span class="s1">'password'</span><span class="p">]);</span>
+	<span class="p">}</span>
+	<span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">createMysqliConnection</span><span class="p">()</span><span class="o">:</span> <span class="nx">mysqli</span>
+	<span class="p">{</span>
+		<span class="k">return</span> <span class="k">new</span> <span class="nx">mysqli</span><span class="p">(</span>
+			<span class="nx">self</span><span class="o">::</span><span class="nv">$config</span><span class="p">[</span><span class="s1">'host'</span><span class="p">],</span>
+			<span class="nx">self</span><span class="o">::</span><span class="nv">$config</span><span class="p">[</span><span class="s1">'username'</span><span class="p">],</span>
+			<span class="nx">self</span><span class="o">::</span><span class="nv">$config</span><span class="p">[</span><span class="s1">'password'</span><span class="p">],</span>
+			<span class="nx">self</span><span class="o">::</span><span class="nv">$config</span><span class="p">[</span><span class="s1">'dbname'</span><span class="p">]</span>
+		<span class="p">);</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nv">$pdo</span> <span class="o">=</span> <span class="nx">DbManager</span><span class="o">::</span><span class="na">createPdoConnection</span><span class="p">();</span>
+
+<span class="c1">// ...
+</span>
+<span class="nv">$mysqli</span> <span class="o">=</span> <span class="nx">DbManager</span><span class="o">::</span><span class="na">createMysqliConnection</span><span class="p">();</span>
+
+<span class="c1">// ...
+</span></code></pre>
+</div>
 
 
                 <hr>
@@ -191,10 +272,10 @@
 
                 <ul class="pager">
                     
-                    
-                    <li class="next">
-                        <a href="/2017/09/23/centos7-lnmp/" data-toggle="tooltip" data-placement="top" title="在CentOS 7 上配置 LNMP 环境">Next Post &rarr;</a>
+                    <li class="previous">
+                        <a href="/2018/01/07/design-pattern-singleton/" data-toggle="tooltip" data-placement="top" title="设计模式 (1) - 单例模式">&larr; Previous Post</a>
                     </li>
+                    
                     
                 </ul>
 
@@ -566,7 +647,7 @@
 <script type="text/javascript">
     function generateCatalog (selector) {
         // interop with multilangual 
-        if (true) {
+        if (false) {
             _containerSelector = 'div.post-container.active'
         } else {
             _containerSelector = 'div.post-container'
@@ -616,51 +697,6 @@
 
 
 <!-- Multi-Lingual -->
-
-<!-- Handle Language Change -->
-<script type="text/javascript">
-    // get nodes
-    var $zh = document.querySelector(".zh");
-    var $en = document.querySelector(".en");
-    var $select = document.querySelector("select");
-    // bind hashchange event
-    // Changes at v1.7.2: change the language flag from hash-basing to in-memory basing
-    // due to its confliction with catalog anchors.
-    // window.addEventListener('hashchange', _render);
-    // handle render
-    function _render(_hash){
-        var _hash = _hash || window.location.hash;
-        // en
-        if(_hash == "#en"){
-            $select.selectedIndex = 1;
-            $en.style.display = "block";
-            $en.classList.add("active");
-            $zh.style.display = "none";
-            $zh.classList.remove("active");
-        // zh by default
-        }else{
-            // not trigger onChange, otherwise cause a loop call.
-            $select.selectedIndex = 0;
-            $zh.style.display = "block";
-            $zh.classList.add("active");
-            $en.style.display = "none";
-            $en.classList.remove("active");
-        }
-        // interop with catalog 
-        if ("true") generateCatalog(".catalog-body");
-    }
-    // handle select change
-    function onLanChange(index){
-        if(index == 0){
-            _hash = "#zh"
-        }else{
-            _hash = "#en"
-        }
-        _render(_hash)
-    }
-    // init
-    _render();
-</script>
 
 
 
