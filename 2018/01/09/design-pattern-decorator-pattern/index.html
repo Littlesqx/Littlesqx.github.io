@@ -9,9 +9,9 @@
     <meta name="keyword"  content="git php mysql laravel littlesqx">
     <link rel="shortcut icon" href="https://littlesqx-github-io.b0.upaiyun.com/img/favicon.ico">
 
-    <title>在CentOS 7 上配置 LNMP 环境 - Littlesqx Blog</title>
+    <title>设计模式 (5) - 装饰模式 - Littlesqx Blog</title>
 
-    <link rel="canonical" href="https://littlesqx.github.io/2017/09/23/centos7-lnmp/">
+    <link rel="canonical" href="https://littlesqx.github.io/2018/01/09/design-pattern-decorator-pattern/">
 
     <!-- nprogress CSS -->
     <link href="https://littlesqx-github-io.b0.upaiyun.com/css/nprogress.min.css" rel="stylesheet">
@@ -150,21 +150,17 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#CentOS" title="CentOS">CentOS</a>
-                        
-                        <a class="tag" href="/tags/#LNMP" title="LNMP">LNMP</a>
-                        
-                        <a class="tag" href="/tags/#Nginx" title="Nginx">Nginx</a>
-                        
                         <a class="tag" href="/tags/#PHP" title="PHP">PHP</a>
                         
+                        <a class="tag" href="/tags/#设计模式" title="设计模式">设计模式</a>
+                        
                     </div>
-                    <h1>在CentOS 7 上配置 LNMP 环境</h1>
+                    <h1>设计模式 (5) - 装饰模式</h1>
                     
                     
                     <h2 class="subheading"></h2>
                     
-                    <span class="meta">Posted by Littlesqx on September 23, 2017</span>
+                    <span class="meta">Posted by Littlesqx on January 9, 2018</span>
                 </div>
             </div>
         </div>
@@ -183,177 +179,134 @@
                 post-container">
 
 				<blockquote>
-  <p>终于开始了第一篇博客，希望自己可以坚持下去。内容是基本的环境配置，但尽量补充必要知识。</p>
+  <p>好颓好颓~</p>
 </blockquote>
 
-<h3 id="前言">前言</h3>
+<h3 id="简单介绍">简单介绍</h3>
 
-<p>提到php的运行环境，就想起了第一次接触php，是社团师兄带我们入门web开发。师兄推荐的<a href="https://zh.wikipedia.org/wiki/XAMPP">xampp</a>，类似的还有<a href="http://www.wampserver.com">WampServer</a>，都是windows下集成好的php开发环境（包括Apache，MySQL，还有PHP）。很方便，一键式的配置，之后就可以把时间集中在php代码实现上。但是缺点也很明显，直接跳过了web环境的原理，失去了学习一些必要的知识。就我自己来说，很久之后才对服务器有大体的正确认识。可能还有其他的集成环境，但是都离不开LNMP和LAMP这两种架构。查阅相关资料的过程中，发现还有LNAMP，有空再写一篇他们之间的介绍和对比文章。</p>
+<p>一般有两种方式可以实现给一个类或对象增加行为：</p>
 
-<hr />
-
-<h3 id="正文">正文</h3>
-
-<h4 id="配置源">配置源</h4>
-<p>1# 查看系统版本</p>
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="o">[</span>root@VM_157_248_centos ~]# cat /etc/centos-release
-CentOS Linux release 7.4.1708 <span class="o">(</span>Core<span class="o">)</span>
-<span class="o">[</span>root@VM_157_248_centos ~]#
-</code></pre>
-</div>
-
-<p>2# 配置MariaDB官方源</p>
-
-<p>根据<a href="https://downloads.mariadb.org/mariadb/repositories/">MariaDB官方源</a>，选择系统合适的版本
-CentOS &gt; CentOS 7(x86_64) &gt; 10.2 [Stable] ：</p>
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="c"># MariaDB 10.2 CentOS repository list - created 2017-09-23 09:53 UTC</span>
-<span class="c"># http://downloads.mariadb.org/mariadb/repositories/</span>
-<span class="o">[</span>mariadb]
-name <span class="o">=</span> MariaDB
-baseurl <span class="o">=</span> http://yum.mariadb.org/10.2/centos7-amd64
-<span class="nv">gpgkey</span><span class="o">=</span>https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
-<span class="nv">gpgcheck</span><span class="o">=</span>1
-</code></pre>
-</div>
-
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>vi /etc/yum.repos.d/MariaDB.repo
-<span class="c"># 填入前面的代码段，ESC :wq 保存退出</span>
-</code></pre>
-</div>
-
-<p>3# 配置Nginx官方源
-根据<a href="http://nginx.org/en/linux_packages.html#stable">Nginx官方源</a>，选择系统合适的版本</p>
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="o">[</span>nginx]
-<span class="nv">name</span><span class="o">=</span>nginx repo
-<span class="nv">baseurl</span><span class="o">=</span>http://nginx.org/packages/centos/7/<span class="nv">$basearch</span>/
-<span class="nv">gpgcheck</span><span class="o">=</span>0
-<span class="nv">enabled</span><span class="o">=</span>1
-</code></pre>
-</div>
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>vi /etc/yum.repos.d/nginx.repo
-<span class="c"># 填入前面的代码段，ESC :wq 保存退出</span>
-</code></pre>
-</div>
-
-<p>4# 配置PHP源</p>
-
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-rpm -Uvh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm
-</code></pre>
-</div>
-
-<h4 id="安装">安装</h4>
-
-<p>1# 安装MariaDB</p>
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>yum install MariaDB-server -y
-</code></pre>
-</div>
-<p>2# 安装Nginx</p>
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>yum install nginx -y
-</code></pre>
-</div>
-<p>3# 安装PHP和常用扩展</p>
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>yum install php71w-cli php71w-fpm -y
-yum install php71w-mbstring php71w-pdo -y
-yum install php71w-gd php71w-mcrypt -y
-yum install php71w-mysql php71w-xml -y
-yum install php71w-soap php71w-xmlrpc -y  
-yum install php71w-opcache -y
-<span class="c"># 其他</span>
-yum search php71w
-</code></pre>
-</div>
-
-<h4 id="配置">配置</h4>
-<p>1# 设置MariaDB</p>
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>mysql_secure_installation
-<span class="c"># 默认密码为空，要求键入旧密码时回车即可</span>
-<span class="c"># 拒绝远程访问。如果实在需要外网连接，设置允许单独的ip</span>
-GRANT ALL PRIVILEGES ON <span class="o">[</span>数据库.]<span class="k">*</span> TO <span class="s1">'用户名'</span>@<span class="s1">'允许访问的IP地址'</span> IDENTIFIED BY <span class="s1">'密码'</span> WITH GRANT OPTION;
-FLUSH PRIVILEGES；
-</code></pre>
-</div>
-<p>2# 设置PHP</p>
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>vi /etc/php.ini
-</code></pre>
-</div>
-<p>找到 ;cgi.fix_pathinfo=1 （可通过 /cgi.fix_pathinfo 搜索）</p>
-
-<p>修改成 <strong>cgi.fix_pathinfo=0</strong></p>
-
-<p>原因可参考<a href="http://www.laruence.com/2010/05/20/1495.html">Nginx + PHP CGI的一个可能的安全漏洞</a></p>
-
-<p>3# 配置Nginx</p>
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>vi /etc/nginx/conf.d/default.conf
-</code></pre>
-</div>
-<p>修改以下代码段，配置正确的路径</p>
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="c"># pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000</span>
-<span class="c">#</span>
-location ~ <span class="se">\.</span>php<span class="nv">$ </span><span class="o">{</span>
-    root           /usr/share/nginx/html;
-    fastcgi_pass   127.0.0.1:9000;
-    fastcgi_index  index.php;
-    fastcgi_param  SCRIPT_FILENAME  <span class="nv">$document_root$fastcgi_script_name</span>;
-    include        fastcgi_params;
-<span class="o">}</span>
-</code></pre>
-</div>
-
-<h4 id="测试">测试</h4>
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>systemctl restart nginx
-systemctl restart php-fpm
-</code></pre>
-</div>
-<p><img src="/img/in-post/phpinfo.png" alt="img" /></p>
-
-<hr />
-
-<h3 id="结尾">结尾</h3>
-
-<h4 id="关于性能">关于性能</h4>
-
-<p>PHP7刚出来时就以性能为主打，确实惊艳了不少PHPer。除了php7本身，鸟哥在自己博客分享了其他的几个技巧</p>
-
-<p>1# 启用Zend Opcache （貌似7.1是默认开启）</p>
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>vi /etc/php.ini
-</code></pre>
-</div>
-<p>加入以下代码段</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>zend_extension=opcache.so
-opcache.enable=1
-opcache.enable_cli=1"
-</code></pre>
-</div>
-<p>ESC :wq 保存退出</p>
-
-<p>2# 使用新的编译器
-gcc version &gt;= 4.8</p>
-
-<p>3# HugePage</p>
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>sysctl vm.nr_hugepages<span class="o">=</span>512
-
-vi /etc/php.ini
-</code></pre>
-</div>
-<p>加入以下代码段</p>
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>opcache.huge_code_pages<span class="o">=</span>1
-</code></pre>
-</div>
-<p>ESC :wq 保存退出</p>
-
-<p>4# <a href="http://www.laruence.com/2015/12/04/3086.html">更多</a></p>
-<h4 id="参考文章">参考文章</h4>
 <ul>
   <li>
-    <p><a href="https://www.coldawn.com/how-to-install-nginx-mariadb-php-on-centos-7/">CentOS 7 搭建LNMP服务器环境 - Coldawn</a></p>
+    <p>继承机制，使用继承机制是给现有类添加功能的一种有效途径，通过继承一个现有类可以使得子类在拥有自身方法的同时还拥有父类的方法。但是这种方法是静态的，用户不能控制增加行为的方式和时机。</p>
   </li>
   <li>
-    <p><a href="http://blog.csdn.net/dengjiexian123/article/details/53358452">nginx+php的配置与原理 - dengjiexian123</a></p>
+    <p>关联机制，即将一个类的对象嵌入另一个对象中，由另一个对象来决定是否调用嵌入对象的行为以便扩展自己的行为，我们称这个嵌入的对象为装饰器(Decorator)。</p>
   </li>
-  <li>
-    <p><a href="http://www.laruence.com/2015/12/04/3086.html">让PHP7达到最高性能的几个Tips - 风雪之隅</a></p>
-  </li>
+</ul>
+
+<p>装饰模式(Decorator Pattern) ：动态地给一个对象增加一些额外的职责(Responsibility)，就增加对象功能来说，装饰模式比生成子类实现更为灵活。其别名也可以称为包装器(Wrapper)，与适配器模式的别名相同，但它们适用于不同的场合。</p>
+
+<h3 id="php-实现">PHP 实现</h3>
+
+<p>引用《深入 PHP ：面向对象、模式与实践》书中的关于游戏建模的例子。</p>
+
+<p>下面的代码定义了 Tile （区域）及其子类：</p>
+
+<div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+
+<span class="k">abstract</span> <span class="k">class</span> <span class="nc">Tile</span> <span class="p">{</span>
+	<span class="k">public</span> <span class="k">abstract</span> <span class="k">function</span> <span class="nf">getWealthFactor</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="k">class</span> <span class="nc">Plains</span> <span class="k">extends</span> <span class="nx">Tile</span>
+<span class="p">{</span>
+	<span class="k">protected</span> <span class="nv">$wealthFactor</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+
+	<span class="k">public</span> <span class="k">function</span> <span class="nf">getWealthFactor</span><span class="p">()</span><span class="o">:</span> <span class="nx">int</span>
+	<span class="p">{</span>
+		<span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">wealthFactor</span><span class="p">;</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<p>Tile 类表示游戏当中的一个区域，当某个区域被玩家占领，玩家而获得区域所具有的收益（wealthFactor），例如上面的 Plains 区域的财富系数是 2 。假设现在需要为两个区域建模（钻石地表和污染地表），一种办法是采用继承机制。</p>
+
+<div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+
+<span class="k">class</span> <span class="nc">DiamondPlains</span> <span class="k">extends</span> <span class="nx">Plains</span>
+<span class="p">{</span>
+	<span class="k">public</span> <span class="k">function</span> <span class="nf">getWealthFactor</span><span class="p">()</span><span class="o">:</span> <span class="nx">int</span>
+	<span class="p">{</span>
+		<span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">wealthFactor</span> <span class="o">+</span> <span class="mi">2</span><span class="p">;</span>
+	<span class="p">}</span>
+<span class="p">}</span> 
+
+<span class="k">class</span> <span class="nc">PollutedPlains</span> <span class="k">extends</span> <span class="nx">Plains</span> 
+<span class="p">{</span>
+	<span class="k">public</span> <span class="k">function</span> <span class="nf">getWealthFactor</span><span class="p">()</span><span class="o">:</span> <span class="nx">int</span>
+	<span class="p">{</span>
+		<span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">wealthFactor</span> <span class="o">-</span> <span class="mi">4</span><span class="p">;</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+
+</code></pre>
+</div>
+
+<p>继承机制存在一个问题，结构不灵活，当拓展越来越多的时候导致了越来越多的类，而且代码冗余。</p>
+
+<p>采用关联机制，也就是装饰模式就不一样了。</p>
+
+<div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+
+<span class="k">abstract</span> <span class="k">class</span> <span class="nc">Tile</span> <span class="p">{</span>
+	<span class="k">public</span> <span class="k">abstract</span> <span class="k">function</span> <span class="nf">getWealthFactor</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="k">class</span> <span class="nc">Plains</span> <span class="k">extends</span> <span class="nx">Tile</span>
+<span class="p">{</span>
+	<span class="k">protected</span> <span class="nv">$wealthFactor</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+
+	<span class="k">public</span> <span class="k">function</span> <span class="nf">getWealthFactor</span><span class="p">()</span><span class="o">:</span> <span class="nx">int</span>
+	<span class="p">{</span>
+		<span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">wealthFactor</span><span class="p">;</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+
+
+<span class="k">abstract</span> <span class="k">class</span> <span class="nc">TileDecorator</span> <span class="k">extends</span> <span class="nx">Tile</span> 
+<span class="p">{</span>
+	<span class="k">protected</span> <span class="nv">$tile</span><span class="p">;</span>
+
+	<span class="k">public</span> <span class="k">function</span> <span class="nf">__construct</span><span class="p">(</span><span class="nx">Tile</span> <span class="nv">$tile</span><span class="p">)</span>
+	<span class="p">{</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="na">tile</span> <span class="o">=</span> <span class="nv">$tile</span><span class="p">;</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">class</span> <span class="nc">DiamondDecorator</span> <span class="k">extends</span> <span class="nx">TileDecorator</span>
+<span class="p">{</span>
+	<span class="k">public</span> <span class="k">function</span> <span class="nf">getWealthFactor</span><span class="p">()</span><span class="o">:</span> <span class="nx">int</span>
+	<span class="p">{</span>
+		<span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">tile</span><span class="o">-&gt;</span><span class="na">getWealthFactor</span><span class="p">()</span> <span class="o">+</span> <span class="mi">2</span><span class="p">;</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">class</span> <span class="nc">PollutedDecorator</span> <span class="k">extends</span> <span class="nx">TileDecorator</span>
+<span class="p">{</span>
+	<span class="k">public</span> <span class="k">function</span> <span class="nf">getWealthFactor</span><span class="p">()</span><span class="o">:</span> <span class="nx">int</span>
+	<span class="p">{</span>
+		<span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">tile</span><span class="o">-&gt;</span><span class="na">getWealthFactor</span><span class="p">()</span> <span class="o">-</span> <span class="mi">4</span><span class="p">;</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nv">$plains</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Plains</span><span class="p">;</span>
+
+<span class="k">echo</span> <span class="p">(</span><span class="k">new</span> <span class="nx">DiamondDecorator</span><span class="p">(</span><span class="nv">$plains</span><span class="p">))</span><span class="o">-&gt;</span><span class="na">getWealthFactor</span><span class="p">()</span> <span class="p">,</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">;</span>
+<span class="k">echo</span> <span class="p">(</span><span class="k">new</span> <span class="nx">PollutedDecorator</span><span class="p">(</span><span class="nv">$plains</span><span class="p">))</span><span class="o">-&gt;</span><span class="na">getWealthFactor</span><span class="p">()</span> <span class="p">,</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">;</span>
+
+</code></pre>
+</div>
+
+<h3 id="适用环境">适用环境</h3>
+
+<p>在以下情况下可以使用装饰模式：</p>
+
+<ul>
+  <li>在不影响其他对象的情况下，以动态、透明的方式给单个对象添加职责。</li>
+  <li>需要动态地给一个对象增加功能，这些功能也可以动态地被撤销。</li>
+  <li>当不能采用继承的方式对系统进行扩充或者采用继承不利于系统扩展和维护时。不能采用继承的情况主要有两类：第一类是系统中存在大量独立的扩展，为支持每一种组合将产生大量的子类，使得子类数目呈爆炸性增长；第二类是因为类定义不能继承（如final类）。</li>
 </ul>
 
 
@@ -368,13 +321,9 @@ vi /etc/php.ini
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2017/09/16/hello-world/" data-toggle="tooltip" data-placement="top" title="Hello World!">&larr; Previous Post</a>
+                        <a href="/2018/01/08/design-pattern-adapter/" data-toggle="tooltip" data-placement="top" title="设计模式 (4) - 适配器模式">&larr; Previous Post</a>
                     </li>
                     
-                    
-                    <li class="next">
-                        <a href="/2017/10/08/mysql-backup-to-sae-storage/" data-toggle="tooltip" data-placement="top" title="MySQL定时备份，要不利用SAE Storage吧">Next Post &rarr;</a>
-                    </li>
                     
                 </ul>
 
