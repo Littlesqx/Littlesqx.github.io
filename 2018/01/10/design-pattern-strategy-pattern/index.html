@@ -9,9 +9,9 @@
     <meta name="keyword"  content="git php mysql laravel littlesqx">
     <link rel="shortcut icon" href="https://littlesqx-github-io.b0.upaiyun.com/img/favicon.ico">
 
-    <title>MySQL定时备份，要不利用SAE Storage吧 - Littlesqx Blog</title>
+    <title>设计模式 (6) - 策略模式 - Littlesqx Blog</title>
 
-    <link rel="canonical" href="https://littlesqx.github.io/2017/10/08/mysql-backup-to-sae-storage/">
+    <link rel="canonical" href="https://littlesqx.github.io/2018/01/10/design-pattern-strategy-pattern/">
 
     <!-- nprogress CSS -->
     <link href="https://littlesqx-github-io.b0.upaiyun.com/css/nprogress.min.css" rel="stylesheet">
@@ -150,21 +150,17 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#crontab" title="crontab">crontab</a>
+                        <a class="tag" href="/tags/#PHP" title="PHP">PHP</a>
                         
-                        <a class="tag" href="/tags/#MySQL" title="MySQL">MySQL</a>
-                        
-                        <a class="tag" href="/tags/#SAE" title="SAE">SAE</a>
-                        
-                        <a class="tag" href="/tags/#Swift" title="Swift">Swift</a>
+                        <a class="tag" href="/tags/#设计模式" title="设计模式">设计模式</a>
                         
                     </div>
-                    <h1>MySQL定时备份，要不利用SAE Storage吧</h1>
+                    <h1>设计模式 (6) - 策略模式</h1>
                     
                     
                     <h2 class="subheading"></h2>
                     
-                    <span class="meta">Posted by Littlesqx on October 8, 2017</span>
+                    <span class="meta">Posted by Littlesqx on January 10, 2018</span>
                 </div>
             </div>
         </div>
@@ -183,98 +179,72 @@
                 post-container">
 
 				<blockquote>
-  <p>这个题目，我挺满意的哈哈。</p>
+  <p>好颓好颓~</p>
 </blockquote>
 
-<h3 id="前言">前言</h3>
+<h3 id="简单介绍">简单介绍</h3>
 
-<p>其实是很久以前的一个想法了，为什么一直没有实行，大概离不开懒吧。我两年前帮学校社团（我们是卖旧书的，有一个管理书本售卖情况的需要）开发了一个小站，挂在SAE上，那时候免费，比现在良心多了，现在数据库需要收费。当然了，就是那么巧，腾讯云开始了校园宣传，云+校园学生一元主机。对，没办法，我们穷啊，就发展到SAE上挂代码，腾讯云挂数据库的形式。每月的费用也就5块左右吧。为什么不都移到腾讯云上，不就每月1块了吗？因为有考虑到腾讯云服务器是我私人的，带宽也只有1m，SAE上也有挺多实用的辅助功能和工具，所以还是使用SAE。</p>
+<p>策略模式是对算法的封装，把一系列的算法分别封装到对应的类中，并且这些类实现相同的接口，相互之间可以替换。</p>
 
-<hr />
+<p>策略模式的结构</p>
 
-<h3 id="正文">正文</h3>
-
-<h4 id="怎么备份">怎么备份</h4>
-
-<p>前面提到了数据库在腾讯云服务器上，系统是CentOS，那很容易想到使用crontab执行计划定时执行备份脚本，就可以导出到服务器上，其实这就已经达到了备份效果，但是腾讯云这一元主机是需要每月续费的，代金券原来的每月自动发放，最后也变成了需要主动领取，万一我哪天忘了，或者出意外了（咳咳，怎么可能嘛~），这数据也就完蛋了。我想需要一个第三方可靠的存储，邮箱不错啊，一般邮箱都有几个g的空间，每次导出来都往备份邮箱发送就好了。但是管理不是很方便，邮箱迟早也会满。后来选择了SAE的Storage服务，一是还是在SAE上，项目成员可以一起管理。二，根据<a href="https://www.sinacloud.com/doc/sae/php/storage.html#swift-ming-ling-xing-gong-ju">Storage文档</a>，linux上可以使用swift管理，这样，定时脚本的实现，技术上是没有问题了。</p>
-
-<p>pic# 我画了个图
-<img src="/img/in-post/sae-storage.png" alt="img" /></p>
-
-<h4 id="开始动手">开始动手</h4>
-
-<p>1# 安装Swift客户端</p>
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>yum install python-pip
-pip install python-swiftclient
-
-<span class="c"># test</span>
-swift --version
-</code></pre>
-</div>
-
-<p>2# SAE Storage 创建一个Bucket</p>
-
-<p>目标SAE应用 &gt; 存储与CDN服务 &gt; Storage &gt; 新建 Bucket
-<img src="/img/in-post/201710081.png" alt="img" />
-务必修改访问权限为私有
-<img src="/img/in-post/201710082.png" alt="img" /></p>
-
-<p>3# 编写Shell脚本</p>
-
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>vim db_backup.sh
-</code></pre>
-</div>
-<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="c">#!/bin/sh</span>
-
-<span class="c"># job setting</span>
-<span class="nv">INTERVAL</span><span class="o">=</span>30 <span class="c"># 保留最近三十天的备份数据</span>
-<span class="nv">TODAY</span><span class="o">=</span><span class="k">$(</span>date <span class="s1">'+%Y%m%d'</span><span class="k">)</span>
-<span class="nv">DROPDAY</span><span class="o">=</span><span class="k">$(</span>date -d <span class="s2">"</span><span class="nv">$INTERVAL</span><span class="s2"> days ago"</span> +%Y%m%d<span class="k">)</span>
-
-<span class="c"># db setting</span>
-<span class="nv">DB_USER</span><span class="o">=</span><span class="s1">''</span>
-<span class="nv">DB_PASSWD</span><span class="o">=</span><span class="s1">''</span>
-<span class="nv">DB_NAME</span><span class="o">=</span><span class="s1">''</span>
-
-<span class="c"># sae storage</span>
-<span class="nv">ST_AUTH</span><span class="o">=</span><span class="s1">'https://auth.sinas3.com/v1.0'</span>
-<span class="nv">ST_USER</span><span class="o">=</span><span class="s1">''</span>
-<span class="nv">ST_KEY</span><span class="o">=</span><span class="s1">''</span>
-<span class="nv">ST_BUCKET</span><span class="o">=</span><span class="s1">''</span> <span class="c"># 需要先创建</span>
-
-<span class="c"># path</span>
-<span class="nv">PATH</span><span class="o">=</span><span class="s2">"data/</span><span class="nv">$DB_NAME</span><span class="s2">/"</span> <span class="c"># 服务器需要先手动创建该目录，SAE Storage 上传时会自动创建</span>
-
-<span class="c"># 导出数据到服务器</span>
-/usr/bin/mysqldump -u<span class="nv">$DB_USER</span> -p<span class="nv">$DB_PASSWD</span> <span class="nv">$DB_NAME</span> &gt; /<span class="nv">$PATH$DB_NAME$TODAY</span>.sql
-
-<span class="c"># 上传当天备份的文件和更新日志</span>
-/usr/bin/swift -A<span class="nv">$ST_AUTH</span> -U<span class="nv">$ST_USER</span> -K<span class="nv">$ST_KEY</span> upload <span class="nv">$ST_BUCKET</span> /<span class="nv">$PATH$DB_NAME$TODAY</span>.sql --insecure &gt;&gt; /data/<span class="nv">$DB_NAME</span>/backup_logs.log
-/usr/bin/swift -A<span class="nv">$ST_AUTH</span> -U<span class="nv">$ST_USER</span> -K<span class="nv">$ST_KEY</span> upload <span class="nv">$ST_BUCKET</span> /<span class="k">${</span><span class="nv">PATH</span><span class="k">}</span>backup_logs.log --insecure
-
-<span class="c"># 删除${INTERVAL}天以前的旧数据</span>
-/usr/bin/rm /<span class="nv">$PATH$DB_NAME$DROPDAY</span>.sql
-/usr/bin/swift -A<span class="nv">$ST_AUTH</span> -U<span class="nv">$ST_USER</span> -K<span class="nv">$ST_KEY</span> delete <span class="nv">$ST_BUCKET</span> <span class="nv">$PATH$DB_NAME$DROPDAY</span>.sql --insecure
-
-</code></pre>
-</div>
-
-<p>4# crontab 执行计划</p>
-
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>crontab -e
-<span class="c"># 加入下面的计划，每晚11点30分执行一次，或者其他更加合适的时间</span>
-30 23 <span class="k">*</span> <span class="k">*</span> <span class="k">*</span> /usr/bin/sh /data/db_backup.sh
-</code></pre>
-</div>
-
-<hr />
-
-<h3 id="结尾">结尾</h3>
-<p>这样，一个完整的备份流程也就结束了，还可以更完善，比如日志更加友好，每次备份邮件通知结果，或者还有其他更加优雅的办法吧。总之，心累有木有!!</p>
-<h4 id="参考文章">参考文章</h4>
 <ul>
-  <li><a href="http://blog.csdn.net/u014494705/article/details/38321923">SAE storage linux管理 - 霹雳书生</a></li>
+  <li>封装类：也叫上下文，对策略进行二次封装，目的是避免高层模块对策略的直接调用。</li>
+  <li>抽象策略：通常情况下为一个接口，当各个实现类中存在着重复的逻辑时，则使用抽象类来封装这部分公共的代码，此时，策略模式看上去更像是模版方法模式。</li>
+  <li>具体策略：具体策略角色通常由一组封装了算法的类来担任，这些类之间可以根据需要自由替换。</li>
 </ul>
+
+<h3 id="php-实现">PHP 实现</h3>
+
+<div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+
+<span class="k">interface</span> <span class="nx">Strategy</span> <span class="p">{</span>
+	<span class="k">public</span> <span class="k">function</span> <span class="nf">doSomething</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="k">class</span> <span class="nc">FemaleStrategy</span> <span class="k">implements</span> <span class="nx">Strategy</span>
+<span class="p">{</span>
+	<span class="k">public</span> <span class="k">function</span> <span class="nf">doSomething</span><span class="p">()</span>
+	<span class="p">{</span>
+		<span class="k">echo</span> <span class="s2">"be female. </span><span class="se">\n</span><span class="s2">"</span><span class="p">;</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">class</span> <span class="nc">MaleStrategy</span> <span class="k">implements</span> <span class="nx">Strategy</span>
+<span class="p">{</span>
+	<span class="k">public</span> <span class="k">function</span> <span class="nf">doSomething</span><span class="p">()</span>
+	<span class="p">{</span>
+		<span class="k">echo</span> <span class="s2">"be male. </span><span class="se">\n</span><span class="s2">"</span><span class="p">;</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">class</span> <span class="nc">Context</span>
+<span class="p">{</span>
+	<span class="k">private</span> <span class="nv">$strategy</span><span class="p">;</span>
+
+	<span class="k">public</span> <span class="k">function</span> <span class="nf">__construct</span><span class="p">(</span><span class="nx">Strategy</span> <span class="nv">$strategy</span><span class="p">)</span>
+	<span class="p">{</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="na">strategy</span> <span class="o">=</span> <span class="nv">$strategy</span><span class="p">;</span>
+	<span class="p">}</span>
+
+	<span class="k">public</span> <span class="k">function</span> <span class="nf">execute</span><span class="p">()</span>
+	<span class="p">{</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="na">strategy</span><span class="o">-&gt;</span><span class="na">doSomething</span><span class="p">();</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+
+
+<span class="p">(</span><span class="k">new</span> <span class="nx">Context</span><span class="p">(</span><span class="k">new</span> <span class="nx">MaleStrategy</span><span class="p">()))</span><span class="o">-&gt;</span><span class="na">execute</span><span class="p">();</span>
+<span class="p">(</span><span class="k">new</span> <span class="nx">Context</span><span class="p">(</span><span class="k">new</span> <span class="nx">FemaleStrategy</span><span class="p">()))</span><span class="o">-&gt;</span><span class="na">execute</span><span class="p">();</span>
+
+</code></pre>
+</div>
+
+<h3 id="适用场景">适用场景</h3>
+
+<p>1# 几个类的主要逻辑相同，只在部分逻辑的算法和行为上稍有区别的情况。</p>
+
+<p>2# 有几种相似的行为，或者说算法，客户端需要动态地决定使用哪一种，那么可以使用策略模式，将这些算法封装起来供客户端调用。</p>
 
 
                 <hr>
@@ -288,12 +258,12 @@ swift --version
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2017/09/23/centos7-lnmp/" data-toggle="tooltip" data-placement="top" title="在CentOS 7 上配置 LNMP 环境">&larr; Previous Post</a>
+                        <a href="/2018/01/09/design-pattern-decorator-pattern/" data-toggle="tooltip" data-placement="top" title="设计模式 (5) - 装饰模式">&larr; Previous Post</a>
                     </li>
                     
                     
                     <li class="next">
-                        <a href="/2017/10/15/lamp-lnmp-lanmp/" data-toggle="tooltip" data-placement="top" title="写一篇介绍和对比文章，关于 LAMP LNMP LANMP，还有...">Next Post &rarr;</a>
+                        <a href="/2018/01/10/design-pattern-observer-pattern/" data-toggle="tooltip" data-placement="top" title="设计模式 (7) - 观察者模式">Next Post &rarr;</a>
                     </li>
                     
                 </ul>

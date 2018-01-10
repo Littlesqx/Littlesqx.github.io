@@ -5,9 +5,325 @@
     <description>littlesqx's blog</description>
     <link>https://littlesqx.github.io/</link>
     <atom:link href="https://littlesqx.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Tue, 09 Jan 2018 18:18:22 +0800</pubDate>
-    <lastBuildDate>Tue, 09 Jan 2018 18:18:22 +0800</lastBuildDate>
+    <pubDate>Wed, 10 Jan 2018 20:11:46 +0800</pubDate>
+    <lastBuildDate>Wed, 10 Jan 2018 20:11:46 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
+    
+      <item>
+        <title>设计模式 (7) - 观察者模式</title>
+        <description>&lt;blockquote&gt;
+  &lt;p&gt;好颓好颓~&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;简单介绍&quot;&gt;简单介绍&lt;/h3&gt;
+
+&lt;p&gt;观察者模式(Observer Pattern)：定义对象间的一种一对多依赖关系，使得每当一个对象（观察目标）状态发生改变时，其相关依赖对象（观察者）皆得到通知并被自动更新。观察者模式又叫做发布-订阅（Publish/Subscribe）模式、模型-视图（Model/View）模式、源-监听器（Source/Listener）模式或从属者（Dependents）模式。&lt;/p&gt;
+
+&lt;p&gt;观察者模式是一种对象行为型模式。&lt;/p&gt;
+
+&lt;h3 id=&quot;php-实现&quot;&gt;PHP 实现&lt;/h3&gt;
+
+&lt;p&gt;假设一个处理登录的操作逻辑，登录后根据登录验证结果做一些其他操作（发送提醒邮件、记录日志等）。&lt;/p&gt;
+
+&lt;p&gt;可以将登录设为观察目标，登录响应作为一系列观察者。&lt;/p&gt;
+
+&lt;div class=&quot;language-php highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?php&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;interface&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Observer&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;update&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Observable&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$observable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;interface&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Observable&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;attach&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Observer&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$observer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;detach&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Observer&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$observer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;notify&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Login&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;implements&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Observable&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$observers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;attach&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Observer&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$observer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;nv&quot;&gt;$this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;observers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$observer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;detach&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Observer&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$observer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;nv&quot;&gt;$observers&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[];&lt;/span&gt;
+
+		&lt;span class=&quot;k&quot;&gt;foreach&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;observers&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+			&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!==&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$observer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+				&lt;span class=&quot;nv&quot;&gt;$observers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+			&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+		&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+		&lt;span class=&quot;nv&quot;&gt;$this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;observers&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$observers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;notify&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;foreach&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;observers&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$observer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+			&lt;span class=&quot;nv&quot;&gt;$observer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;update&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+		&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;handleLogin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$password&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;c1&quot;&gt;// check user login
+&lt;/span&gt;		&lt;span class=&quot;c1&quot;&gt;// ...
+&lt;/span&gt;		
+		&lt;span class=&quot;nv&quot;&gt;$this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;status&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+			&lt;span class=&quot;s1&quot;&gt;'user'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+			&lt;span class=&quot;s1&quot;&gt;'password'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$password&lt;/span&gt;
+		&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+
+		&lt;span class=&quot;nv&quot;&gt;$this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;notify&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getStatus&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;array&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;abstract&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;LoginObserver&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;implements&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Observer&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$login&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;__construct&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Login&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$login&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;nv&quot;&gt;$this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;login&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$login&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+		&lt;span class=&quot;nv&quot;&gt;$this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;login&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;attach&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;update&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Observable&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$observable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$observable&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;===&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;login&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+			&lt;span class=&quot;nv&quot;&gt;$this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;doUpdate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$observable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+		&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;abstract&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;doUpdate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Observable&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$observable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;GeneralLogger&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;LoginObserver&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;doUpdate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Observable&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$observable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;nv&quot;&gt;$status&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$observable&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getStatus&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+
+		&lt;span class=&quot;nb&quot;&gt;var_dump&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+
+&lt;span class=&quot;nv&quot;&gt;$login&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Login&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;GeneralLogger&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$login&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;nv&quot;&gt;$login&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;handleLogin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'root'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'password'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;可以利用 PHP 内置的 SPL 标准类对上面代码做一些简化：&lt;/p&gt;
+
+&lt;div class=&quot;language-php highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?php&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Login&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;implements&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;SplSubject&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$observerStorage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;__construct&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;nv&quot;&gt;$this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;observerStorage&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;SplObjectStorage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;attach&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;SplObserver&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$observer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;nv&quot;&gt;$this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;observerStorage&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;attach&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$observer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;detach&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;SplObserver&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$observer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;nv&quot;&gt;$this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;observerStorage&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;detach&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$observer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;notify&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;foreach&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;observerStorage&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$observer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+			&lt;span class=&quot;nv&quot;&gt;$observer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;update&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+		&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;handleLogin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$password&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;c1&quot;&gt;// check user login
+&lt;/span&gt;		&lt;span class=&quot;c1&quot;&gt;// ...
+&lt;/span&gt;		
+		&lt;span class=&quot;nv&quot;&gt;$this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;status&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+			&lt;span class=&quot;s1&quot;&gt;'user'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+			&lt;span class=&quot;s1&quot;&gt;'password'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$password&lt;/span&gt;
+		&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+
+		&lt;span class=&quot;nv&quot;&gt;$this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;notify&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getStatus&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;array&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;abstract&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;LoginObserver&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;implements&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;SplObserver&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$login&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;__construct&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Login&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$login&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;nv&quot;&gt;$this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;login&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$login&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+		&lt;span class=&quot;nv&quot;&gt;$this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;login&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;attach&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;update&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;SplSubject&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$observable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$observable&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;===&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;login&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+			&lt;span class=&quot;nv&quot;&gt;$this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;doUpdate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$observable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+		&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;abstract&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;doUpdate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;SplSubject&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$observable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;GeneralLogger&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;LoginObserver&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;doUpdate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;SplSubject&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$observable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;nv&quot;&gt;$status&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$observable&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getStatus&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+
+		&lt;span class=&quot;nb&quot;&gt;var_dump&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+
+&lt;span class=&quot;nv&quot;&gt;$login&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Login&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;GeneralLogger&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$login&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;nv&quot;&gt;$login&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;handleLogin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'root'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'password'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;使用环境&quot;&gt;使用环境&lt;/h3&gt;
+
+&lt;p&gt;在以下情况下可以使用观察者模式：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;一个抽象模型有两个方面，其中一个方面依赖于另一个方面。将这些方面封装在独立的对象中使它们可以各自独立地改变和复用。&lt;/li&gt;
+  &lt;li&gt;一个对象的改变将导致其他一个或多个对象也发生改变，而不知道具体有多少对象将发生改变，可以降低对象之间的耦合度。&lt;/li&gt;
+  &lt;li&gt;一个对象必须通知其他对象，而并不知道这些对象是谁。
+需要在系统中创建一个触发链，A对象的行为将影响B对象，B对象的行为将影响C对象……，可以使用观察者模式创建一种链式触发机制。&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Wed, 10 Jan 2018 19:25:01 +0800</pubDate>
+        <link>https://littlesqx.github.io/2018/01/10/design-pattern-observer-pattern/</link>
+        <guid isPermaLink="true">https://littlesqx.github.io/2018/01/10/design-pattern-observer-pattern/</guid>
+        
+        <category>PHP</category>
+        
+        <category>设计模式</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>设计模式 (6) - 策略模式</title>
+        <description>&lt;blockquote&gt;
+  &lt;p&gt;好颓好颓~&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;简单介绍&quot;&gt;简单介绍&lt;/h3&gt;
+
+&lt;p&gt;策略模式是对算法的封装，把一系列的算法分别封装到对应的类中，并且这些类实现相同的接口，相互之间可以替换。&lt;/p&gt;
+
+&lt;p&gt;策略模式的结构&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;封装类：也叫上下文，对策略进行二次封装，目的是避免高层模块对策略的直接调用。&lt;/li&gt;
+  &lt;li&gt;抽象策略：通常情况下为一个接口，当各个实现类中存在着重复的逻辑时，则使用抽象类来封装这部分公共的代码，此时，策略模式看上去更像是模版方法模式。&lt;/li&gt;
+  &lt;li&gt;具体策略：具体策略角色通常由一组封装了算法的类来担任，这些类之间可以根据需要自由替换。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;php-实现&quot;&gt;PHP 实现&lt;/h3&gt;
+
+&lt;div class=&quot;language-php highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?php&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;interface&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Strategy&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;doSomething&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;FemaleStrategy&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;implements&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Strategy&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;doSomething&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;be female. &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;MaleStrategy&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;implements&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Strategy&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;doSomething&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;be male. &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Context&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$strategy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;__construct&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Strategy&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$strategy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;nv&quot;&gt;$this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;strategy&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$strategy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;execute&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;nv&quot;&gt;$this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;strategy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;doSomething&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+
+&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;MaleStrategy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()))&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;execute&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;FemaleStrategy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()))&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;execute&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;适用场景&quot;&gt;适用场景&lt;/h3&gt;
+
+&lt;p&gt;1# 几个类的主要逻辑相同，只在部分逻辑的算法和行为上稍有区别的情况。&lt;/p&gt;
+
+&lt;p&gt;2# 有几种相似的行为，或者说算法，客户端需要动态地决定使用哪一种，那么可以使用策略模式，将这些算法封装起来供客户端调用。&lt;/p&gt;
+</description>
+        <pubDate>Wed, 10 Jan 2018 16:25:01 +0800</pubDate>
+        <link>https://littlesqx.github.io/2018/01/10/design-pattern-strategy-pattern/</link>
+        <guid isPermaLink="true">https://littlesqx.github.io/2018/01/10/design-pattern-strategy-pattern/</guid>
+        
+        <category>PHP</category>
+        
+        <category>设计模式</category>
+        
+        
+      </item>
     
       <item>
         <title>设计模式 (5) - 装饰模式</title>
@@ -1962,344 +2278,6 @@ In an Elasticsearch index, fields that have the same name in different mapping t
         <category>axios</category>
         
         <category>JavaScript</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>写一篇介绍和对比文章，关于 LAMP LNMP LANMP，还有...</title>
-        <description>&lt;blockquote&gt;
-  &lt;p&gt;LAMP = Linux Apache MySQL PHP&lt;/p&gt;
-
-  &lt;p&gt;LNMP = Linux Nginx MySQL PHP&lt;/p&gt;
-
-  &lt;p&gt;LANMP = Linux Apache Nginx MySQL PHP&lt;/p&gt;
-
-  &lt;p&gt;LNSMP = Linux Nginx Swoole MySQL PHP （这是我乱起的缩写）&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h3 id=&quot;前言&quot;&gt;前言&lt;/h3&gt;
-&lt;p&gt;在第一篇文章《&lt;a href=&quot;https://littlesqx.github.io/2017/09/23/centos7-lnmp/&quot;&gt;在CentOS 7 上配置 LNMP 环境
-&lt;/a&gt;》提到过，有时间对比一下LAMP
-和LNMP的区别，现在把php可能的web运行环境都做一次说明，也就是加上了LANMP和LNSMP，前者好说，
-后者是有关于重新定义PHP的&lt;a href=&quot;https://www.swoole.com/&quot;&gt;Swoole&lt;/a&gt;，其实我还没学过哈哈哈。&lt;/p&gt;
-
-&lt;h3 id=&quot;正文&quot;&gt;正文&lt;/h3&gt;
-
-&lt;h4 id=&quot;lamp-和-lnmp&quot;&gt;LAMP 和 LNMP&lt;/h4&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;LAMP = Linux Apache MySQL PHP&lt;/p&gt;
-
-  &lt;p&gt;LNMP = Linux Nginx MySQL PHP&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h5 id=&quot;概述&quot;&gt;概述&lt;/h5&gt;
-
-&lt;p&gt;区别在于A和N，也就是同是web服务器，原本是没有解析动态网页（包括php Python等）的能力。那他们
-是如何实现可以解析php程序呢？&lt;/p&gt;
-
-&lt;p&gt;pic# 我画了个图&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/in-post/201710151.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;这个图简化了整个过程，表达的是web服务器会判断用户请求的文件类型，如果是php，那会交给PHP处理器
-（PHP handler）处理，处理结果返回给web服务器，再由web服务器响应给请求方。但是，
-实际的过程应该更加复杂。
-需要先引出一些名词：SAPI，mod_php，mod_fastcgi，CGI，FastCGI，PHP-CGI，PHP-FPM。&lt;/p&gt;
-
-&lt;h5 id=&quot;sapi&quot;&gt;SAPI&lt;/h5&gt;
-
-&lt;p&gt;pic# 这个图不是我画的&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/in-post/201710152.jpg&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;上图是PHP架构图，可以看到实际的应用程序和PHP之间有一层SAPI
-（Server Application Programming Interface：
-the API used by PHP to interface with Web Servers），
-&lt;strong&gt;SAPI提供了一个和外部通信的接口，使得PHP可以和其他应用进行交互数据。&lt;/strong&gt;
-PHP提供了很多种SAPI，Apache的mod_php，Nginx的mod_fastcgi，还有Shell的CLI。&lt;/p&gt;
-
-&lt;p&gt;那我们就来谈谈Apache的mod_php，Nginx的mod_fastcgi。&lt;/p&gt;
-
-&lt;h5 id=&quot;mod_php&quot;&gt;mod_php&lt;/h5&gt;
-
-&lt;p&gt;在这种模式下，php被编译为apache的一个内置模块，在启动时加载。当有一个php请求过来时，
-直接在httpd进程里完成php的解释运行，将结果返回。&lt;/p&gt;
-
-&lt;p&gt;pic# 我画了个图，扩展了前面的图&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/in-post/201710153.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
-
-&lt;h5 id=&quot;mod_fastcgi&quot;&gt;mod_fastcgi&lt;/h5&gt;
-
-&lt;p&gt;这是另一种SAPI，在LAMP中常见，涉及到CGI，FastCGI，PHP-CGI，PHP-FPM这几个名词。&lt;/p&gt;
-
-&lt;p&gt;1# 什么是CGI？&lt;/p&gt;
-
-&lt;p&gt;CGI(Common Gateway Interface)，即公共网关接口，web服务器和脚本语言通信的一个标准、
-接口、协议。CGI规范允许Web服务器执行外部程序，并将它们的输出发送给Web浏览器，
-CGI将Web的一组简单的静态超媒体文档变成一个完整的新的交互式媒体。&lt;/p&gt;
-
-&lt;p&gt;2# 什么是FastCGI？&lt;/p&gt;
-
-&lt;p&gt;CGI的升级版。FastCGI像是一个常驻(long-live)型的CGI，它可以一直执行着，只要激活后，
-不会每次都要花费时间去fork一次(这是CGI最为人诟病的fork-and-execute 模式)。
-它还支持分布式的运算, 即 FastCGI 程序可以在网站服务器以外的主机上执行并且接受
-来自其它网站服务器来的请求。&lt;/p&gt;
-
-&lt;p&gt;FastCGI是语言无关的、可伸缩架构的CGI开放扩展，其主要行为是将CGI解释器进程保持在内存中并因此
-获得较高的性能。众所周知，CGI解释器的反复加载是CGI性能低下的主要原因，
-如果CGI解释器保持在内存中并接受FastCGI进程管理器调度，
-则可以提供良好的性能、伸缩性、Fail- Over特性等等。&lt;/p&gt;
-
-&lt;p&gt;3# 什么是PHP-CGI？&lt;/p&gt;
-
-&lt;p&gt;实现了CGI接口协议的PHP脚本解析器。&lt;/p&gt;
-
-&lt;p&gt;4# 什么是PHP-FPM？&lt;/p&gt;
-
-&lt;p&gt;管理和调度php-cgi进程，进而实现了FastCGI接口协议的程序。&lt;/p&gt;
-
-&lt;p&gt;现在的LAMP一般采用FastCGI+PHP-FPM的组合。Nginx通过FastCGI协议将php脚本请求转发到PHP-FPM管理的
-php-cgi进程。&lt;/p&gt;
-
-&lt;p&gt;pic# 我画了个图，也是扩展第一张图。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/in-post/201710154.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
-
-&lt;h4 id=&quot;lanmp&quot;&gt;LANMP&lt;/h4&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;LANMP = Linux Apache Nginx MySQL PHP&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;为什么同时使用Apache和Nginx？&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;对比一下两者的优缺点：&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;1# Nginx 相对 Apache 的优点：&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;轻量级，占用更少的资源&lt;/li&gt;
-  &lt;li&gt;抗并发，nginx 处理请求是异步非阻塞的，而apache 则是阻塞型的，
-在高并发下nginx 能保持低资源低消耗高性能&lt;/li&gt;
-  &lt;li&gt;高度模块化的设计，编写模块相对简单&lt;/li&gt;
-  &lt;li&gt;社区活跃，各种高性能模块出品迅速啊&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;2# Apache 相对Nginx 的优点：&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;配置较复杂&lt;/li&gt;
-  &lt;li&gt;rewrite 强大&lt;/li&gt;
-  &lt;li&gt;模块超多&lt;/li&gt;
-  &lt;li&gt;更稳定&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;3# 更多 » &lt;a href=&quot;https://www.zhihu.com/question/19571087/answer/12313829&quot;&gt;&lt;strong&gt;Nginx 和 Apache 各有什么优缺点？- 知乎&lt;/strong&gt;&lt;/a&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Nginx的优势是处理静态请求，cpu内存使用率低，Apache适合处理动态请求 - wuhen&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;所以，在LANMP架构下，Apache负责处理动态请求，而Nginx处理静态请求。Nginx作为web服务的入口，
-如果是动态请求，那就反向代理到Apache。&lt;/p&gt;
-
-&lt;p&gt;pic# 我不想画图了，字面意思，脑补一下嘻嘻&lt;/p&gt;
-
-&lt;h4 id=&quot;lnsmp&quot;&gt;LNSMP&lt;/h4&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;LNSMP = Linux Nginx Swoole MySQL PHP （这是我乱起的缩写）&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;什么是Swoole？&lt;/p&gt;
-
-&lt;p&gt;这是官网的介绍：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;PHP的异步、并行、高性能网络通信引擎，使用纯C语言编写，提供了PHP语言的异步多线程服务器，
-异步TCP/UDP网络客户端，异步MySQL，异步Redis，数据库连接池，AsyncTask，
-消息队列，毫秒定时器，异步文件读写，异步DNS查询。
-Swoole内置了Http/WebSocket服务器端/客户端、Http2.0服务器端/客户端。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;这是作者韩天峰的介绍：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;swoole实际上是一个网络通信和异步io的引擎，一个基础库。
-PHPer可以基于swoole去实现过去PHP无法实现的功能。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;Swoole内置异步非阻塞多进程的Http服务器，在LNSMP中的作用和LANMP中的Apache一样，处理动态请求。Swoole处理动态请求，涉及到的SAPI
-是CLI(commandline，命令行)模式。&lt;/p&gt;
-
-&lt;p&gt;具体Swoole和php是怎么配合运行的，坦白讲，有点懵逼，就不误导了。&lt;/p&gt;
-
-&lt;h4 id=&quot;对比&quot;&gt;对比&lt;/h4&gt;
-
-&lt;p&gt;从前面的介绍可以看出，每个模式的优点和局限性。需要补充的是，Swoole性能是最好的。这个结论官网有宣传，也有其他同学测试过。有时间，一定好好学习Swoole。&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;h3 id=&quot;结尾&quot;&gt;结尾&lt;/h3&gt;
-
-&lt;h4 id=&quot;补充&quot;&gt;补充&lt;/h4&gt;
-
-&lt;p&gt;1# PHP-FPM虽然在Nginx上使用较多，但Apache上也可以配置使用。同样，Swoole也可以配合Apache。&lt;/p&gt;
-
-&lt;p&gt;2# MySQL呢？PHP和MySQL的交互，需要通过PHP extension。&lt;/p&gt;
-
-&lt;p&gt;3# 命令行模式（CommandLine），常shell上执行。我自己常用来做一些耗时或定时任务。&lt;/p&gt;
-
-&lt;h4 id=&quot;参考文章&quot;&gt;参考文章&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;a href=&quot;http://www.cnblogs.com/zl0372/articles/php_4.html&quot;&gt;mod_php、mod_fastcgi和php-fpm的介绍,对比,和性能数据 - 日落紫荆&lt;/a&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;a href=&quot;http://www.cnblogs.com/yujon/p/6209551.html&quot;&gt;深入理解PHP的运行模式 - 余朝忠&lt;/a&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;a href=&quot;https://www.qcloud.com/community/article/385799001490608925&quot;&gt;三种 PHP 运行环境的性能对比 - 石仕海&lt;/a&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;a href=&quot;http://article.gitos.cn/2015/Aurthur/PHP-Mod-PHP-And-Fast-CGI-Explain.html&quot;&gt;PHP填坑记之FastCGI与mod_php详解 - Aurthur&lt;/a&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;a href=&quot;http://m.php.cn/article/325869.html&quot;&gt;Nginx、CGI、FastCGI、PHP-CGI、PHP-FPM处理流程 - PHP中文网&lt;/a&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;a href=&quot;https://tech.meituan.com/php_success_or_failure_web_dev_is_the_sole_cause.html&quot;&gt;【思考】PHP——成也Web，败也Web - 七月的夏天&lt;/a&gt;&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Sun, 15 Oct 2017 16:17:01 +0800</pubDate>
-        <link>https://littlesqx.github.io/2017/10/15/lamp-lnmp-lanmp/</link>
-        <guid isPermaLink="true">https://littlesqx.github.io/2017/10/15/lamp-lnmp-lanmp/</guid>
-        
-        <category>LAMP</category>
-        
-        <category>LNMP</category>
-        
-        <category>LANMP</category>
-        
-        <category>LNSMP</category>
-        
-        <category>PHP</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>MySQL定时备份，要不利用SAE Storage吧</title>
-        <description>&lt;blockquote&gt;
-  &lt;p&gt;这个题目，我挺满意的哈哈。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h3 id=&quot;前言&quot;&gt;前言&lt;/h3&gt;
-
-&lt;p&gt;其实是很久以前的一个想法了，为什么一直没有实行，大概离不开懒吧。我两年前帮学校社团（我们是卖旧书的，有一个管理书本售卖情况的需要）开发了一个小站，挂在SAE上，那时候免费，比现在良心多了，现在数据库需要收费。当然了，就是那么巧，腾讯云开始了校园宣传，云+校园学生一元主机。对，没办法，我们穷啊，就发展到SAE上挂代码，腾讯云挂数据库的形式。每月的费用也就5块左右吧。为什么不都移到腾讯云上，不就每月1块了吗？因为有考虑到腾讯云服务器是我私人的，带宽也只有1m，SAE上也有挺多实用的辅助功能和工具，所以还是使用SAE。&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;h3 id=&quot;正文&quot;&gt;正文&lt;/h3&gt;
-
-&lt;h4 id=&quot;怎么备份&quot;&gt;怎么备份&lt;/h4&gt;
-
-&lt;p&gt;前面提到了数据库在腾讯云服务器上，系统是CentOS，那很容易想到使用crontab执行计划定时执行备份脚本，就可以导出到服务器上，其实这就已经达到了备份效果，但是腾讯云这一元主机是需要每月续费的，代金券原来的每月自动发放，最后也变成了需要主动领取，万一我哪天忘了，或者出意外了（咳咳，怎么可能嘛~），这数据也就完蛋了。我想需要一个第三方可靠的存储，邮箱不错啊，一般邮箱都有几个g的空间，每次导出来都往备份邮箱发送就好了。但是管理不是很方便，邮箱迟早也会满。后来选择了SAE的Storage服务，一是还是在SAE上，项目成员可以一起管理。二，根据&lt;a href=&quot;https://www.sinacloud.com/doc/sae/php/storage.html#swift-ming-ling-xing-gong-ju&quot;&gt;Storage文档&lt;/a&gt;，linux上可以使用swift管理，这样，定时脚本的实现，技术上是没有问题了。&lt;/p&gt;
-
-&lt;p&gt;pic# 我画了个图
-&lt;img src=&quot;/img/in-post/sae-storage.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
-
-&lt;h4 id=&quot;开始动手&quot;&gt;开始动手&lt;/h4&gt;
-
-&lt;p&gt;1# 安装Swift客户端&lt;/p&gt;
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;yum install python-pip
-pip install python-swiftclient
-
-&lt;span class=&quot;c&quot;&gt;# test&lt;/span&gt;
-swift --version
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;2# SAE Storage 创建一个Bucket&lt;/p&gt;
-
-&lt;p&gt;目标SAE应用 &amp;gt; 存储与CDN服务 &amp;gt; Storage &amp;gt; 新建 Bucket
-&lt;img src=&quot;/img/in-post/201710081.png&quot; alt=&quot;img&quot; /&gt;
-务必修改访问权限为私有
-&lt;img src=&quot;/img/in-post/201710082.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;3# 编写Shell脚本&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;vim db_backup.sh
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/sh&lt;/span&gt;
-
-&lt;span class=&quot;c&quot;&gt;# job setting&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;INTERVAL&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;30 &lt;span class=&quot;c&quot;&gt;# 保留最近三十天的备份数据&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;TODAY&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;date &lt;span class=&quot;s1&quot;&gt;'+%Y%m%d'&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;DROPDAY&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;date -d &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$INTERVAL&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; days ago&quot;&lt;/span&gt; +%Y%m%d&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;c&quot;&gt;# db setting&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;DB_USER&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;DB_PASSWD&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;DB_NAME&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;
-
-&lt;span class=&quot;c&quot;&gt;# sae storage&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;ST_AUTH&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'https://auth.sinas3.com/v1.0'&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;ST_USER&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;ST_KEY&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;ST_BUCKET&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# 需要先创建&lt;/span&gt;
-
-&lt;span class=&quot;c&quot;&gt;# path&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;PATH&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;data/&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$DB_NAME&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/&quot;&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# 服务器需要先手动创建该目录，SAE Storage 上传时会自动创建&lt;/span&gt;
-
-&lt;span class=&quot;c&quot;&gt;# 导出数据到服务器&lt;/span&gt;
-/usr/bin/mysqldump -u&lt;span class=&quot;nv&quot;&gt;$DB_USER&lt;/span&gt; -p&lt;span class=&quot;nv&quot;&gt;$DB_PASSWD&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$DB_NAME&lt;/span&gt; &amp;gt; /&lt;span class=&quot;nv&quot;&gt;$PATH$DB_NAME$TODAY&lt;/span&gt;.sql
-
-&lt;span class=&quot;c&quot;&gt;# 上传当天备份的文件和更新日志&lt;/span&gt;
-/usr/bin/swift -A&lt;span class=&quot;nv&quot;&gt;$ST_AUTH&lt;/span&gt; -U&lt;span class=&quot;nv&quot;&gt;$ST_USER&lt;/span&gt; -K&lt;span class=&quot;nv&quot;&gt;$ST_KEY&lt;/span&gt; upload &lt;span class=&quot;nv&quot;&gt;$ST_BUCKET&lt;/span&gt; /&lt;span class=&quot;nv&quot;&gt;$PATH$DB_NAME$TODAY&lt;/span&gt;.sql --insecure &amp;gt;&amp;gt; /data/&lt;span class=&quot;nv&quot;&gt;$DB_NAME&lt;/span&gt;/backup_logs.log
-/usr/bin/swift -A&lt;span class=&quot;nv&quot;&gt;$ST_AUTH&lt;/span&gt; -U&lt;span class=&quot;nv&quot;&gt;$ST_USER&lt;/span&gt; -K&lt;span class=&quot;nv&quot;&gt;$ST_KEY&lt;/span&gt; upload &lt;span class=&quot;nv&quot;&gt;$ST_BUCKET&lt;/span&gt; /&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PATH&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;backup_logs.log --insecure
-
-&lt;span class=&quot;c&quot;&gt;# 删除${INTERVAL}天以前的旧数据&lt;/span&gt;
-/usr/bin/rm /&lt;span class=&quot;nv&quot;&gt;$PATH$DB_NAME$DROPDAY&lt;/span&gt;.sql
-/usr/bin/swift -A&lt;span class=&quot;nv&quot;&gt;$ST_AUTH&lt;/span&gt; -U&lt;span class=&quot;nv&quot;&gt;$ST_USER&lt;/span&gt; -K&lt;span class=&quot;nv&quot;&gt;$ST_KEY&lt;/span&gt; delete &lt;span class=&quot;nv&quot;&gt;$ST_BUCKET&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$PATH$DB_NAME$DROPDAY&lt;/span&gt;.sql --insecure
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;4# crontab 执行计划&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;crontab -e
-&lt;span class=&quot;c&quot;&gt;# 加入下面的计划，每晚11点30分执行一次，或者其他更加合适的时间&lt;/span&gt;
-30 23 &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt; /usr/bin/sh /data/db_backup.sh
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;hr /&gt;
-
-&lt;h3 id=&quot;结尾&quot;&gt;结尾&lt;/h3&gt;
-&lt;p&gt;这样，一个完整的备份流程也就结束了，还可以更完善，比如日志更加友好，每次备份邮件通知结果，或者还有其他更加优雅的办法吧。总之，心累有木有!!&lt;/p&gt;
-&lt;h4 id=&quot;参考文章&quot;&gt;参考文章&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.csdn.net/u014494705/article/details/38321923&quot;&gt;SAE storage linux管理 - 霹雳书生&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Sun, 08 Oct 2017 19:05:01 +0800</pubDate>
-        <link>https://littlesqx.github.io/2017/10/08/mysql-backup-to-sae-storage/</link>
-        <guid isPermaLink="true">https://littlesqx.github.io/2017/10/08/mysql-backup-to-sae-storage/</guid>
-        
-        <category>crontab</category>
-        
-        <category>MySQL</category>
-        
-        <category>SAE</category>
-        
-        <category>Swift</category>
         
         
       </item>
