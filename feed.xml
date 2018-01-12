@@ -5,8 +5,8 @@
     <description>littlesqx's blog</description>
     <link>https://littlesqx.github.io/</link>
     <atom:link href="https://littlesqx.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Fri, 12 Jan 2018 17:57:41 +0800</pubDate>
-    <lastBuildDate>Fri, 12 Jan 2018 17:57:41 +0800</lastBuildDate>
+    <pubDate>Fri, 12 Jan 2018 18:19:42 +0800</pubDate>
+    <lastBuildDate>Fri, 12 Jan 2018 18:19:42 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
     
       <item>
@@ -94,7 +94,7 @@
 
 &lt;p&gt;原理网上找了下，比较少相关文章。&lt;/p&gt;
 
-&lt;p&gt;###　与 JavaScript 闭包区别&lt;/p&gt;
+&lt;h3 id=&quot;与-javascript-闭包区别&quot;&gt;与 JavaScript 闭包区别&lt;/h3&gt;
 
 &lt;p&gt;最大的区别在于作用域。&lt;/p&gt;
 
@@ -150,6 +150,7 @@ f&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;n&lt;span class=&quot;o&quot;&gt;
 &lt;p&gt;可以使用闭包保存上一次的运行环境。&lt;/p&gt;
 
 &lt;p&gt;PHP 版本&lt;/p&gt;
+
 &lt;div class=&quot;language-php highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?php&lt;/span&gt;
 &lt;span class=&quot;nv&quot;&gt;$fibonacci&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;callable&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
 
