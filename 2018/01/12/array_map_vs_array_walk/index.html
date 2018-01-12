@@ -9,9 +9,9 @@
     <meta name="keyword"  content="git php mysql laravel littlesqx">
     <link rel="shortcut icon" href="https://littlesqx-github-io.b0.upaiyun.com/img/favicon.ico">
 
-    <title>设计模式 (5) - 装饰模式 - Littlesqx Blog</title>
+    <title>array_map 和 array_walk 的对比 - Littlesqx Blog</title>
 
-    <link rel="canonical" href="https://littlesqx.github.io/2018/01/09/design-pattern-decorator-pattern/">
+    <link rel="canonical" href="https://littlesqx.github.io/2018/01/12/array_map_vs_array_walk/">
 
     <!-- nprogress CSS -->
     <link href="https://littlesqx-github-io.b0.upaiyun.com/css/nprogress.min.css" rel="stylesheet">
@@ -152,15 +152,13 @@
                         
                         <a class="tag" href="/tags/#PHP" title="PHP">PHP</a>
                         
-                        <a class="tag" href="/tags/#设计模式" title="设计模式">设计模式</a>
-                        
                     </div>
-                    <h1>设计模式 (5) - 装饰模式</h1>
+                    <h1>array_map 和 array_walk 的对比</h1>
                     
                     
                     <h2 class="subheading"></h2>
                     
-                    <span class="meta">Posted by Littlesqx on January 9, 2018</span>
+                    <span class="meta">Posted by Littlesqx on January 12, 2018</span>
                 </div>
             </div>
         </div>
@@ -182,132 +180,131 @@
   <p>好颓好颓~</p>
 </blockquote>
 
-<h3 id="简单介绍">简单介绍</h3>
+<h3 id="array_map">array_map</h3>
 
-<p>一般有两种方式可以实现给一个类或对象增加行为：</p>
+<p>array_map — 为数组的每个元素应用回调函数。</p>
+
+<p>array array_map ( callable $callback , array $array1 [, array $… ] )</p>
+
+<h3 id="array_walk">array_walk</h3>
+
+<p>array_walk — 使用用户自定义函数对数组中的每个元素做回调处理</p>
+
+<p>array_walk ( array &amp;$array , callable $callback [, mixed $userdata = NULL ] )</p>
+
+<h3 id="相同点">相同点</h3>
+
+<p>虽然官方文档解释有点区别（回调函数 / 自定义函数做回调），其实意思都一样。</p>
+
+<h3 id="不同点">不同点</h3>
+
+<h4 id="参数">参数</h4>
 
 <ul>
   <li>
-    <p>继承机制，使用继承机制是给现有类添加功能的一种有效途径，通过继承一个现有类可以使得子类在拥有自身方法的同时还拥有父类的方法。但是这种方法是静态的，用户不能控制增加行为的方式和时机。</p>
+    <p>array_map</p>
+
+    <p>先传回调函数，再传数组参数。</p>
+
+    <p>callback 函数形参（都是数组）的数量和传给 array_map() 数组数量，两者必须一样。</p>
   </li>
   <li>
-    <p>关联机制，即将一个类的对象嵌入另一个对象中，由另一个对象来决定是否调用嵌入对象的行为以便扩展自己的行为，我们称这个嵌入的对象为装饰器(Decorator)。</p>
+    <p>array_walk</p>
+
+    <p>先传数组参数（引用），再传回调函数。</p>
+
+    <p>callback 函数默认接受两个参数。array 参数的值作为第一个，键名作为第二个。</p>
+
+    <p>如果提供了可选参数 userdata，将被作为第三个参数传递给 callback 函数。</p>
   </li>
 </ul>
 
-<p>装饰模式(Decorator Pattern) ：动态地给一个对象增加一些额外的职责(Responsibility)，就增加对象功能来说，装饰模式比生成子类实现更为灵活。其别名也可以称为包装器(Wrapper)，与适配器模式的别名相同，但它们适用于不同的场合。</p>
-
-<h3 id="php-实现">PHP 实现</h3>
-
-<p>引用《深入 PHP ：面向对象、模式与实践》书中的关于游戏建模的例子。</p>
-
-<p>下面的代码定义了 Tile （区域）及其子类：</p>
-
-<div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
-
-<span class="k">abstract</span> <span class="k">class</span> <span class="nc">Tile</span> <span class="p">{</span>
-	<span class="k">public</span> <span class="k">abstract</span> <span class="k">function</span> <span class="nf">getWealthFactor</span><span class="p">();</span>
-<span class="p">}</span>
-
-<span class="k">class</span> <span class="nc">Plains</span> <span class="k">extends</span> <span class="nx">Tile</span>
-<span class="p">{</span>
-	<span class="k">protected</span> <span class="nv">$wealthFactor</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
-
-	<span class="k">public</span> <span class="k">function</span> <span class="nf">getWealthFactor</span><span class="p">()</span><span class="o">:</span> <span class="nx">int</span>
-	<span class="p">{</span>
-		<span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">wealthFactor</span><span class="p">;</span>
-	<span class="p">}</span>
-<span class="p">}</span>
-</code></pre>
-</div>
-
-<p>Tile 类表示游戏当中的一个区域，当某个区域被玩家占领，玩家而获得区域所具有的收益（wealthFactor），例如上面的 Plains 区域的财富系数是 2 。假设现在需要为两个区域建模（钻石地表和污染地表），一种办法是采用继承机制。</p>
-
-<div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
-
-<span class="k">class</span> <span class="nc">DiamondPlains</span> <span class="k">extends</span> <span class="nx">Plains</span>
-<span class="p">{</span>
-	<span class="k">public</span> <span class="k">function</span> <span class="nf">getWealthFactor</span><span class="p">()</span><span class="o">:</span> <span class="nx">int</span>
-	<span class="p">{</span>
-		<span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">wealthFactor</span> <span class="o">+</span> <span class="mi">2</span><span class="p">;</span>
-	<span class="p">}</span>
-<span class="p">}</span> 
-
-<span class="k">class</span> <span class="nc">PollutedPlains</span> <span class="k">extends</span> <span class="nx">Plains</span> 
-<span class="p">{</span>
-	<span class="k">public</span> <span class="k">function</span> <span class="nf">getWealthFactor</span><span class="p">()</span><span class="o">:</span> <span class="nx">int</span>
-	<span class="p">{</span>
-		<span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">wealthFactor</span> <span class="o">-</span> <span class="mi">4</span><span class="p">;</span>
-	<span class="p">}</span>
-<span class="p">}</span>
-
-</code></pre>
-</div>
-
-<p>继承机制存在一个问题，结构不灵活，当拓展越来越多的时候导致了越来越多的类，而且代码冗余。</p>
-
-<p>采用关联机制，也就是装饰模式就不一样了。</p>
-
-<div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
-
-<span class="k">abstract</span> <span class="k">class</span> <span class="nc">Tile</span> <span class="p">{</span>
-	<span class="k">public</span> <span class="k">abstract</span> <span class="k">function</span> <span class="nf">getWealthFactor</span><span class="p">();</span>
-<span class="p">}</span>
-
-<span class="k">class</span> <span class="nc">Plains</span> <span class="k">extends</span> <span class="nx">Tile</span>
-<span class="p">{</span>
-	<span class="k">protected</span> <span class="nv">$wealthFactor</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
-
-	<span class="k">public</span> <span class="k">function</span> <span class="nf">getWealthFactor</span><span class="p">()</span><span class="o">:</span> <span class="nx">int</span>
-	<span class="p">{</span>
-		<span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">wealthFactor</span><span class="p">;</span>
-	<span class="p">}</span>
-<span class="p">}</span>
-
-
-<span class="k">abstract</span> <span class="k">class</span> <span class="nc">TileDecorator</span> <span class="k">extends</span> <span class="nx">Tile</span> 
-<span class="p">{</span>
-	<span class="k">protected</span> <span class="nv">$tile</span><span class="p">;</span>
-
-	<span class="k">public</span> <span class="k">function</span> <span class="nf">__construct</span><span class="p">(</span><span class="nx">Tile</span> <span class="nv">$tile</span><span class="p">)</span>
-	<span class="p">{</span>
-		<span class="nv">$this</span><span class="o">-&gt;</span><span class="na">tile</span> <span class="o">=</span> <span class="nv">$tile</span><span class="p">;</span>
-	<span class="p">}</span>
-<span class="p">}</span>
-
-<span class="k">class</span> <span class="nc">DiamondDecorator</span> <span class="k">extends</span> <span class="nx">TileDecorator</span>
-<span class="p">{</span>
-	<span class="k">public</span> <span class="k">function</span> <span class="nf">getWealthFactor</span><span class="p">()</span><span class="o">:</span> <span class="nx">int</span>
-	<span class="p">{</span>
-		<span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">tile</span><span class="o">-&gt;</span><span class="na">getWealthFactor</span><span class="p">()</span> <span class="o">+</span> <span class="mi">2</span><span class="p">;</span>
-	<span class="p">}</span>
-<span class="p">}</span>
-
-<span class="k">class</span> <span class="nc">PollutedDecorator</span> <span class="k">extends</span> <span class="nx">TileDecorator</span>
-<span class="p">{</span>
-	<span class="k">public</span> <span class="k">function</span> <span class="nf">getWealthFactor</span><span class="p">()</span><span class="o">:</span> <span class="nx">int</span>
-	<span class="p">{</span>
-		<span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">tile</span><span class="o">-&gt;</span><span class="na">getWealthFactor</span><span class="p">()</span> <span class="o">-</span> <span class="mi">4</span><span class="p">;</span>
-	<span class="p">}</span>
-<span class="p">}</span>
-
-<span class="nv">$plains</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Plains</span><span class="p">;</span>
-
-<span class="k">echo</span> <span class="p">(</span><span class="k">new</span> <span class="nx">DiamondDecorator</span><span class="p">(</span><span class="nv">$plains</span><span class="p">))</span><span class="o">-&gt;</span><span class="na">getWealthFactor</span><span class="p">()</span> <span class="p">,</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">;</span>
-<span class="k">echo</span> <span class="p">(</span><span class="k">new</span> <span class="nx">PollutedDecorator</span><span class="p">(</span><span class="nv">$plains</span><span class="p">))</span><span class="o">-&gt;</span><span class="na">getWealthFactor</span><span class="p">()</span> <span class="p">,</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">;</span>
-
-</code></pre>
-</div>
-
-<h3 id="适用环境">适用环境</h3>
-
-<p>在以下情况下可以使用装饰模式：</p>
+<h4 id="返回值">返回值</h4>
 
 <ul>
-  <li>在不影响其他对象的情况下，以动态、透明的方式给单个对象添加职责。</li>
-  <li>需要动态地给一个对象增加功能，这些功能也可以动态地被撤销。</li>
-  <li>当不能采用继承的方式对系统进行扩充或者采用继承不利于系统扩展和维护时。不能采用继承的情况主要有两类：第一类是系统中存在大量独立的扩展，为支持每一种组合将产生大量的子类，使得子类数目呈爆炸性增长；第二类是因为类定义不能继承（如final类）。</li>
+  <li>
+    <p>array_map</p>
+
+    <p>返回数组（callback 函数处理之后）。</p>
+  </li>
+  <li>
+    <p>array_walk</p>
+
+    <p>返回布尔值（成功则 <code class="highlighter-rouge">TRUE</code> ，失败则 <code class="highlighter-rouge">FALSE</code>）。</p>
+  </li>
 </ul>
+
+<h3 id="示例">示例</h3>
+
+<p>1# array_map 一般用法</p>
+
+<div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+
+<span class="nv">$arr1</span> <span class="o">=</span> <span class="p">[</span>
+	<span class="s1">'a'</span> <span class="o">=&gt;</span> <span class="s1">'test1'</span><span class="p">,</span>
+	<span class="s1">'b'</span> <span class="o">=&gt;</span> <span class="s1">'test2'</span><span class="p">,</span>
+	<span class="s1">'c'</span> <span class="o">=&gt;</span> <span class="s1">'test3'</span>
+<span class="p">];</span>
+
+<span class="nv">$data</span> <span class="o">=</span> <span class="nb">array_map</span><span class="p">(</span><span class="k">function</span> <span class="p">(</span><span class="nv">$item</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">return</span> <span class="s1">'new_'</span> <span class="o">.</span> <span class="nv">$item</span><span class="p">;</span>
+<span class="p">},</span> <span class="nv">$arr1</span><span class="p">);</span>
+
+<span class="nb">var_dump</span><span class="p">(</span><span class="nv">$data</span><span class="p">);</span>
+
+<span class="nb">var_dump</span><span class="p">(</span><span class="nv">$arr1</span><span class="p">);</span>
+
+</code></pre>
+</div>
+
+<p>上面的打印结果，<code class="highlighter-rouge">$data</code>　是新数组，而　$arr1　还是旧数组。</p>
+
+<p>2# array_walk 一般用法</p>
+
+<div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+
+<span class="nv">$arr1</span> <span class="o">=</span> <span class="p">[</span>
+	<span class="s1">'a'</span> <span class="o">=&gt;</span> <span class="s1">'test1'</span><span class="p">,</span>
+	<span class="s1">'b'</span> <span class="o">=&gt;</span> <span class="s1">'test2'</span><span class="p">,</span>
+	<span class="s1">'c'</span> <span class="o">=&gt;</span> <span class="s1">'test3'</span>
+<span class="p">];</span>
+
+<span class="nv">$arr2</span> <span class="o">=</span> <span class="nv">$arr1</span><span class="p">;</span>
+
+<span class="nv">$flag</span> <span class="o">=</span> <span class="nb">array_walk</span><span class="p">(</span><span class="nv">$arr2</span><span class="p">,</span> <span class="k">function</span> <span class="p">(</span><span class="o">&amp;</span><span class="nv">$item</span><span class="p">,</span> <span class="nv">$key</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nv">$item</span> <span class="o">=</span> <span class="s1">'new_'</span> <span class="o">.</span> <span class="nv">$item</span><span class="p">;</span>
+<span class="p">});</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="nv">$flag</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nb">var_dump</span><span class="p">(</span><span class="nv">$arr2</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<p><code class="highlighter-rouge">$arr2</code> 是新数组。</p>
+
+<p>3# array_map 也传引用呢？</p>
+
+<div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="nv">$arr1</span> <span class="o">=</span> <span class="p">[</span>
+	<span class="s1">'a'</span> <span class="o">=&gt;</span> <span class="s1">'test1'</span><span class="p">,</span>
+	<span class="s1">'b'</span> <span class="o">=&gt;</span> <span class="s1">'test2'</span><span class="p">,</span>
+	<span class="s1">'c'</span> <span class="o">=&gt;</span> <span class="s1">'test3'</span>
+<span class="p">];</span>
+
+<span class="nv">$data</span> <span class="o">=</span> <span class="nb">array_map</span><span class="p">(</span><span class="k">function</span> <span class="p">(</span><span class="o">&amp;</span><span class="nv">$item</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nv">$item</span> <span class="o">=</span> <span class="s1">'new_'</span> <span class="o">.</span> <span class="nv">$item</span><span class="p">;</span>
+	<span class="k">return</span> <span class="nv">$item</span><span class="p">;</span>
+<span class="p">},</span> <span class="nv">$arr1</span><span class="p">);</span>
+
+<span class="nb">var_dump</span><span class="p">(</span><span class="nv">$arr1</span><span class="p">);</span>
+<span class="nb">var_dump</span><span class="p">(</span><span class="nv">$data</span><span class="p">);</span>
+
+</code></pre>
+</div>
+
+<p>结果和 1# 一样。</p>
+
 
 
                 <hr>
@@ -321,13 +318,9 @@
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2018/01/08/design-pattern-adapter/" data-toggle="tooltip" data-placement="top" title="设计模式 (4) - 适配器模式">&larr; Previous Post</a>
+                        <a href="/2018/01/10/design-pattern-observer-pattern/" data-toggle="tooltip" data-placement="top" title="设计模式 (7) - 观察者模式">&larr; Previous Post</a>
                     </li>
                     
-                    
-                    <li class="next">
-                        <a href="/2018/01/10/design-pattern-strategy-pattern/" data-toggle="tooltip" data-placement="top" title="设计模式 (6) - 策略模式">Next Post &rarr;</a>
-                    </li>
                     
                 </ul>
 
