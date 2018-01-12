@@ -9,9 +9,9 @@
     <meta name="keyword"  content="git php mysql laravel littlesqx">
     <link rel="shortcut icon" href="https://littlesqx-github-io.b0.upaiyun.com/img/favicon.ico">
 
-    <title>设计模式 (3) - 建造者模式 - Littlesqx Blog</title>
+    <title>浅析闭包函数 Ｃlosures - Littlesqx Blog</title>
 
-    <link rel="canonical" href="https://littlesqx.github.io/2018/01/08/design-pattern-builder-pattern/">
+    <link rel="canonical" href="https://littlesqx.github.io/2018/01/12/closures/">
 
     <!-- nprogress CSS -->
     <link href="https://littlesqx-github-io.b0.upaiyun.com/css/nprogress.min.css" rel="stylesheet">
@@ -152,15 +152,15 @@
                         
                         <a class="tag" href="/tags/#PHP" title="PHP">PHP</a>
                         
-                        <a class="tag" href="/tags/#设计模式" title="设计模式">设计模式</a>
+                        <a class="tag" href="/tags/#JavaScript" title="JavaScript">JavaScript</a>
                         
                     </div>
-                    <h1>设计模式 (3) - 建造者模式</h1>
+                    <h1>浅析闭包函数 Ｃlosures</h1>
                     
                     
                     <h2 class="subheading"></h2>
                     
-                    <span class="meta">Posted by Littlesqx on January 8, 2018</span>
+                    <span class="meta">Posted by Littlesqx on January 12, 2018</span>
                 </div>
             </div>
         </div>
@@ -182,128 +182,181 @@
   <p>好颓好颓~</p>
 </blockquote>
 
-<h3 id="简单介绍">简单介绍</h3>
+<h3 id="什么是闭包">什么是闭包？</h3>
 
-<p>造者模式(Builder Pattern)：将一个复杂对象的构建与它的表示分离，使得同样的构建过程可以创建不同的表示。</p>
+<p>PHP 文档这样介绍：</p>
 
-<p>主要角色：</p>
+<blockquote>
+  <p>匿名函数（Anonymous functions），也叫闭包函数（closures），允许 临时创建一个没有指定名称的函数。最经常用作回调函数（callback）参数的值。当然，也有其它应用的情况。</p>
+</blockquote>
 
-<ul>
-  <li>
-    <p>Builder：抽象建造者</p>
-  </li>
-  <li>
-    <p>ConcreteBuilder：具体建造者</p>
-  </li>
-  <li>
-    <p>Director：指挥者</p>
-  </li>
-  <li>
-    <p>Product：产品角色</p>
-  </li>
-</ul>
+<p>真的很含糊，什么叫<strong>还有其它应用的情况</strong>。。。</p>
 
-<h3 id="php-实现">PHP 实现</h3>
+<p>找了 JavaScript 的文档：</p>
+
+<blockquote>
+  <p>Closures (闭包)是使用被作用域封闭的变量，函数，闭包等执行的一个函数的作用域。通常我们用和其相应的函数来指代这些作用域。(可以访问独立数据的函数)。</p>
+
+  <p>闭包是一个函数和声明该函数的词法环境的组合。从理论角度来说，所有函数都是闭包。</p>
+</blockquote>
+
+<p>关键在于“作用域”、“环境”。</p>
+
+<p><strong>栗子：</strong></p>
+
+<div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="nv">$closure</span> <span class="o">=</span> <span class="k">function</span><span class="p">(</span><span class="nv">$name</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nb">printf</span><span class="p">(</span><span class="s2">"Hello %s</span><span class="se">\r\n</span><span class="s2">"</span><span class="p">,</span> <span class="nv">$name</span><span class="p">);</span>
+<span class="p">};</span>
+
+<span class="nv">$closure</span><span class="p">(</span><span class="s1">'World'</span><span class="p">);</span>
+<span class="c1">// Hello World
+</span></code></pre>
+</div>
+
+<h3 id="为什么要用闭包">为什么要用闭包？</h3>
+
+<p>闭包有一个特点，内部函数可以引用外部函数的参数和变量，参数和变量就不会被收回。</p>
+
+<p>环境被保存下来。</p>
+
+<p><strong>栗子：</strong></p>
+
+<div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="nv">$add</span> <span class="o">=</span> <span class="k">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nv">$sum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">return</span> <span class="k">function</span><span class="p">()</span> <span class="k">use</span> <span class="p">(</span><span class="o">&amp;</span><span class="nv">$sum</span><span class="p">)</span><span class="o">:</span> <span class="nx">int</span> <span class="p">{</span>
+        <span class="nv">$sum</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+        <span class="k">return</span> <span class="nv">$sum</span><span class="p">;</span>
+    <span class="p">};</span>
+<span class="p">};</span>
+
+<span class="nv">$test</span> <span class="o">=</span> <span class="nv">$add</span><span class="p">();</span>
+
+<span class="k">echo</span> <span class="nv">$test</span><span class="p">(),</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">;</span> <span class="c1">// 1
+</span><span class="k">echo</span> <span class="nv">$test</span><span class="p">(),</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">;</span> <span class="c1">// 2
+</span>
+</code></pre>
+</div>
+
+<blockquote>
+  <p>一般函数局部变量无法长久地保存，而全局变量可能造成变量污染，所以我们希望有一种机制既可以长久地保存变量又不会造成全局污染。</p>
+</blockquote>
+
+<h3 id="php-闭包的实现原理">PHP 闭包的实现原理</h3>
+
+<p>目前是通过 Closure 类来实现，调用闭包函数的过程与 <code class="highlighter-rouge">__invoke </code> 魔术方法无关。</p>
+
+<p>这是文档说的，但是很奇怪，下面的代码两个输出是一样的。</p>
+
+<div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="nv">$closure</span> <span class="o">=</span> <span class="k">function</span><span class="p">(</span><span class="nv">$name</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nb">printf</span><span class="p">(</span><span class="s2">"Hello %s</span><span class="se">\r\n</span><span class="s2">"</span><span class="p">,</span> <span class="nv">$name</span><span class="p">);</span>
+<span class="p">};</span>
+
+<span class="nv">$closure</span><span class="p">(</span><span class="s1">'World'</span><span class="p">);</span> <span class="c1">// Hello World
+</span><span class="nv">$closure</span><span class="o">-&gt;</span><span class="na">__invoke</span><span class="p">(</span><span class="s1">'World'</span><span class="p">);</span> <span class="c1">// Hello World
+</span></code></pre>
+</div>
+
+<p>原理网上找了下，比较少相关文章。</p>
+
+<p>###　与 JavaScript 闭包区别</p>
+
+<p>最大的区别在于作用域。</p>
+
+<p>可以看到前面加一的例子，使用了 <code class="highlighter-rouge">use</code> 关键字，PHP 里叫做变量“继承”，而且逐层传递（只能传递父级作用域的变量）。</p>
+
+<p>这跟 PHP　语言特性有关， PHP 只有函数作用域、类作用域，而没有块级作用域。</p>
 
 <div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
 
-<span class="k">class</span> <span class="nc">Product</span>
-<span class="p">{</span>
-	<span class="k">private</span> <span class="nv">$name</span><span class="p">;</span>
-
-	<span class="k">private</span> <span class="nv">$description</span><span class="p">;</span>
-
-	<span class="k">public</span> <span class="k">function</span> <span class="nf">setName</span><span class="p">(</span><span class="nv">$name</span> <span class="o">=</span> <span class="s1">'default name'</span><span class="p">)</span><span class="o">:</span> <span class="nx">Product</span>
-	<span class="p">{</span>
-		<span class="nv">$this</span><span class="o">-&gt;</span><span class="na">name</span> <span class="o">=</span> <span class="nv">$name</span><span class="p">;</span>
-		<span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
-	<span class="p">}</span>
-
-	<span class="k">public</span> <span class="k">function</span> <span class="nf">setDescription</span><span class="p">(</span><span class="nv">$description</span> <span class="o">=</span> <span class="s1">'default description'</span><span class="p">)</span><span class="o">:</span> <span class="nx">Product</span>
-	<span class="p">{</span>
-		<span class="nv">$this</span><span class="o">-&gt;</span><span class="na">description</span> <span class="o">=</span> <span class="nv">$description</span><span class="p">;</span>
-		<span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
-	<span class="p">}</span>
+<span class="nv">$i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="k">while</span><span class="p">(</span><span class="nv">$i</span><span class="o">--</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nv">$j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="k">abstract</span> <span class="k">class</span> <span class="nc">Builder</span> <span class="p">{</span>
-	<span class="k">public</span> <span class="k">abstract</span> <span class="k">function</span> <span class="nf">setFields</span><span class="p">(</span><span class="nv">$name</span><span class="p">,</span> <span class="nv">$description</span><span class="p">);</span>
-	<span class="k">public</span> <span class="k">abstract</span> <span class="k">function</span> <span class="nf">getProduct</span><span class="p">();</span>
+<span class="k">echo</span> <span class="nv">$j</span><span class="p">,</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">;</span> <span class="c1">// 0
+</span>
+</code></pre>
+</div>
+
+<p>奇葩有木有。。。</p>
+
+<p>函数里访问不了函数外部的变量，需要访问的话可以通过传参和 <code class="highlighter-rouge">use</code>　传递。</p>
+
+<p>下面的例子可以更好看出区别。</p>
+
+<h3 id="举栗子">举栗子</h3>
+
+<p>使用闭包打印斐波那契数列。我们知道斐波那契数列有下面的规律：</p>
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="c"># f(n) 表示数列中第 n 个数的值</span>
+f<span class="o">(</span>n<span class="o">)</span> <span class="o">=</span> 0; <span class="o">(</span>n <span class="o">=</span> 0<span class="o">)</span>
+f<span class="o">(</span>n<span class="o">)</span> <span class="o">=</span> 1; <span class="o">(</span>n <span class="o">=</span> 1<span class="o">)</span>
+f<span class="o">(</span>n<span class="o">)</span> <span class="o">=</span> f<span class="o">(</span>n-1<span class="o">)</span>+f<span class="o">(</span>n-2<span class="o">)</span>; <span class="o">(</span>n &gt;<span class="o">=</span> 2<span class="o">)</span>
+</code></pre>
+</div>
+
+<p>使用递归的方法</p>
+
+<div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="k">function</span> <span class="nf">fibonacci</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$n</span><span class="p">)</span><span class="o">:</span> <span class="nx">int</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="p">(</span><span class="nv">$n</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nv">$n</span><span class="p">;</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="nx">fibonacci</span><span class="p">(</span><span class="nv">$n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="nx">fibonacci</span><span class="p">(</span><span class="nv">$n</span><span class="o">-</span><span class="mi">2</span><span class="p">);</span>
 <span class="p">}</span>
 
-<span class="k">class</span> <span class="nc">ConcreteBuilder</span> <span class="k">extends</span> <span class="nx">Builder</span>
-<span class="p">{</span>
-	<span class="k">private</span> <span class="nv">$product</span><span class="p">;</span>
+<span class="k">echo</span> <span class="nx">fibonacci</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">;</span> <span class="c1">// 55
+</span>
+</code></pre>
+</div>
 
-	<span class="k">public</span> <span class="k">function</span> <span class="nf">__construct</span><span class="p">()</span>
-	<span class="p">{</span>
-		<span class="nv">$this</span><span class="o">-&gt;</span><span class="na">product</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Product</span><span class="p">;</span>
-	<span class="p">}</span>
+<p>如果打印数列，那每一次都需要重复计算前面已经计算过的数据（只需要前两个就好）。</p>
 
-	<span class="k">public</span> <span class="k">function</span> <span class="nf">setFields</span><span class="p">(</span><span class="nv">$name</span><span class="p">,</span> <span class="nv">$description</span><span class="p">)</span><span class="o">:</span> <span class="nx">ConcreteBuilder</span>
-	<span class="p">{</span>
-		<span class="nv">$this</span><span class="o">-&gt;</span><span class="na">product</span><span class="o">-&gt;</span><span class="na">setName</span><span class="p">(</span><span class="nv">$name</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">setDescription</span><span class="p">(</span><span class="nv">$description</span><span class="p">);</span>
-		<span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
-	<span class="p">}</span>
+<p>可以使用闭包保存上一次的运行环境。</p>
 
-	<span class="k">public</span> <span class="k">function</span> <span class="nf">getProduct</span><span class="p">()</span><span class="o">:</span> <span class="nx">Product</span>
-	<span class="p">{</span>
-		<span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">product</span><span class="p">;</span>
-	<span class="p">}</span>
+<p>PHP 版本</p>
+<div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="nv">$fibonacci</span> <span class="o">=</span> <span class="k">function</span> <span class="p">()</span><span class="o">:</span> <span class="nx">callable</span> <span class="p">{</span>
+
+	<span class="nv">$x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+	<span class="nv">$y</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+
+	<span class="k">return</span> <span class="k">function</span> <span class="p">()</span> <span class="k">use</span> <span class="p">(</span><span class="o">&amp;</span><span class="nv">$x</span><span class="p">,</span> <span class="o">&amp;</span><span class="nv">$y</span><span class="p">)</span><span class="o">:</span> <span class="nx">int</span> <span class="p">{</span>
+		<span class="k">list</span><span class="p">(</span><span class="nv">$x</span><span class="p">,</span> <span class="nv">$y</span><span class="p">)</span> <span class="o">=</span> <span class="p">[</span><span class="nv">$y</span><span class="p">,</span> <span class="nv">$x</span><span class="o">+</span><span class="nv">$y</span><span class="p">];</span>
+		<span class="k">return</span> <span class="nv">$x</span><span class="p">;</span>
+	<span class="p">};</span>
+<span class="p">};</span>
+
+<span class="nv">$f</span> <span class="o">=</span> <span class="nv">$fibonacci</span><span class="p">();</span>
+
+<span class="k">for</span> <span class="p">(</span><span class="nv">$i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nv">$i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="nv">$i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">echo</span> <span class="nv">$f</span><span class="p">()</span> <span class="p">,</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">;</span>
 <span class="p">}</span>
-
-<span class="k">class</span> <span class="nc">Director</span>
-<span class="p">{</span>
-	<span class="k">private</span> <span class="nv">$buider</span><span class="p">;</span>
-
-	<span class="k">public</span> <span class="k">function</span> <span class="nf">__construct</span><span class="p">()</span>
-	<span class="p">{</span>
-		<span class="nv">$this</span><span class="o">-&gt;</span><span class="na">buider</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ConcreteBuilder</span><span class="p">;</span>
-	<span class="p">}</span>
-
-	<span class="k">public</span> <span class="k">function</span> <span class="nf">getPan</span><span class="p">()</span><span class="o">:</span> <span class="nx">Product</span>
-	<span class="p">{</span>
-		<span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">buider</span><span class="o">-&gt;</span><span class="na">setFields</span><span class="p">(</span>
-			<span class="s1">'pan'</span><span class="p">,</span>
-			<span class="s1">'i am a pan!'</span>
-		<span class="p">)</span><span class="o">-&gt;</span><span class="na">getProduct</span><span class="p">();</span>
-	<span class="p">}</span>
-
-	<span class="k">public</span> <span class="k">function</span> <span class="nf">getBook</span><span class="p">()</span><span class="o">:</span> <span class="nx">Product</span>
-	<span class="p">{</span>
-		<span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">buider</span><span class="o">-&gt;</span><span class="na">setFields</span><span class="p">(</span>
-			<span class="s1">'Book'</span><span class="p">,</span>
-			<span class="s1">'i am a book!'</span>
-		<span class="p">)</span><span class="o">-&gt;</span><span class="na">getProduct</span><span class="p">();</span>
-	<span class="p">}</span>
-<span class="p">}</span>
-
-
-<span class="p">(</span><span class="k">new</span> <span class="nx">Director</span><span class="p">())</span><span class="o">-&gt;</span><span class="na">getPan</span><span class="p">();</span>
-
-<span class="p">(</span><span class="k">new</span> <span class="nx">Director</span><span class="p">())</span><span class="o">-&gt;</span><span class="na">getBook</span><span class="p">();</span>
 
 </code></pre>
 </div>
 
-<h3 id="补充">补充</h3>
+<p>JavaScript 版本</p>
 
-<p><strong>建造者模式的简化:</strong></p>
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">fibonacci</span> <span class="o">=</span> <span class="nx">_</span> <span class="o">=&gt;</span> <span class="p">{</span>
+	<span class="kd">let</span> <span class="nx">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">y</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
 
-<ul>
-  <li>
-    <p>省略抽象建造者角色：如果系统中只需要一个具体建造者的话，可以省略掉抽象建造者。</p>
-  </li>
-  <li>
-    <p>省略指挥者角色：在具体建造者只有一个的情况下，如果抽象建造者角色已经被省略掉，那么还可以省略指挥者角色，让
-Builder角色扮演指挥者与建造者双重角色。</p>
-  </li>
-</ul>
+	<span class="k">return</span> <span class="nx">_</span> <span class="o">=&gt;</span> <span class="p">{</span>
+		<span class="p">[</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nx">y</span><span class="p">,</span> <span class="nx">x</span><span class="o">+</span><span class="nx">y</span><span class="p">];</span>
+		<span class="k">return</span> <span class="nx">x</span><span class="p">;</span>
+	<span class="p">};</span>
+<span class="p">};</span>
 
-<p><strong>建造者模式与抽象工厂模式的比较:</strong></p>
+<span class="kd">let</span> <span class="nx">f</span> <span class="o">=</span> <span class="nx">fibonacci</span><span class="p">();</span>
 
-<p>与抽象工厂模式相比， 建造者模式返回一个组装好的完整产品 ，而 抽象工厂模式返回一系列相关的产品，这些产品位于不同的产品等级结构，构成了一个产品族。
-在抽象工厂模式中，客户端实例化工厂类，然后调用工厂方法获取所需产品对象，而在建造者模式中，客户端可以不直接调用建造者的相关方法，而是通过指挥者类来指导如何生成对象，包括对象的组装过程和建造步骤，它侧重于一步步构造一个复杂对象，返回一个完整的对象。</p>
+<span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;=</span> <span class="mi">10</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">f</span><span class="p">());</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
 
 
                 <hr>
@@ -317,13 +370,9 @@ Builder角色扮演指挥者与建造者双重角色。</p>
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2018/01/08/design-pattern-factory-pattern/" data-toggle="tooltip" data-placement="top" title="设计模式 (2) - 工厂模式">&larr; Previous Post</a>
+                        <a href="/2018/01/12/array_map_vs_array_walk/" data-toggle="tooltip" data-placement="top" title="array_map 和 array_walk 的对比">&larr; Previous Post</a>
                     </li>
                     
-                    
-                    <li class="next">
-                        <a href="/2018/01/08/design-pattern-adapter/" data-toggle="tooltip" data-placement="top" title="设计模式 (4) - 适配器模式">Next Post &rarr;</a>
-                    </li>
                     
                 </ul>
 
