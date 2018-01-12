@@ -5,12 +5,12 @@
     <description>littlesqx's blog</description>
     <link>https://littlesqx.github.io/</link>
     <atom:link href="https://littlesqx.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Fri, 12 Jan 2018 18:19:42 +0800</pubDate>
-    <lastBuildDate>Fri, 12 Jan 2018 18:19:42 +0800</lastBuildDate>
+    <pubDate>Fri, 12 Jan 2018 18:31:13 +0800</pubDate>
+    <lastBuildDate>Fri, 12 Jan 2018 18:31:13 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
     
       <item>
-        <title>浅析闭包函数 Ｃlosures</title>
+        <title>浅析闭包函数 Closures</title>
         <description>&lt;blockquote&gt;
   &lt;p&gt;好颓好颓~&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -116,7 +116,7 @@
 
 &lt;p&gt;奇葩有木有。。。&lt;/p&gt;
 
-&lt;p&gt;函数里访问不了函数外部的变量，需要访问的话可以通过传参和 &lt;code class=&quot;highlighter-rouge&quot;&gt;use&lt;/code&gt;　传递。&lt;/p&gt;
+&lt;p&gt;函数里访问不了函数外部的变量，需要访问的话可以通过传参和 &lt;code class=&quot;highlighter-rouge&quot;&gt;use&lt;/code&gt; 传递。&lt;/p&gt;
 
 &lt;p&gt;下面的例子可以更好看出区别。&lt;/p&gt;
 
@@ -191,6 +191,7 @@ f&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;n&lt;span class=&quot;o&quot;&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
+&lt;p&gt;对，说了那么多我就是想证明　JavaScript ES6 好简洁。&lt;/p&gt;
 </description>
         <pubDate>Fri, 12 Jan 2018 14:02:01 +0800</pubDate>
         <link>https://littlesqx.github.io/2018/01/12/closures/</link>
