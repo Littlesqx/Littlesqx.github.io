@@ -164,6 +164,39 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2018/01/12/go-func-defer/">
+        <h2 class="post-title">
+            Go defer 关键字
+        </h2>
+        
+        <div class="post-content-preview">
+            
+  好颓好颓~
+
+
+defer 关键字
+
+Go 语言中使用 defer 关键字在函数中声明延迟( defer )语句，顾名思义，这些语句会被逆序延迟执行。
+执行时间是函数返回(return)前。
+
+栗子：
+
+func main() {
+    defer fmt.Printf("a ")
+    defer fmt.Printf("b ")
+    fmt.Printf("c ")
+}
+
+...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Littlesqx on January 12, 2018
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2018/01/12/closures/">
         <h2 class="post-title">
             浅析闭包函数 Closures
@@ -440,35 +473,6 @@ class Product {
 </div>
 <hr>
 
-<div class="post-preview">
-    <a href="/2017/12/24/the-2018-guide-to-building-secure-php-software/">
-        <h2 class="post-title">
-            [译]The 2018 Guide to Building Secure PHP Software
-        </h2>
-        
-        <div class="post-content-preview">
-            
-  2018PHP应用程序安全设计指北！
-
-
-目录
-
-  前言
-  PHP 版本 / PHP Versions
-  Composer依赖管理 / Dependency Management with Composer
-    
-      推荐扩展 / Recommended Packages
-    
-  
-  HTTPS和浏览器安全 / HTTPS and Browser Securi...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Littlesqx on December 24, 2017
-    </p>
-</div>
-<hr>
-
 
 <!-- Pager -->
 
@@ -546,6 +550,8 @@ class Product {
                                 <a href="/tags/#设计模式" title="设计模式" rel="7">
                                     设计模式
                                 </a>
+                            
+                        
                             
                         
                     </div>
