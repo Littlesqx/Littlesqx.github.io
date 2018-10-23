@@ -196,8 +196,7 @@
 
 <h3 id="前言">前言</h3>
 <p>在第一篇文章《<a href="https://littlesqx.github.io/2017/09/23/centos7-lnmp/">在CentOS 7 上配置 LNMP 环境
-</a>》提到过，有时间对比一下LAMP
-和LNMP的区别，现在把php可能的web运行环境都做一次说明，也就是加上了LANMP和LNSMP，前者好说，
+</a>》提到过，有时间对比一下 LAMP 和 LNMP 的区别，现在把 php 可能的 web 运行环境都做一次说明，也就是加上了 LANMP 和 LNSMP，前者好说，
 后者是有关于重新定义PHP的<a href="https://www.swoole.com/">Swoole</a>，其实我还没学过哈哈哈。</p>
 
 <h3 id="正文">正文</h3>
@@ -212,14 +211,14 @@
 
 <h5 id="概述">概述</h5>
 
-<p>区别在于A和N，也就是同是web服务器，原本是没有解析动态网页（包括php Python等）的能力。那他们
-是如何实现可以解析php程序呢？</p>
+<p>区别在于 A 和 N，也就是同是web服务器，原本是没有解析动态网页（包括 php Python 等）的能力。那他们
+是如何实现可以解析 php 程序呢？</p>
 
 <p>pic# 我画了个图</p>
 
 <p><img src="/img/in-post/201710151.png" alt="img" /></p>
 
-<p>这个图简化了整个过程，表达的是web服务器会判断用户请求的文件类型，如果是php，那会交给PHP处理器
+<p>这个图简化了整个过程，表达的是 web 服务器会判断用户请求的文件类型，如果是 php，那会交给 PHP 处理器
 （PHP handler）处理，处理结果返回给web服务器，再由web服务器响应给请求方。但是，
 实际的过程应该更加复杂。
 需要先引出一些名词：SAPI，mod_php，mod_fastcgi，CGI，FastCGI，PHP-CGI，PHP-FPM。</p>
@@ -240,8 +239,8 @@ PHP提供了很多种SAPI，Apache的mod_php，Nginx的mod_fastcgi，还有Shell
 
 <h5 id="mod_php">mod_php</h5>
 
-<p>在这种模式下，php被编译为apache的一个内置模块，在启动时加载。当有一个php请求过来时，
-直接在httpd进程里完成php的解释运行，将结果返回。</p>
+<p>在这种模式下，php 被编译为 apache 的一个内置模块，在启动时加载。当有一个 php 请求过来时，
+直接在 httpd 进程里完成 php 的解释运行，将结果返回。</p>
 
 <p>pic# 我画了个图，扩展了前面的图</p>
 
@@ -249,13 +248,13 @@ PHP提供了很多种SAPI，Apache的mod_php，Nginx的mod_fastcgi，还有Shell
 
 <h5 id="mod_fastcgi">mod_fastcgi</h5>
 
-<p>这是另一种SAPI，在LAMP中常见，涉及到CGI，FastCGI，PHP-CGI，PHP-FPM这几个名词。</p>
+<p>这是另一种 SAPI，在 LAMP 中常见，涉及到 CGI，FastCGI，PHP-CGI，PHP-FPM 这几个名词。</p>
 
-<p>1# 什么是CGI？</p>
+<p>1# 什么是 CGI？</p>
 
-<p>CGI(Common Gateway Interface)，即公共网关接口，web服务器和脚本语言通信的一个标准、
-接口、协议。CGI规范允许Web服务器执行外部程序，并将它们的输出发送给Web浏览器，
-CGI将Web的一组简单的静态超媒体文档变成一个完整的新的交互式媒体。</p>
+<p>CGI(Common Gateway Interface)，即公共网关接口，web 服务器和脚本语言通信的一个标准、
+接口、协议。CGI 规范允许 Web 服务器执行外部程序，并将它们的输出发送给 Web 浏览器，
+CGI 将 Web 的一组简单的静态超媒体文档变成一个完整的新的交互式媒体。</p>
 
 <p>2# 什么是FastCGI？</p>
 
@@ -409,7 +408,7 @@ PHPer可以基于swoole去实现过去PHP无法实现的功能。</p>
                     
                     
                     <li class="next">
-                        <a href="/2017/10/24/axios-packaging-notes/" data-toggle="tooltip" data-placement="top" title="记一次axios封装">Next Post &rarr;</a>
+                        <a href="/2017/10/24/axios-packaging-notes/" data-toggle="tooltip" data-placement="top" title="记一次 axios 封装">Next Post &rarr;</a>
                     </li>
                     
                 </ul>
@@ -465,7 +464,7 @@ PHPer可以基于swoole去实现过去PHP无法实现的功能。</p>
                             
         				
                             
-                				<a href="/tags/#PHP" title="PHP" rel="12">
+                				<a href="/tags/#PHP" title="PHP" rel="3">
                                     PHP
                                 </a>
                             
@@ -473,22 +472,8 @@ PHPer可以基于swoole去实现过去PHP无法实现的功能。</p>
                             
         				
                             
-        				
-                            
-        				
-                            
-        				
-                            
-        				
-                            
-        				
-                            
-        				
-                            
-        				
-                            
-                				<a href="/tags/#JavaScript" title="JavaScript" rel="2">
-                                    JavaScript
+                				<a href="/tags/#MySQL" title="MySQL" rel="2">
+                                    MySQL
                                 </a>
                             
         				
@@ -497,8 +482,20 @@ PHPer可以基于swoole去实现过去PHP无法实现的功能。</p>
                             
         				
                             
-                				<a href="/tags/#设计模式" title="设计模式" rel="7">
-                                    设计模式
+        				
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+                				<a href="/tags/#学习笔记" title="学习笔记" rel="2">
+                                    学习笔记
                                 </a>
                             
         				

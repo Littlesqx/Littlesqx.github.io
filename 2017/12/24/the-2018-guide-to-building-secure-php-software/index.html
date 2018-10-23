@@ -258,9 +258,8 @@
 <p>如果你没有使用Composer来管理应用的依赖，最终（hopefully later but most likely sooner）会导致应用里某个依赖会严重过时，然后老旧版本中的漏洞会被利用于计算机犯罪。</p>
 
 <p><strong>重要</strong>： 开发软件时，时常记得<a href="http://www.phptherightway.com/#updating-your-dependencies">保持依赖的更新</a>。幸运地，这只需一行命令：</p>
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>composer update
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer update
+</code></pre></div></div>
 <p>如果你正在使用某些专业的，需要使用PHP扩展（C语言编写），那你不能使用Composer管理，而需要PECL。</p>
 
 <h5 id="推荐扩展">推荐扩展</h5>
@@ -271,9 +270,8 @@
 
 <p><a href="https://github.com/Roave/SecurityAdvisories">Roave’s security-advisories</a>使用<a href="https://github.com/FriendsOfPHP/security-advisories">Friends of PHP repository</a>确保你的项目没有依赖一些已知易受攻击的依赖。</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>composer require roave/security-advisories:dev-master    
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer require roave/security-advisories:dev-master    
+</code></pre></div></div>
 
 <p>或者，你可以<a href="https://github.com/FriendsOfPHP/security-advisories#checking-for-vulnerabilities">上传你的<code class="highlighter-rouge">composer.lock</code>文件到Sensio Labs</a>，作为例行自动化漏洞评估工作流的一部分，以提醒发现任何过时的软件包。</p>
 
@@ -283,16 +281,15 @@
 
 <p>使用Psalm挺简单：</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="c"># Version 1 doesn't exist yet, but it will one day:</span>
-composer require --dev vimeo/psalm:^0
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Version 1 doesn't exist yet, but it will one day:</span>
+composer require <span class="nt">--dev</span> vimeo/psalm:^0
 
 <span class="c"># Only do this once:</span>
-vendor/bin/psalm --init
+vendor/bin/psalm <span class="nt">--init</span>
 
 <span class="c"># Do this as often as you need:</span>
 vendor/bin/psalm
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>如果你是第一次在现有代码库运行，可能会看到很多红色错误。但除非你在构建像WordPress那么大的程序，否则努力通过所有测试绝不是艰巨的。</p>
 
@@ -372,13 +369,12 @@ vendor/bin/psalm
 </ul>
 
 <p>同样，如果你使用PHP的内置会话管理功能（建议使用），则可能需要调用<code class="highlighter-rouge">session_start()</code></p>
-<div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
 <span class="nb">session_start</span><span class="p">([</span>
     <span class="s1">'cookie_httponly'</span> <span class="o">=&gt;</span> <span class="kc">true</span><span class="p">,</span>
     <span class="s1">'cookie_secure'</span> <span class="o">=&gt;</span> <span class="kc">true</span>
 <span class="p">]);</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 <p>这会强制你的应用在发送会话标识符时使用HTTP-Only和Secure标志，从而防止XSS攻击窃取用户的Cookie，并强制它们分别通过HTTPS发送。 我们之前在2015年的博客文章中介绍了<a href="https://paragonie.com/blog/2015/04/fast-track-safe-and-secure-php-sessions">安全的PHP会话</a>。</p>
 
 <h5 id="子资源完整性">子资源完整性</h5>
@@ -391,7 +387,7 @@ vendor/bin/psalm
 
 <p>一个真实例子: <a href="https://v4-alpha.getbootstrap.com/">Bootstrap v4-alpha uses SRI in their CDN example snippet</a></p>
 
-<div class="language-html highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;link</span>
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;link</span>
     <span class="na">rel=</span><span class="s">"stylesheet"</span>
     <span class="na">href=</span><span class="s">"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"</span>
     <span class="na">integrity=</span><span class="s">"sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ"</span>
@@ -402,8 +398,7 @@ vendor/bin/psalm
     <span class="na">integrity=</span><span class="s">"sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"</span>
     <span class="na">crossorigin=</span><span class="s">"anonymous"</span>
 <span class="nt">&gt;&lt;/script&gt;</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h5 id="文档关系">文档关系</h5>
 
@@ -411,17 +406,15 @@ vendor/bin/psalm
 
 <p>不要这样做：</p>
 
-<div class="language-html highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"http://example.com"</span> <span class="na">target=</span><span class="s">"_blank"</span><span class="nt">&gt;</span>Click here<span class="nt">&lt;/a&gt;</span>
-</code></pre>
-</div>
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"http://example.com"</span> <span class="na">target=</span><span class="s">"_blank"</span><span class="nt">&gt;</span>Click here<span class="nt">&lt;/a&gt;</span>
+</code></pre></div></div>
 
 <p>这会让<code class="highlighter-rouge">http://example.com</code>页面能控制当前页面。</p>
 
 <p>而应该这样做：</p>
 
-<div class="language-html highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"https://example.com"</span> <span class="na">target=</span><span class="s">"_blank"</span> <span class="na">rel=</span><span class="s">"noopener noreferrer"</span><span class="nt">&gt;</span>Click here<span class="nt">&lt;/a&gt;</span>
-</code></pre>
-</div>
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"https://example.com"</span> <span class="na">target=</span><span class="s">"_blank"</span> <span class="na">rel=</span><span class="s">"noopener noreferrer"</span><span class="nt">&gt;</span>Click here<span class="nt">&lt;/a&gt;</span>
+</code></pre></div></div>
 
 <p>通过这样在新窗口打开<code class="highlighter-rouge">https://example.com</code>，当前窗口的控制权也不会授予可能的恶意第三方。</p>
 
@@ -451,19 +444,17 @@ vendor/bin/psalm
 
 <p>不要这样做：</p>
 
-<div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
 <span class="cm">/* Insecure code: */</span>
 <span class="nv">$query</span> <span class="o">=</span> <span class="nv">$pdo</span><span class="o">-&gt;</span><span class="na">query</span><span class="p">(</span><span class="s2">"SELECT * FROM users WHERE username = '"</span> <span class="o">.</span> <span class="nv">$_GET</span><span class="p">[</span><span class="s1">'username'</span><span class="p">]</span> <span class="o">.</span> <span class="s2">"'"</span><span class="p">);</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>应该这样做：</p>
 
-<div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
 <span class="cm">/* Secure against SQL injection: */</span>
 <span class="nv">$results</span> <span class="o">=</span> <span class="nv">$easydb</span><span class="o">-&gt;</span><span class="na">row</span><span class="p">(</span><span class="s2">"SELECT * FROM users WHERE username = ?"</span><span class="p">,</span> <span class="nv">$_GET</span><span class="p">[</span><span class="s1">'username'</span><span class="p">]);</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>还有其他数据库抽象层提供了相同的安全性（EasyDB实际上是在使用PDO，但在实际的<code class="highlighter-rouge">prepare</code>语句前避免了<code class="highlighter-rouge">prepared</code>语句模拟）。 只要用户输入不会影响查询的结构，就很安全（包括存储过程）。</p>
 
@@ -561,10 +552,9 @@ vendor/bin/psalm
 
 <p>针对XXE袭击的主要缓解措施:</p>
 
-<div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
 <span class="nb">libxml_disable_entity_loader</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>除XML文档外，<a href="https://www.owasp.org/index.php/XPATH_Injection">XPath注入</a>与SQL注入非常相似。</p>
 
@@ -572,7 +562,7 @@ vendor/bin/psalm
 
 <p>而不幸的是，这也意味着PHP生态中不存在可用的最佳避免措施（预编译和参数化XPath查询）。最好的办法是在任何涉及XPath查询的数据上设置允许使用的字符白名单。</p>
 
-<div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
 <span class="k">declare</span><span class="p">(</span><span class="nx">strict_types</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span>
 
 <span class="k">class</span> <span class="nc">SafeXPathEscaper</span>
@@ -596,14 +586,13 @@ vendor/bin/psalm
     <span class="p">}</span>
 <span class="p">}</span>
 
-<span class="c1">// Usage:
-</span><span class="nv">$selected</span> <span class="o">=</span> <span class="nv">$xml</span><span class="o">-&gt;</span><span class="na">xpath</span><span class="p">(</span>
+<span class="c1">// Usage:</span>
+<span class="nv">$selected</span> <span class="o">=</span> <span class="nv">$xml</span><span class="o">-&gt;</span><span class="na">xpath</span><span class="p">(</span>
     <span class="s2">"/user/username/"</span> <span class="o">.</span> <span class="nx">SafeXPathEscaper</span><span class="o">::</span><span class="na">allowAlphaNumeric</span><span class="p">(</span>
         <span class="nv">$_GET</span><span class="p">[</span><span class="s1">'username'</span><span class="p">]</span>
     <span class="p">)</span>
 <span class="p">);</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>白名单总会比黑名单更安全。</p>
 
@@ -652,17 +641,16 @@ vendor/bin/psalm
 
 <p>安全的密码存储曾经是一个激烈争论的话题，但现在实现起来相当微不足道，特别是在PHP中：</p>
 
-<div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
 <span class="nv">$hash</span> <span class="o">=</span> <span class="nx">\password_hash</span><span class="p">(</span><span class="nv">$password</span><span class="p">,</span> <span class="nx">PASSWORD_DEFAULT</span><span class="p">);</span>
 
 <span class="k">if</span> <span class="p">(</span><span class="nx">\password_verify</span><span class="p">(</span><span class="nv">$password</span><span class="p">,</span> <span class="nv">$hash</span><span class="p">))</span> <span class="p">{</span>
-    <span class="c1">// Authenticated.
-</span>    <span class="k">if</span> <span class="p">(</span><span class="nx">\password_needs_rehash</span><span class="p">(</span><span class="nv">$hash</span><span class="p">,</span> <span class="nx">PASSWORD_DEFAULT</span><span class="p">))</span> <span class="p">{</span>
-        <span class="c1">// Rehash, update database.
-</span>    <span class="p">}</span>
+    <span class="c1">// Authenticated.</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">\password_needs_rehash</span><span class="p">(</span><span class="nv">$hash</span><span class="p">,</span> <span class="nx">PASSWORD_DEFAULT</span><span class="p">))</span> <span class="p">{</span>
+        <span class="c1">// Rehash, update database.</span>
+    <span class="p">}</span>
 <span class="p">}</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>你甚至不需要知道在后台使用什么算法，因为如果你使用最新版本的PHP，你也将使用当前最新的技术，用户的密码将会自动进行升级（只要有新的默认算法可用）。</p>
 
@@ -702,16 +690,15 @@ vendor/bin/psalm
 
 <p>如果你需要从秘密种子生成伪随机数，而不是<code class="highlighter-rouge">srand()</code>或<code class="highlighter-rouge">mt_srand()</code>，请查阅<a href="https://github.com/paragonie/seedspring">SeedSpring</a>。</p>
 
-<div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
 <span class="k">use</span> <span class="nx">ParagonIE\SeedSpring\SeedSpring</span><span class="p">;</span>
 
-<span class="nv">$seed</span> <span class="o">=</span> <span class="nx">random_bytes</span><span class="p">(</span><span class="mi">16</span><span class="p">);</span>
+<span class="nv">$seed</span> <span class="o">=</span> <span class="nb">random_bytes</span><span class="p">(</span><span class="mi">16</span><span class="p">);</span>
 <span class="nv">$rng</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">SeedSpring</span><span class="p">(</span><span class="nv">$seed</span><span class="p">);</span>
 
 <span class="nv">$data</span> <span class="o">=</span> <span class="nv">$rng</span><span class="o">-&gt;</span><span class="na">getBytes</span><span class="p">(</span><span class="mi">1024</span><span class="p">);</span>
 <span class="nv">$int</span> <span class="o">=</span> <span class="nv">$rng</span><span class="o">-&gt;</span><span class="na">getInt</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">);</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h5 id="服务器端https请求">服务器端HTTPS请求</h5>
 
@@ -727,33 +714,31 @@ vendor/bin/psalm
 
 <p>安装Certainty很简单：</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>composer require paragonie/certainty:^1
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer require paragonie/certainty:^1
+</code></pre></div></div>
 
 <p>使用Certainty也很简单：</p>
 
-<div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
     <span class="k">use</span> <span class="nx">ParagonIE\Certainty\RemoteFetch</span><span class="p">;</span>
 
     <span class="nv">$latestCACertBundle</span> <span class="o">=</span> <span class="p">(</span><span class="k">new</span> <span class="nx">RemoteFetch</span><span class="p">())</span><span class="o">-&gt;</span><span class="na">getLatestBundle</span><span class="p">();</span>
 
-    <span class="c1"># cURL users:
-</span>    <span class="nv">$ch</span> <span class="o">=</span> <span class="nb">curl_init</span><span class="p">();</span>
+    <span class="c1"># cURL users:</span>
+    <span class="nv">$ch</span> <span class="o">=</span> <span class="nb">curl_init</span><span class="p">();</span>
     <span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="nx">CURLOPT_SSL_VERIFYHOST</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
     <span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="nx">CURLOPT_SSL_VERIFYPEER</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
     <span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="nx">CURLOPT_CAINFO</span><span class="p">,</span> <span class="nv">$latestCACertBundle</span><span class="o">-&gt;</span><span class="na">getFilePath</span><span class="p">());</span>
 
-    <span class="c1"># Guzzle users:
-</span>    <span class="sd">/** @var \GuzzleHttp\Client $http */</span>
+    <span class="c1"># Guzzle users:</span>
+    <span class="sd">/** @var \GuzzleHttp\Client $http */</span>
     <span class="nv">$repsonse</span> <span class="o">=</span> <span class="nv">$http</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span>
         <span class="s1">'https://example.com'</span><span class="p">,</span> 
         <span class="p">[</span>
             <span class="s1">'verify'</span> <span class="o">=&gt;</span> <span class="nv">$latestCACertBundle</span><span class="o">-&gt;</span><span class="na">getFilePath</span><span class="p">()</span>
         <span class="p">]</span>
     <span class="p">);</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>这样可以保护你免受网络服务器与集成的任何第三方API之间的中间人攻击。</p>
 
@@ -789,16 +774,15 @@ Certainty通过将CACert捆绑在最新的可预测位置来消除这种激励�
   <li><a href="https://paragonie.com/blog/2016/12/everything-you-know-about-public-key-encryption-in-php-is-wrong">避免使用RSA</a>，改用libsodium。如果你必须使用RSA，请确保指定OAEP填充。</li>
 </ul>
 
-<div class="language-php highlighter-rouge"><pre class="highlight"><code> <span class="cp">&lt;?php</span>
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="cp">&lt;?php</span>
 
  <span class="nb">openssl_private_decrypt</span><span class="p">(</span>
     <span class="nv">$ciphertext</span><span class="p">,</span>
-    <span class="nv">$decrypted</span><span class="p">,</span> <span class="c1">// Plaintext gets written to this variable upon success,
-</span>    <span class="nv">$privateKey</span><span class="p">,</span>
-    <span class="nx">OPENSSL_PKCS1_OAEP_PADDING</span> <span class="c1">// Important: DO NOT OMIT THIS!
-</span><span class="p">);</span>
-</code></pre>
-</div>
+    <span class="nv">$decrypted</span><span class="p">,</span> <span class="c1">// Plaintext gets written to this variable upon success,</span>
+    <span class="nv">$privateKey</span><span class="p">,</span>
+    <span class="nx">OPENSSL_PKCS1_OAEP_PADDING</span> <span class="c1">// Important: DO NOT OMIT THIS!</span>
+<span class="p">);</span>
+</code></pre></div></div>
 
 <p>如果你不得不使用PKCS＃1 v1.5填充，那么无论你与哪个集成在一起，
 几乎肯定会受到<a href="https://robotattack.org/">ROBOT</a>的影响，
@@ -1002,7 +986,7 @@ Certainty通过将CACert捆绑在最新的可预测位置来消除这种激励�
                     
                     
                     <li class="next">
-                        <a href="/2018/01/07/design-pattern-singleton/" data-toggle="tooltip" data-placement="top" title="设计模式 (1) - 单例模式">Next Post &rarr;</a>
+                        <a href="/2018/03/09/high-performance-mysql-notes-01/" data-toggle="tooltip" data-placement="top" title="《高性能 MySQL》学习笔记（1）- 事务与隔离">Next Post &rarr;</a>
                     </li>
                     
                 </ul>
@@ -1058,7 +1042,7 @@ Certainty通过将CACert捆绑在最新的可预测位置来消除这种激励�
                             
         				
                             
-                				<a href="/tags/#PHP" title="PHP" rel="12">
+                				<a href="/tags/#PHP" title="PHP" rel="3">
                                     PHP
                                 </a>
                             
@@ -1066,22 +1050,8 @@ Certainty通过将CACert捆绑在最新的可预测位置来消除这种激励�
                             
         				
                             
-        				
-                            
-        				
-                            
-        				
-                            
-        				
-                            
-        				
-                            
-        				
-                            
-        				
-                            
-                				<a href="/tags/#JavaScript" title="JavaScript" rel="2">
-                                    JavaScript
+                				<a href="/tags/#MySQL" title="MySQL" rel="2">
+                                    MySQL
                                 </a>
                             
         				
@@ -1090,8 +1060,20 @@ Certainty通过将CACert捆绑在最新的可预测位置来消除这种激励�
                             
         				
                             
-                				<a href="/tags/#设计模式" title="设计模式" rel="7">
-                                    设计模式
+        				
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+                				<a href="/tags/#学习笔记" title="学习笔记" rel="2">
+                                    学习笔记
                                 </a>
                             
         				

@@ -9,7 +9,7 @@
     <meta name="keyword"  content="git php mysql laravel littlesqx">
     <link rel="shortcut icon" href="https://littlesqx-github-io.b0.upaiyun.com/img/favicon.ico">
 
-    <title>记一次axios封装 - Littlesqx Blog</title>
+    <title>记一次 axios 封装 - Littlesqx Blog</title>
 
     <link rel="canonical" href="https://littlesqx.github.io/2017/10/24/axios-packaging-notes/">
 
@@ -155,7 +155,7 @@
                         <a class="tag" href="/tags/#JavaScript" title="JavaScript">JavaScript</a>
                         
                     </div>
-                    <h1>记一次axios封装</h1>
+                    <h1>记一次 axios 封装</h1>
                     
                     
                     <h2 class="subheading"></h2>
@@ -183,13 +183,13 @@
 </blockquote>
 
 <h3 id="前言">前言</h3>
-<p>源自于最近在写的一个项目，原因是前期的axios封装考虑得不是很好，逐渐出现冗余。趁着还早，就重构一下这部分。</p>
+<p>源自于最近在写的一个项目，原因是前期的 axios 封装考虑得不是很好，逐渐出现冗余。趁着还早，就重构一下这部分。</p>
 
 <h3 id="正文">正文</h3>
 
 <h4 id="axios">axios</h4>
 
-<p>web开发里，axios是首推的Ajax库了，应该说基本上都用它。</p>
+<p>web开发里，axios 是首推的 Ajax 库了，应该说基本上都用它。</p>
 
 <p>官方是这样介绍的：</p>
 
@@ -213,15 +213,15 @@
 
 <h4 id="谈谈流程">谈谈流程</h4>
 
-<p>一个体验好的web应用，应该具备的请求过程有什么？</p>
+<p>一个体验好的 web 应用，应该具备的请求过程有什么？</p>
 
 <p>pic# 对，我又画了个图</p>
 
 <p><img src="/img/in-post/201710241.png" alt="img" /></p>
 
-<p>确定参数：请求url，请求方式，请求参数，其他请求参数（时限？请求头？）</p>
+<p>确定参数：请求 url，请求方式，请求参数，其他请求参数（时限？请求头？）</p>
 
-<p>过渡动画：请求开始后一直到请求结束之间有过渡动画，容易想到axios提供的拦截器</p>
+<p>过渡动画：请求开始后一直到请求结束之间有过渡动画，容易想到 axios 提供的拦截器</p>
 
 <p>视图响应：提示框？对话框？路由跳转？</p>
 
@@ -229,21 +229,21 @@
 
 <h5 id="确定参数">确定参数</h5>
 
-<p>1# 接口是多样的，接口的代码入口，是以url还是method来区分？</p>
+<p>1# 接口是多样的，接口的代码入口，是以 url 还是 method 来区分？</p>
 
-<p>其实都有，以url为区分，会设计为每个接口一个函数；以method为区分，一般只有涉及到的get，post，put，patch，delete，那就主要有这么几个函数，实际调用再具体指定url。</p>
+<p>其实都有，以 url 为区分，会设计为每个接口一个函数；以 method 为区分，一般只有涉及到的 get，post，put，patch，delete，那就主要有这么几个函数，实际调用再具体指定 url。</p>
 
-<p>个人倾向于后者，应为当借口类型多了，那前者写比较多函数，有点多余了。但是后者有个问题，当url变动时，每一处调用都需要修改。参考工厂模式的思想，可以把url写到单个配置文件，这样就可以避免了。</p>
+<p>个人倾向于后者，应为当借口类型多了，那前者写比较多函数，有点多余了。但是后者有个问题，当 url 变动时，每一处调用都需要修改。参考工厂模式的思想，可以把 url 写到单个配置文件，这样就可以避免了。</p>
 
-<p>2# 动态的参数怎么设置？比如验证token，接受语言。</p>
+<p>2# 动态的参数怎么设置？比如验证 token，接受语言。</p>
 
-<p>这部分配置都在请求头处，那可以增加header参数，因为axios已提供动态修改或header的api。</p>
+<p>这部分配置都在请求头处，那可以增加 header 参数，因为 axios 已提供动态修改或 header 的 api。</p>
 
-<p>一些公共的header，比如接受语言，那就可以利用拦截器增加。</p>
+<p>一些公共的 header，比如接受语言，那就可以利用拦截器增加。</p>
 
 <h5 id="过渡动画">过渡动画</h5>
 
-<p>axios的拦截器包括了请求前的拦截和响应后的拦截。那过渡动画的增加就简单了。</p>
+<p>axios 的拦截器包括了请求前的拦截和响应后的拦截。那过渡动画的增加就简单了。</p>
 
 <h5 id="视图响应">视图响应</h5>
 
@@ -251,11 +251,11 @@
 
 <h4 id="代码样例">代码样例</h4>
 
-<p>我的是用在vue上， ./utils/http.js</p>
+<p>我的是用在 vue 上， ./utils/http.js</p>
 
-<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="kr">import</span> <span class="nx">qs</span> <span class="nx">from</span> <span class="s1">'qs'</span>
-<span class="kr">import</span> <span class="nx">axios</span> <span class="nx">from</span> <span class="s1">'axios'</span>
-<span class="kr">import</span> <span class="nx">store</span> <span class="nx">from</span> <span class="s1">'../store'</span>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nx">qs</span> <span class="k">from</span> <span class="s1">'qs'</span>
+<span class="k">import</span> <span class="nx">axios</span> <span class="k">from</span> <span class="s1">'axios'</span>
+<span class="k">import</span> <span class="nx">store</span> <span class="k">from</span> <span class="s1">'../store'</span>
 
 <span class="nx">axios</span><span class="p">.</span><span class="nx">defaults</span><span class="p">.</span><span class="nx">headers</span><span class="p">.</span><span class="nx">common</span><span class="p">[</span><span class="s1">'X-Requested-With'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'XMLHttpRequest'</span>
 <span class="nx">axios</span><span class="p">.</span><span class="nx">defaults</span><span class="p">.</span><span class="nx">timeout</span> <span class="o">=</span> <span class="mi">10000</span> <span class="c1">// ms</span>
@@ -277,14 +277,14 @@
 
     <span class="k">return</span> <span class="nx">config</span>
 <span class="p">},</span> <span class="nx">error</span> <span class="o">=&gt;</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="nx">Promise</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">Promise</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span>
 <span class="p">})</span>
 
 <span class="nx">axios</span><span class="p">.</span><span class="nx">interceptors</span><span class="p">.</span><span class="nx">response</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">response</span> <span class="o">=&gt;</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">response</span>
 <span class="p">},</span> <span class="nx">error</span> <span class="o">=&gt;</span> <span class="p">{</span>
 
-    <span class="kr">const</span> <span class="p">{</span> <span class="nx">response</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">error</span>
+    <span class="kd">const</span> <span class="p">{</span> <span class="nx">response</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">error</span>
 
     <span class="c1">// loading finish</span>
     <span class="c1">// ...</span>
@@ -292,12 +292,12 @@
     <span class="c1">// deal with errorResponse</span>
     <span class="c1">// ...</span>
 
-    <span class="k">return</span> <span class="nx">Promise</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">Promise</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span>
 <span class="p">})</span>
 
-<span class="kr">export</span> <span class="k">default</span> <span class="p">{</span>
-    <span class="nx">get</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">params</span><span class="p">,</span> <span class="nx">header</span> <span class="o">=</span> <span class="p">{})</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="nx">axios</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="p">{</span>
+<span class="k">export</span> <span class="k">default</span> <span class="p">{</span>
+    <span class="kd">get</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">params</span><span class="p">,</span> <span class="nx">header</span> <span class="o">=</span> <span class="p">{})</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">axios</span><span class="p">.</span><span class="kd">get</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="p">{</span>
             <span class="nx">params</span><span class="p">,</span> <span class="nx">header</span>
         <span class="p">})</span>
     <span class="p">},</span>
@@ -322,38 +322,35 @@
         <span class="p">})</span>
     <span class="p">}</span>
 <span class="p">}</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>调用代码</p>
 
-<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="kr">import</span> <span class="nx">http</span> <span class="nx">from</span> <span class="s1">'./utils/http'</span>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nx">http</span> <span class="k">from</span> <span class="s1">'./utils/http'</span>
 
 <span class="nx">fetch</span><span class="p">()</span> <span class="p">{</span>
-  <span class="nx">http</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">params</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span> <span class="nx">response</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="nx">http</span><span class="p">.</span><span class="kd">get</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">params</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span> <span class="nx">response</span> <span class="o">=&gt;</span> <span class="p">{</span>
     <span class="c1">// ...</span>
   <span class="p">}).</span><span class="k">catch</span><span class="p">(</span> <span class="nx">error</span> <span class="o">=&gt;</span> <span class="p">{</span>
     <span class="c1">// ...</span>
   <span class="p">})</span>
 <span class="p">}</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p><strong>有必要使用async/await代替Promise</strong></p>
-<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="kr">import</span> <span class="nx">http</span> <span class="nx">from</span> <span class="s1">'./utils/http'</span>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nx">http</span> <span class="k">from</span> <span class="s1">'./utils/http'</span>
 
-<span class="nx">async</span> <span class="nx">fetch</span><span class="p">()</span> <span class="p">{</span>
+<span class="k">async</span> <span class="nx">fetch</span><span class="p">()</span> <span class="p">{</span>
   <span class="k">try</span> <span class="p">{</span>
-    <span class="kd">let</span> <span class="nx">response</span> <span class="o">=</span> <span class="nx">await</span> <span class="nx">http</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">params</span><span class="p">)</span>
+    <span class="kd">let</span> <span class="nx">response</span> <span class="o">=</span> <span class="kr">await</span> <span class="nx">http</span><span class="p">.</span><span class="kd">get</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">params</span><span class="p">)</span>
     <span class="c1">// ...</span>
   <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
     <span class="c1">// ...</span>
   <span class="p">}</span>
 <span class="p">}</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>使用async/await有效避免很多回调的代码，线性的执行更好理解。</p>
+<p>使用 async/await 有效避免很多回调的代码，线性的执行更好理解。</p>
 
 <h3 id="结尾">结尾</h3>
 
@@ -432,7 +429,7 @@
                             
         				
                             
-                				<a href="/tags/#PHP" title="PHP" rel="12">
+                				<a href="/tags/#PHP" title="PHP" rel="3">
                                     PHP
                                 </a>
                             
@@ -440,22 +437,8 @@
                             
         				
                             
-        				
-                            
-        				
-                            
-        				
-                            
-        				
-                            
-        				
-                            
-        				
-                            
-        				
-                            
-                				<a href="/tags/#JavaScript" title="JavaScript" rel="2">
-                                    JavaScript
+                				<a href="/tags/#MySQL" title="MySQL" rel="2">
+                                    MySQL
                                 </a>
                             
         				
@@ -464,8 +447,20 @@
                             
         				
                             
-                				<a href="/tags/#设计模式" title="设计模式" rel="7">
-                                    设计模式
+        				
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+                				<a href="/tags/#学习笔记" title="学习笔记" rel="2">
+                                    学习笔记
                                 </a>
                             
         				

@@ -9,9 +9,9 @@
     <meta name="keyword"  content="git php mysql laravel littlesqx">
     <link rel="shortcut icon" href="https://littlesqx-github-io.b0.upaiyun.com/img/favicon.ico">
 
-    <title>设计模式 (4) - 适配器模式 - Littlesqx Blog</title>
+    <title>《高性能 MySQL》学习笔记（1）- 事务与隔离 - Littlesqx Blog</title>
 
-    <link rel="canonical" href="https://littlesqx.github.io/2018/01/08/design-pattern-adapter/">
+    <link rel="canonical" href="https://littlesqx.github.io/2018/03/09/high-performance-mysql-notes-01/">
 
     <!-- nprogress CSS -->
     <link href="https://littlesqx-github-io.b0.upaiyun.com/css/nprogress.min.css" rel="stylesheet">
@@ -150,17 +150,17 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#PHP" title="PHP">PHP</a>
+                        <a class="tag" href="/tags/#MySQL" title="MySQL">MySQL</a>
                         
-                        <a class="tag" href="/tags/#设计模式" title="设计模式">设计模式</a>
+                        <a class="tag" href="/tags/#学习笔记" title="学习笔记">学习笔记</a>
                         
                     </div>
-                    <h1>设计模式 (4) - 适配器模式</h1>
+                    <h1>《高性能 MySQL》学习笔记（1）- 事务与隔离</h1>
                     
                     
                     <h2 class="subheading"></h2>
                     
-                    <span class="meta">Posted by Littlesqx on January 8, 2018</span>
+                    <span class="meta">Posted by Littlesqx on March 9, 2018</span>
                 </div>
             </div>
         </div>
@@ -179,119 +179,125 @@
                 post-container">
 
 				<blockquote>
-  <p>好颓好颓~</p>
+  <p>停滞了好久，想着找点东西写。</p>
 </blockquote>
 
-<h3 id="简单介绍">简单介绍</h3>
+<h3 id="事务">事务</h3>
 
-<p>适配器模式(Adapter Pattern) ：是作为两个不兼容的接口之间的桥梁，将一个接口转换成客户希望的另一个接口，适配器模式使接口不兼容的那些类可以一起工作，其别名为包装器(Wrapper)。</p>
+<blockquote>
+  <p>事务是一组原子性的 SQL 查询，或者说一个独立的工作单元。如果数据库引擎能够成功地对数据库应用该组查询的全部语句，那么就执行该组查询；但如果其中有任何一条语句因为崩溃或其他原因无法执行，那么所有的语句都不会执行。简言之，事务内的语句，要么全部执行成功，要么全部执行失败（不执行）。</p>
+</blockquote>
 
-<h3 id="php-实现">PHP 实现</h3>
+<p>举一个例子，假设一个银行的数据库有张表：支票（checkings）表和储蓄（savings）表。现在要从用户 Jane 的支票账户转移 200 美元到她的储蓄账户，那么需要至少三个步骤：</p>
 
-<p>假设旧系统都是采用 MySQLi 的方式连接数据库，当项目移植到另一个系统，新环境不支持 MySQLi ，而支持 PDO ，适配器的作用就体现了；反之也是类似的。</p>
+<ul>
+  <li>
+    <p>检查支票账户的余额是否不低于 200 美元。</p>
+  </li>
+  <li>
+    <p>从支票账户余额钟减去 200 美元。</p>
+  </li>
+  <li>
+    <p>在储蓄账户余额中增加 200 美元。</p>
+  </li>
+</ul>
 
-<p>这是旧代码：</p>
+<p>上述三个步骤的操作必须打包在一个事务中，任何一个步骤失败，都必须回滚所有步骤。</p>
 
-<div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<h4 id="特征">特征</h4>
 
-<span class="nv">$config</span> <span class="o">=</span> <span class="p">[</span>
-	<span class="s1">'host'</span> <span class="o">=&gt;</span> <span class="s1">'localhost'</span><span class="p">,</span>
-	<span class="s1">'dbname'</span> <span class="o">=&gt;</span> <span class="s1">'test'</span><span class="p">,</span>
-	<span class="s1">'username'</span> <span class="o">=&gt;</span> <span class="s1">'homestead'</span><span class="p">,</span>
-	<span class="s1">'password'</span> <span class="o">=&gt;</span> <span class="s1">'secret'</span>
-<span class="p">];</span>
+<p><strong>1# 原子性（atomicity）</strong></p>
 
-<span class="k">interface</span> <span class="nx">MySQLi</span> <span class="p">{</span>
-	<span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">connection</span><span class="p">(</span><span class="nv">$config</span><span class="p">);</span>
-<span class="p">}</span>
+<p>一个事务必须被视为一个不可分割的最小工作单元，整个事务中的所有操作要么全部提交成功，要么全部失败回滚。</p>
 
-<span class="k">class</span> <span class="nc">Db</span> <span class="k">implements</span> <span class="nx">MySQLi</span>
-<span class="p">{</span>
-	<span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">connection</span><span class="p">(</span><span class="nv">$config</span><span class="p">)</span>
-	<span class="p">{</span>
-		<span class="k">return</span> <span class="k">new</span> <span class="nx">mysqli</span><span class="p">(</span>
-			<span class="nv">$config</span><span class="p">[</span><span class="s1">'host'</span><span class="p">],</span>
-			<span class="nv">$config</span><span class="p">[</span><span class="s1">'username'</span><span class="p">],</span>
-			<span class="nv">$config</span><span class="p">[</span><span class="s1">'password'</span><span class="p">],</span>
-			<span class="nv">$config</span><span class="p">[</span><span class="s1">'dbname'</span><span class="p">]</span>
-		<span class="p">);</span>
-	<span class="p">}</span>
-<span class="p">}</span>
+<p><strong>2# 一致性（consistency）</strong></p>
 
-<span class="nv">$db</span> <span class="o">=</span> <span class="nx">Db</span><span class="o">::</span><span class="na">connection</span><span class="p">(</span><span class="nv">$config</span><span class="p">);</span>
+<p>数据库总是从一个一致性的状态转换到另外一个一致性的状态。像上面三个步骤中，即便第二（三）个步骤失败了，但由于事务的回滚，使得最终数据库不会增加（减少）了 200 美元的数据。</p>
+
+<p><strong>3# 隔离性（isolation）</strong></p>
+
+<p><strong>通常</strong>，一个事务所做的修改在最终提交前，对其他事务都是不可见的。但是不可见的隔离也产生了“副作用” ———— 不可重复读。后面会讨论不同等级的隔离级别。</p>
+
+<p><strong>4# 持久性（durability）</strong></p>
+
+<p>一旦事务提交，其所做的修改就会永久保存到数据库。</p>
+
+<h4 id="隔离级别">隔离级别</h4>
+
+<p><strong>1# READ UNCOMMITTED（未提交读）</strong></p>
+
+<p>事务的修改，即使没有提交，对其他事务也都是可见的。事务可以读取未提交的数据，被称为“脏读”（Dirty Read）。这个级别会导致很多问题，从性能上来说，不会比其他级别好太多，但却缺乏其他级别很多好处，在实际应用中一般很少被使用。</p>
+
+<p><strong>2# READ COMMITTED（提交读）</strong></p>
+
+<p>一个事务从开始直到提交之前，所做的任何修改对其他事务都是不可见的。这个级别有时候也叫做不可重复读（nonrepeatable read），因为两次执行同样的查询，可能会得到不一样的结果。</p>
+
+<p><strong>3# REPEATABLE READ（可重复读）</strong></p>
+
+<p>解决了脏读的问题。该级别保证了在同一事务中多次读取同样记录的结果是一致的。但理论上，无法解决另一个幻读（Phantom Read）的问题，它指的是当某个事务在读取某个范围内的记录时，另外一个事务又在该范围内插入了新的记录，当之前的事务再次读取该范围内的记录时，会产生幻行（Phantom Row）。</p>
+
+<p>MySQL 的默认事务隔离级别。</p>
+
+<p><strong>4# SERIALIZABLE（可串行化）</strong></p>
+
+<p>最高的隔离级别。它通过强制事务串行执行，避免了前面说的幻读问题。简单来说，SERIALIZABLE 会在读取的每一行数据上都加锁，所以可能导致大量的超时和锁争用的问题。</p>
+
+<h4 id="异常读">异常读</h4>
+
+<p>MySQL 的 <code class="highlighter-rouge">@@global.tx_isolation</code> 和 <code class="highlighter-rouge">@@tx_isolation</code> 配置项（分别对于全局和当前会话）设置隔离级别。</p>
+
+<p>设置全局：</p>
+<pre><code class="language-MySQL">set global transaction isolation level [READ UNCOMMITTED|READ COMMITTED|REPEATABLE|SERIALIZABLE];
 </code></pre>
-</div>
-
-<p>这是新代码：</p>
-
-<div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
-
-<span class="nv">$config</span> <span class="o">=</span> <span class="p">[</span>
-	<span class="s1">'host'</span> <span class="o">=&gt;</span> <span class="s1">'localhost'</span><span class="p">,</span>
-	<span class="s1">'dbname'</span> <span class="o">=&gt;</span> <span class="s1">'test'</span><span class="p">,</span>
-	<span class="s1">'username'</span> <span class="o">=&gt;</span> <span class="s1">'homestead'</span><span class="p">,</span>
-	<span class="s1">'password'</span> <span class="o">=&gt;</span> <span class="s1">'secret'</span>
-<span class="p">];</span>
-
-<span class="k">interface</span> <span class="nx">IMySQLi</span> <span class="p">{</span>
-	<span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">connection</span><span class="p">(</span><span class="nv">$config</span><span class="p">);</span>
-<span class="p">}</span>
-
-<span class="k">interface</span> <span class="nx">IPDO</span> <span class="p">{</span>
-	<span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">connection</span><span class="p">(</span><span class="nv">$config</span><span class="p">);</span>
-<span class="p">}</span>
-
-<span class="k">class</span> <span class="nc">Db</span> <span class="k">implements</span> <span class="nx">IMySQLi</span>
-<span class="p">{</span>
-	<span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">connection</span><span class="p">(</span><span class="nv">$config</span><span class="p">)</span>
-	<span class="p">{</span>
-		<span class="k">return</span> <span class="k">new</span> <span class="nx">mysqli</span><span class="p">(</span>
-			<span class="nv">$config</span><span class="p">[</span><span class="s1">'host'</span><span class="p">],</span>
-			<span class="nv">$config</span><span class="p">[</span><span class="s1">'username'</span><span class="p">],</span>
-			<span class="nv">$config</span><span class="p">[</span><span class="s1">'password'</span><span class="p">],</span>
-			<span class="nv">$config</span><span class="p">[</span><span class="s1">'dbname'</span><span class="p">]</span>
-		<span class="p">);</span>
-	<span class="p">}</span>
-<span class="p">}</span>
-
-<span class="k">class</span> <span class="nc">PdoDb</span> <span class="k">implements</span> <span class="nx">IPDO</span>
-<span class="p">{</span>
-	<span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">connection</span><span class="p">(</span><span class="nv">$config</span><span class="p">)</span>
-	<span class="p">{</span>
-		<span class="k">return</span> <span class="k">new</span> <span class="nx">PDO</span><span class="p">(</span><span class="s1">'host='</span><span class="o">.</span><span class="nv">$config</span><span class="p">[</span><span class="s1">'host'</span><span class="p">]</span><span class="o">.</span><span class="s1">';dbname='</span><span class="o">.</span><span class="nv">$config</span><span class="p">[</span><span class="s1">'dbname'</span><span class="p">],</span> <span class="nv">$config</span><span class="p">[</span><span class="s1">'username'</span><span class="p">],</span> <span class="nv">$config</span><span class="p">[</span><span class="s1">'password'</span><span class="p">]);</span>
-	<span class="p">}</span>
-<span class="p">}</span>
-
-<span class="k">class</span> <span class="nc">DbAdapter</span> <span class="k">implements</span> <span class="nx">IMySQLi</span>
-<span class="p">{</span>
-	<span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">connection</span><span class="p">(</span><span class="nv">$config</span><span class="p">)</span>
-	<span class="p">{</span>
-		<span class="nv">$driver</span> <span class="o">=</span> <span class="nv">$config</span><span class="p">[</span><span class="s1">'driver'</span><span class="p">]</span> <span class="o">??</span> <span class="s1">'mysqli'</span><span class="p">;</span>
-
-		<span class="k">if</span> <span class="p">(</span><span class="nv">$driver</span> <span class="o">===</span> <span class="s1">'pdo'</span><span class="p">)</span> <span class="p">{</span>
-			<span class="k">return</span> <span class="nx">PdoDb</span><span class="o">::</span><span class="na">connection</span><span class="p">(</span><span class="nv">$config</span><span class="p">);</span>
-		<span class="p">}</span>
-
-		<span class="k">return</span> <span class="nx">Db</span><span class="o">::</span><span class="na">connection</span><span class="p">(</span><span class="nv">$config</span><span class="p">);</span>
-	<span class="p">}</span>
-<span class="p">}</span>
-
-<span class="k">class</span> <span class="nc">Client</span> <span class="k">implements</span> <span class="nx">IMySQLi</span>
-<span class="p">{</span>
-
-	<span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">connection</span><span class="p">(</span><span class="nv">$config</span><span class="p">)</span>
-	<span class="p">{</span>
-		<span class="k">return</span> <span class="nx">DbAdapter</span><span class="o">::</span><span class="na">connection</span><span class="p">(</span><span class="nv">$config</span><span class="p">);</span>
-	<span class="p">}</span>
-<span class="p">}</span>
-
-<span class="nv">$db</span> <span class="o">=</span> <span class="nx">Client</span><span class="o">::</span><span class="na">connection</span><span class="p">(</span><span class="nv">$config</span><span class="p">);</span>
+<p>设置当前会话：</p>
+<pre><code class="language-MySQL">set session transaction isolation level [READ UNCOMMITTED|READ COMMITTED|REPEATABLE|SERIALIZABLE];
 </code></pre>
-</div>
 
-<h3 id="补充">补充</h3>
+<p><strong>0# 隔离级别对应的异常读发生可能性</strong></p>
 
-<p>其他场景，例如 Cache 驱动的适配（文件、 Redis、memcache等）。</p>
+<table>
+  <tbody>
+    <tr>
+      <td>隔离级别</td>
+      <td>脏读</td>
+      <td>不可重复读</td>
+      <td>幻读</td>
+      <td>加锁读</td>
+    </tr>
+    <tr>
+      <td>READ UNCOMMITTED</td>
+      <td>Y</td>
+      <td>Y</td>
+      <td>Y</td>
+      <td>N</td>
+    </tr>
+    <tr>
+      <td>READ COMMITTED</td>
+      <td>N</td>
+      <td>Y</td>
+      <td>Y</td>
+      <td>N</td>
+    </tr>
+    <tr>
+      <td>REPEATABLE</td>
+      <td>N</td>
+      <td>N</td>
+      <td>Y</td>
+      <td>N</td>
+    </tr>
+    <tr>
+      <td>SERIALIZABLE</td>
+      <td>N</td>
+      <td>N</td>
+      <td>N</td>
+      <td>Y</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>1# 脏读</strong></p>
+
+<p>…</p>
 
 
 
@@ -306,13 +312,9 @@
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2018/01/08/design-pattern-builder-pattern/" data-toggle="tooltip" data-placement="top" title="设计模式 (3) - 建造者模式">&larr; Previous Post</a>
+                        <a href="/2017/12/24/the-2018-guide-to-building-secure-php-software/" data-toggle="tooltip" data-placement="top" title="[译]The 2018 Guide to Building Secure PHP Software">&larr; Previous Post</a>
                     </li>
                     
-                    
-                    <li class="next">
-                        <a href="/2018/01/09/design-pattern-decorator-pattern/" data-toggle="tooltip" data-placement="top" title="设计模式 (5) - 装饰模式">Next Post &rarr;</a>
-                    </li>
                     
                 </ul>
 
@@ -367,7 +369,7 @@
                             
         				
                             
-                				<a href="/tags/#PHP" title="PHP" rel="12">
+                				<a href="/tags/#PHP" title="PHP" rel="3">
                                     PHP
                                 </a>
                             
@@ -375,22 +377,8 @@
                             
         				
                             
-        				
-                            
-        				
-                            
-        				
-                            
-        				
-                            
-        				
-                            
-        				
-                            
-        				
-                            
-                				<a href="/tags/#JavaScript" title="JavaScript" rel="2">
-                                    JavaScript
+                				<a href="/tags/#MySQL" title="MySQL" rel="2">
+                                    MySQL
                                 </a>
                             
         				
@@ -399,8 +387,20 @@
                             
         				
                             
-                				<a href="/tags/#设计模式" title="设计模式" rel="7">
-                                    设计模式
+        				
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+                				<a href="/tags/#学习笔记" title="学习笔记" rel="2">
+                                    学习笔记
                                 </a>
                             
         				
