@@ -7,14 +7,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="littlesqx's blog">
     <meta name="keyword"  content="git php mysql laravel littlesqx">
-    <link rel="shortcut icon" href="https://littlesqx-github-io.b0.upaiyun.com/img/favicon.ico">
+    <link rel="shortcut icon" href="https://littlesqx.github.io/img/favicon.ico">
 
     <title>Littlesqx Blog</title>
 
     <link rel="canonical" href="https://littlesqx.github.io/">
 
     <!-- nprogress CSS -->
-    <link href="https://littlesqx-github-io.b0.upaiyun.com/css/nprogress.min.css" rel="stylesheet">
+    <link href="https://littlesqx.github.io/css/nprogress.min.css" rel="stylesheet">
     <style media="screen">
       #nprogress .bar {
         height: 3px;
@@ -22,13 +22,13 @@
     </style>
 
     <!-- Bootstrap Core CSS -->
-    <link rel="stylesheet" href="https://littlesqx-github-io.b0.upaiyun.com/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://littlesqx.github.io/css/bootstrap.min.css">
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="https://littlesqx-github-io.b0.upaiyun.com/css/hux-blog.min.css">
+    <link rel="stylesheet" href="https://littlesqx.github.io/css/hux-blog.min.css">
 
     <!-- Pygments Github CSS -->
-    <link rel="stylesheet" href="https://littlesqx-github-io.b0.upaiyun.com/css/syntax.css">
+    <link rel="stylesheet" href="https://littlesqx.github.io/css/syntax.css">
 
     <!-- Custom Fonts -->
     <!-- <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
@@ -52,7 +52,7 @@
 
     <!-- ga & ba script hoook -->
     
-    <link rel="stylesheet" href="https://littlesqx-github-io.b0.upaiyun.com/css/gitment.min.css">
+    <link rel="stylesheet" href="https://littlesqx.github.io/css/gitment.min.css">
     
     <script></script>
 </head>
@@ -134,7 +134,7 @@
 
 
     <!-- Page Header -->
-<header class="intro-header" style="background-image: url('https://littlesqx-github-io.b0.upaiyun.com/img/bg.png')">
+<header class="intro-header" style="background-image: url('https://littlesqx.github.io/img/bg.png')">
     <div class="container">
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
@@ -164,326 +164,218 @@
             ">
     			
 <div class="post-preview">
-    <a href="/2018/01/12/go-func-defer/">
+    <a href="/2018/03/09/high-performance-mysql-notes-01/">
         <h2 class="post-title">
-            Go defer 关键字
+            《高性能 MySQL》学习笔记（1）- 事务与隔离
         </h2>
         
         <div class="post-content-preview">
             
-  好颓好颓~
+  停滞了好久，想着找点东西写。
 
 
-defer 关键字
+事务
 
-Go 语言中使用 defer 关键字在函数中声明延迟( defer )语句，顾名思义，这些语句会被逆序延迟执行。
-执行时间是函数返回(return)前。
 
-栗子：
+  事务是一组原子性的 SQL 查询，或者说一个独立的工作单元。如果数据库引擎能够成功地对数据库应用该组查询的全部语句，那么就执行该组查询；但如果其中有任何一条语句因为崩溃或其他原因无法执行，那么所有的语句都不会执行。简言之，事务内的语句，要么全部执行成功，要么全部执行失败（不执行）。
 
-func main() {
-    defer fmt.Printf("a ")
-    defer fmt.Printf("b ")
-    fmt.Printf("c ")
-}
 
-...
+举一个例子，假设一个银行的数据库有张表：支票（che...
         </div>
     </a>
     <p class="post-meta">
-        Posted by Littlesqx on January 12, 2018
+        Posted by Littlesqx on March 9, 2018
     </p>
 </div>
 <hr>
 
 <div class="post-preview">
-    <a href="/2018/01/12/closures/">
+    <a href="/2017/12/24/the-2018-guide-to-building-secure-php-software/">
         <h2 class="post-title">
-            浅析闭包函数 Closures
+            [译]The 2018 Guide to Building Secure PHP Software
         </h2>
         
         <div class="post-content-preview">
             
-  好颓好颓~
+  2018PHP应用程序安全设计指北！
 
 
-什么是闭包？
+目录
 
-PHP 文档这样介绍：
-
-
-  匿名函数（Anonymous functions），也叫闭包函数（closures），允许 临时创建一个没有指定名称的函数。最经常用作回调函数（callback）参数的值。当然，也有其它应用的情况。
-
-
-真的很含糊，什么叫还有其它应用的情况。。。
-
-找了 JavaScript 的文档：
-
-
-  Closures (闭包)是...
+  前言
+  PHP 版本 / PHP Versions
+  Composer依赖管理 / Dependency Management with Composer
+    
+      推荐扩展 / Recommended Packages
+    
+  
+  HTTPS和浏览器安全 / HTTPS and Browser Securi...
         </div>
     </a>
     <p class="post-meta">
-        Posted by Littlesqx on January 12, 2018
+        Posted by Littlesqx on December 24, 2017
     </p>
 </div>
 <hr>
 
 <div class="post-preview">
-    <a href="/2018/01/12/array_map_vs_array_walk/">
+    <a href="/2017/12/08/elasticsearch-learn-notes-1/">
         <h2 class="post-title">
-            array_map 和 array_walk 的对比
+            you know, for search - ElasticSearch 学习笔记(1)
         </h2>
         
         <div class="post-content-preview">
             
-  好颓好颓~
+  好大的胆子，写了(1)，不知道后面还能不能坚持。。。
 
 
-array_map
+ElasticSearch 是什么 ?
 
-array_map — 为数组的每个元素应用回调函数。
+怒抄一波介绍：
 
-array array_map ( callable $callback , array $array1 [, array $… ] )
 
-array_walk
+  Elasticsearch是一个基于Apache Lucene(TM)的开源搜索引擎。无论在开源还是专有领域，Lucene可以被认为是迄今为止最先进、性能最好的、功能最全的搜索引擎库。
 
-array_walk — 使用用户自定义函数对数组中的每个元素做回调处理
-
-array_walk ( array &amp;$a...
+不过，Elasticsearch不仅仅是Lucene和全文搜索，我们还能这样...
         </div>
     </a>
     <p class="post-meta">
-        Posted by Littlesqx on January 12, 2018
+        Posted by Littlesqx on December 8, 2017
     </p>
 </div>
 <hr>
 
 <div class="post-preview">
-    <a href="/2018/01/10/design-pattern-observer-pattern/">
+    <a href="/2017/10/24/axios-packaging-notes/">
         <h2 class="post-title">
-            设计模式 (7) - 观察者模式
+            记一次 axios 封装
         </h2>
         
         <div class="post-content-preview">
             
-  好颓好颓~
+  就祝自己1024快乐吧！
 
 
-简单介绍
+前言
+源自于最近在写的一个项目，原因是前期的 axios 封装考虑得不是很好，逐渐出现冗余。趁着还早，就重构一下这部分。
 
-观察者模式(Observer Pattern)：定义对象间的一种一对多依赖关系，使得每当一个对象（观察目标）状态发生改变时，其相关依赖对象（观察者）皆得到通知并被自动更新。观察者模式又叫做发布-订阅（Publish/Subscribe）模式、模型-视图（Model/View）模式、源-监听器（Source/Listener）模式或从属者（Dependents...
+正文
+
+axios
+
+web开发里，axios 是首推的 Ajax 库了，应该说基本上都用它。
+
+官方是这样介绍的：
+
+
+  Make XMLHttpRequests from the browser
+
+  Make http req...
         </div>
     </a>
     <p class="post-meta">
-        Posted by Littlesqx on January 10, 2018
+        Posted by Littlesqx on October 24, 2017
     </p>
 </div>
 <hr>
 
 <div class="post-preview">
-    <a href="/2018/01/10/design-pattern-strategy-pattern/">
+    <a href="/2017/10/15/lamp-lnmp-lanmp/">
         <h2 class="post-title">
-            设计模式 (6) - 策略模式
+            写一篇介绍和对比文章，关于 LAMP LNMP LANMP，还有...
         </h2>
         
         <div class="post-content-preview">
             
-  好颓好颓~
+  LAMP = Linux Apache MySQL PHP
+
+  LNMP = Linux Nginx MySQL PHP
+
+  LANMP = Linux Apache Nginx MySQL PHP
+
+  LNSMP = Linux Nginx Swoole MySQL PHP （这是我乱起的缩写）
 
 
-简单介绍
-
-策略模式是对算法的封装，把一系列的算法分别封装到对应的类中，并且这些类实现相同的接口，相互之间可以替换。
-
-策略模式的结构
-
-
-  封装类：也叫上下文，对策略进行二次封装，目的是避免高层模块对策略的直接调用。
-  抽象策略：通常情况下为一个接口，当各个实现类中存在着重复的逻辑时，则使用抽象类来封装这部分公共的代码，此时，策略模式看上去更像是模版方法模式。
- ...
+前言
+在第一篇文章《在CentOS 7 上配置 LNMP 环境
+》提到过，有时...
         </div>
     </a>
     <p class="post-meta">
-        Posted by Littlesqx on January 10, 2018
+        Posted by Littlesqx on October 15, 2017
     </p>
 </div>
 <hr>
 
 <div class="post-preview">
-    <a href="/2018/01/09/design-pattern-decorator-pattern/">
+    <a href="/2017/10/08/mysql-backup-to-sae-storage/">
         <h2 class="post-title">
-            设计模式 (5) - 装饰模式
+            MySQL定时备份，要不利用SAE Storage吧
         </h2>
         
         <div class="post-content-preview">
             
-  好颓好颓~
+  这个题目，我挺满意的哈哈。
 
 
-简单介绍
+前言
 
-一般有两种方式可以实现给一个类或对象增加行为：
-
-
-  
-    继承机制，使用继承机制是给现有类添加功能的一种有效途径，通过继承一个现有类可以使得子类在拥有自身方法的同时还拥有父类的方法。但是这种方法是静态的，用户不能控制增加行为的方式和时机。
-  
-  
-    关联机制，即将一个类的对象嵌入另一个对象中，由另一个对象来决定是否调用嵌入对象的行为以便扩展...
+其实是很久以前的一个想法了，为什么一直没有实行，大概离不开懒吧。我两年前帮学校社团（我们是卖旧书的，有一个管理书本售卖情况的需要）开发了一个小站，挂在SAE上，那时候免费，比现在良心多了，现在数据库需要收费。当然了，就是那么巧，腾讯云开始了校园宣传，云+校园学生一元主机。对，没办法，我们穷啊，就发展到SAE上挂代码，腾讯云挂数据库的形式。每月的费...
         </div>
     </a>
     <p class="post-meta">
-        Posted by Littlesqx on January 9, 2018
+        Posted by Littlesqx on October 8, 2017
     </p>
 </div>
 <hr>
 
 <div class="post-preview">
-    <a href="/2018/01/08/design-pattern-adapter/">
+    <a href="/2017/09/23/centos7-lnmp/">
         <h2 class="post-title">
-            设计模式 (4) - 适配器模式
+            在CentOS 7 上配置 LNMP 环境
         </h2>
         
         <div class="post-content-preview">
             
-  好颓好颓~
+  终于开始了第一篇博客，希望自己可以坚持下去。内容是基本的环境配置，但尽量补充必要知识。
 
 
-简单介绍
+前言
 
-适配器模式(Adapter Pattern) ：是作为两个不兼容的接口之间的桥梁，将一个接口转换成客户希望的另一个接口，适配器模式使接口不兼容的那些类可以一起工作，其别名为包装器(Wrapper)。
-
-PHP 实现
-
-假设旧系统都是采用 MySQLi 的方式连接数据库，当项目移植到另一个系统，新环境不支持 MySQLi ，而支持 PDO ，适配器的作用就体现...
+提到 php 的运行环境，就想起了第一次接触 php，是社团师兄带我们入门 web 开发。师兄推荐的xampp，类似的还有WampServer，都是 windows 下集成好的 php 开发环境（包括 Apache，MySQL，还有 PHP）。很方便，一键式的配置，之后就可以把时间集中在...
         </div>
     </a>
     <p class="post-meta">
-        Posted by Littlesqx on January 8, 2018
+        Posted by Littlesqx on September 23, 2017
     </p>
 </div>
 <hr>
 
 <div class="post-preview">
-    <a href="/2018/01/08/design-pattern-builder-pattern/">
+    <a href="/2017/09/16/hello-world/">
         <h2 class="post-title">
-            设计模式 (3) - 建造者模式
+            Hello World!
         </h2>
+        
+        <h3 class="post-subtitle">
+            it's never too late to start studying anything
+        </h3>
         
         <div class="post-content-preview">
             
-  好颓好颓~
+  keep!
 
 
-简单介绍
-
-造者模式(Builder Pattern)：将一个复杂对象的构建与它的表示分离，使得同样的构建过程可以创建不同的表示。
-
-主要角色：
-
-
-  
-    Builder：抽象建造者
-  
-  
-    ConcreteBuilder：具体建造者
-  
-  
-    Director：指挥者
-  
-  
-    Product：产品角色
-  
-
-
-PHP 实现
-...
         </div>
     </a>
     <p class="post-meta">
-        Posted by Littlesqx on January 8, 2018
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2018/01/08/design-pattern-factory-pattern/">
-        <h2 class="post-title">
-            设计模式 (2) - 工厂模式
-        </h2>
-        
-        <div class="post-content-preview">
-            
-  好颓好颓~
-
-
-简单介绍
-
-工厂模式提供了一种创建对象的最佳方式，在创建对象时不暴露具体创建逻辑，而是提供公共的创建接口。
-工厂模式又分为简单工厂模式（静态工厂模式）、工厂方法模式和抽象工厂模式，它们其实大同小异，
-最终目的都是为了解耦，只是抽象程度：简单工厂模式 &lt; 工厂方法模式 &lt; 抽象工厂模式。
-
-PHP 实现
-
-以实现 MySQL 数据库连接的封装为例。
-
-工厂方法...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Littlesqx on January 8, 2018
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2018/01/07/design-pattern-singleton/">
-        <h2 class="post-title">
-            设计模式 (1) - 单例模式
-        </h2>
-        
-        <div class="post-content-preview">
-            
-  好颓好颓~
-
-
-简单介绍
-
-单例模式保证了应用在生命周期间一个类只生成一个实例对象，实现思路是类只能返回对象一个引用和一个获得该实例的方法。它的好处是避免频繁重复实例化同一个类，而造成系统资源的消耗和浪费。
-
-PHP 实现
-
-一个栗子
-
-直接上代码。
-
-&lt;?php
-
-class Product {
-
-	private static $instance;
-
-	public stat...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Littlesqx on January 7, 2018
+        Posted by Littlesqx on September 16, 2017
     </p>
 </div>
 <hr>
 
 
 <!-- Pager -->
-
-<ul class="pager">
-    
-    
-    <li class="next">
-        <a href="/page2">Older Posts &rarr;</a>
-    </li>
-    
-</ul>
 
 
     		</div>
@@ -515,7 +407,7 @@ class Product {
                             
                         
                             
-                                <a href="/tags/#PHP" title="PHP" rel="12">
+                                <a href="/tags/#PHP" title="PHP" rel="3">
                                     PHP
                                 </a>
                             
@@ -523,22 +415,8 @@ class Product {
                             
                         
                             
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                                <a href="/tags/#JavaScript" title="JavaScript" rel="2">
-                                    JavaScript
+                                <a href="/tags/#MySQL" title="MySQL" rel="2">
+                                    MySQL
                                 </a>
                             
                         
@@ -547,8 +425,20 @@ class Product {
                             
                         
                             
-                                <a href="/tags/#设计模式" title="设计模式" rel="7">
-                                    设计模式
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                                <a href="/tags/#学习笔记" title="学习笔记" rel="2">
+                                    学习笔记
                                 </a>
                             
                         
@@ -570,6 +460,15 @@ class Product {
                         
                         <!-- SNS Link -->
                         <ul class="list-inline">
+                            
+                            <li>
+                                <a href="/feed.xml">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
                             
                             
                             
@@ -613,6 +512,15 @@ class Product {
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                 <ul class="list-inline text-center">
                     
+                    <li>
+                        <a href="/feed.xml">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
                     
 
                     <!-- add Weibo, Zhihu by Hux, add target = "_blank" to <a> by Hux -->
@@ -633,12 +541,12 @@ class Product {
                     
                     <li>
                         <a target="_blank" href="https://www.upyun.com">
-                            <img src="https://littlesqx-github-io.b0.upaiyun.com/img/upyun_logo.png" style="width: 140px; cursor: pointer;">
+                            <img src="https://littlesqx.github.io/img/upyun_logo.png" style="width: 140px; cursor: pointer;">
                         </a>
                     </li>
                 </ul>
                 <p class="copyright text-muted">
-                    Copyright &copy; Littlesqx Blog 2018
+                    Copyright &copy; Littlesqx Blog 2019
                     <br>
                     Theme by <a href="https://huangxuan.me">Hux</a> |
                     <iframe
@@ -653,16 +561,16 @@ class Product {
 </footer>
 
 <!-- jQuery -->
-<script src="https://littlesqx-github-io.b0.upaiyun.com/js/jquery.min.js "></script>
+<script src="https://littlesqx.github.io/js/jquery.min.js "></script>
 
 <!-- Bootstrap Core JavaScript -->
-<script src="https://littlesqx-github-io.b0.upaiyun.com/js/bootstrap.min.js "></script>
+<script src="https://littlesqx.github.io/js/bootstrap.min.js "></script>
 
 <!-- Custom Theme JavaScript -->
-<script src="https://littlesqx-github-io.b0.upaiyun.com/js/hux-blog.min.js "></script>
+<script src="https://littlesqx.github.io/js/hux-blog.min.js "></script>
 
 <!-- nprogress JavaScript -->
-<script src="https://littlesqx-github-io.b0.upaiyun.com/js/nprogress.min.js "></script>
+<script src="https://littlesqx.github.io/js/nprogress.min.js "></script>
 
 
 <!-- async load function -->
@@ -700,7 +608,7 @@ class Product {
 <script>
     // only load tagcloud.js in tag.html
     if($('#tag_cloud').length !== 0){
-        async("https://littlesqx-github-io.b0.upaiyun.com/js/jquery.tagcloud.js",function(){
+        async("https://littlesqx.github.io/js/jquery.tagcloud.js",function(){
             $.fn.tagcloud.defaults = {
                 //size: {start: 1, end: 1, unit: 'em'},
                 color: {start: '#bbbbee', end: '#0085a1'},
@@ -712,7 +620,7 @@ class Product {
 
 <!--fastClick.js -->
 <script>
-    async("https://littlesqx-github-io.b0.upaiyun.com/js/fastclick.min.js ", function(){
+    async("https://littlesqx.github.io/js/fastclick.min.js ", function(){
         var $nav = document.querySelector("nav");
         if($nav) FastClick.attach($nav);
     })

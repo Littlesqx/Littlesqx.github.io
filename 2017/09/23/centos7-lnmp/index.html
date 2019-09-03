@@ -7,14 +7,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="littlesqx's blog">
     <meta name="keyword"  content="git php mysql laravel littlesqx">
-    <link rel="shortcut icon" href="https://littlesqx-github-io.b0.upaiyun.com/img/favicon.ico">
+    <link rel="shortcut icon" href="https://littlesqx.github.io/img/favicon.ico">
 
     <title>在CentOS 7 上配置 LNMP 环境 - Littlesqx Blog</title>
 
     <link rel="canonical" href="https://littlesqx.github.io/2017/09/23/centos7-lnmp/">
 
     <!-- nprogress CSS -->
-    <link href="https://littlesqx-github-io.b0.upaiyun.com/css/nprogress.min.css" rel="stylesheet">
+    <link href="https://littlesqx.github.io/css/nprogress.min.css" rel="stylesheet">
     <style media="screen">
       #nprogress .bar {
         height: 3px;
@@ -22,13 +22,13 @@
     </style>
 
     <!-- Bootstrap Core CSS -->
-    <link rel="stylesheet" href="https://littlesqx-github-io.b0.upaiyun.com/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://littlesqx.github.io/css/bootstrap.min.css">
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="https://littlesqx-github-io.b0.upaiyun.com/css/hux-blog.min.css">
+    <link rel="stylesheet" href="https://littlesqx.github.io/css/hux-blog.min.css">
 
     <!-- Pygments Github CSS -->
-    <link rel="stylesheet" href="https://littlesqx-github-io.b0.upaiyun.com/css/syntax.css">
+    <link rel="stylesheet" href="https://littlesqx.github.io/css/syntax.css">
 
     <!-- Custom Fonts -->
     <!-- <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
@@ -52,7 +52,7 @@
 
     <!-- ga & ba script hoook -->
     
-    <link rel="stylesheet" href="https://littlesqx-github-io.b0.upaiyun.com/css/gitment.min.css">
+    <link rel="stylesheet" href="https://littlesqx.github.io/css/gitment.min.css">
     
     <script></script>
 </head>
@@ -140,7 +140,7 @@
 <!-- Post Header -->
 <style type="text/css">
     header.intro-header{
-        background-image: url('https://littlesqx-github-io.b0.upaiyun.com/img/bg.png')
+        background-image: url('https://littlesqx.github.io/img/bg.png')
     }
 </style>
 <header class="intro-header" >
@@ -188,7 +188,7 @@
 
 <h3 id="前言">前言</h3>
 
-<p>提到php的运行环境，就想起了第一次接触php，是社团师兄带我们入门web开发。师兄推荐的<a href="https://zh.wikipedia.org/wiki/XAMPP">xampp</a>，类似的还有<a href="http://www.wampserver.com">WampServer</a>，都是windows下集成好的php开发环境（包括Apache，MySQL，还有PHP）。很方便，一键式的配置，之后就可以把时间集中在php代码实现上。但是缺点也很明显，直接跳过了web环境的原理，失去了学习一些必要的知识。就我自己来说，很久之后才对服务器有大体的正确认识。可能还有其他的集成环境，但是都离不开LNMP和LAMP这两种架构。查阅相关资料的过程中，发现还有LNAMP，有空再写一篇他们之间的介绍和对比文章。</p>
+<p>提到 php 的运行环境，就想起了第一次接触 php，是社团师兄带我们入门 web 开发。师兄推荐的<a href="https://zh.wikipedia.org/wiki/XAMPP">xampp</a>，类似的还有<a href="http://www.wampserver.com">WampServer</a>，都是 windows 下集成好的 php 开发环境（包括 Apache，MySQL，还有 PHP）。很方便，一键式的配置，之后就可以把时间集中在 php 代码实现上。但是缺点也很明显，直接跳过了 web 环境的原理，失去了学习一些必要的知识。就我自己来说，很久之后才对服务器有大体的正确认识。可能还有其他的集成环境，但是都离不开 LNMP 和 LAMP 这两种架构。查阅相关资料的过程中，发现还有 LNAMP，有空再写一篇他们之间的介绍和对比文章。</p>
 
 <hr />
 
@@ -221,8 +221,9 @@ baseurl <span class="o">=</span> http://yum.mariadb.org/10.2/centos7-amd64
 </code></pre>
 </div>
 
-<p>3# 配置Nginx官方源
-根据<a href="http://nginx.org/en/linux_packages.html#stable">Nginx官方源</a>，选择系统合适的版本</p>
+<p>3# 配置 Nginx 官方源</p>
+
+<p>根据<a href="http://nginx.org/en/linux_packages.html#stable">Nginx官方源</a>，选择系统合适的版本</p>
 <div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="o">[</span>nginx]
 <span class="nv">name</span><span class="o">=</span>nginx repo
 <span class="nv">baseurl</span><span class="o">=</span>http://nginx.org/packages/centos/7/<span class="nv">$basearch</span>/
@@ -313,9 +314,9 @@ systemctl restart php-fpm
 
 <h4 id="关于性能">关于性能</h4>
 
-<p>PHP7刚出来时就以性能为主打，确实惊艳了不少PHPer。除了php7本身，鸟哥在自己博客分享了其他的几个技巧</p>
+<p>PHP7 刚出来时就以性能为主打，确实惊艳了不少 PHPer。除了php7本身，鸟哥在自己博客分享了其他的几个技巧</p>
 
-<p>1# 启用Zend Opcache （貌似7.1是默认开启）</p>
+<p>1# 启用 Zend Opcache （貌似7.1是默认开启）</p>
 <div class="language-bash highlighter-rouge"><pre class="highlight"><code>vi /etc/php.ini
 </code></pre>
 </div>
@@ -429,7 +430,7 @@ vi /etc/php.ini
                             
         				
                             
-                				<a href="/tags/#PHP" title="PHP" rel="12">
+                				<a href="/tags/#PHP" title="PHP" rel="3">
                                     PHP
                                 </a>
                             
@@ -437,22 +438,8 @@ vi /etc/php.ini
                             
         				
                             
-        				
-                            
-        				
-                            
-        				
-                            
-        				
-                            
-        				
-                            
-        				
-                            
-        				
-                            
-                				<a href="/tags/#JavaScript" title="JavaScript" rel="2">
-                                    JavaScript
+                				<a href="/tags/#MySQL" title="MySQL" rel="2">
+                                    MySQL
                                 </a>
                             
         				
@@ -461,8 +448,20 @@ vi /etc/php.ini
                             
         				
                             
-                				<a href="/tags/#设计模式" title="设计模式" rel="7">
-                                    设计模式
+        				
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+                				<a href="/tags/#学习笔记" title="学习笔记" rel="2">
+                                    学习笔记
                                 </a>
                             
         				
@@ -563,6 +562,15 @@ vi /etc/php.ini
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                 <ul class="list-inline text-center">
                     
+                    <li>
+                        <a href="/feed.xml">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
                     
 
                     <!-- add Weibo, Zhihu by Hux, add target = "_blank" to <a> by Hux -->
@@ -583,12 +591,12 @@ vi /etc/php.ini
                     
                     <li>
                         <a target="_blank" href="https://www.upyun.com">
-                            <img src="https://littlesqx-github-io.b0.upaiyun.com/img/upyun_logo.png" style="width: 140px; cursor: pointer;">
+                            <img src="https://littlesqx.github.io/img/upyun_logo.png" style="width: 140px; cursor: pointer;">
                         </a>
                     </li>
                 </ul>
                 <p class="copyright text-muted">
-                    Copyright &copy; Littlesqx Blog 2018
+                    Copyright &copy; Littlesqx Blog 2019
                     <br>
                     Theme by <a href="https://huangxuan.me">Hux</a> |
                     <iframe
@@ -603,16 +611,16 @@ vi /etc/php.ini
 </footer>
 
 <!-- jQuery -->
-<script src="https://littlesqx-github-io.b0.upaiyun.com/js/jquery.min.js "></script>
+<script src="https://littlesqx.github.io/js/jquery.min.js "></script>
 
 <!-- Bootstrap Core JavaScript -->
-<script src="https://littlesqx-github-io.b0.upaiyun.com/js/bootstrap.min.js "></script>
+<script src="https://littlesqx.github.io/js/bootstrap.min.js "></script>
 
 <!-- Custom Theme JavaScript -->
-<script src="https://littlesqx-github-io.b0.upaiyun.com/js/hux-blog.min.js "></script>
+<script src="https://littlesqx.github.io/js/hux-blog.min.js "></script>
 
 <!-- nprogress JavaScript -->
-<script src="https://littlesqx-github-io.b0.upaiyun.com/js/nprogress.min.js "></script>
+<script src="https://littlesqx.github.io/js/nprogress.min.js "></script>
 
 
 <!-- async load function -->
@@ -650,7 +658,7 @@ vi /etc/php.ini
 <script>
     // only load tagcloud.js in tag.html
     if($('#tag_cloud').length !== 0){
-        async("https://littlesqx-github-io.b0.upaiyun.com/js/jquery.tagcloud.js",function(){
+        async("https://littlesqx.github.io/js/jquery.tagcloud.js",function(){
             $.fn.tagcloud.defaults = {
                 //size: {start: 1, end: 1, unit: 'em'},
                 color: {start: '#bbbbee', end: '#0085a1'},
@@ -662,7 +670,7 @@ vi /etc/php.ini
 
 <!--fastClick.js -->
 <script>
-    async("https://littlesqx-github-io.b0.upaiyun.com/js/fastclick.min.js ", function(){
+    async("https://littlesqx.github.io/js/fastclick.min.js ", function(){
         var $nav = document.querySelector("nav");
         if($nav) FastClick.attach($nav);
     })
