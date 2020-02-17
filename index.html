@@ -164,32 +164,6 @@
             ">
     			
 <div class="post-preview">
-    <a href="/2018/03/09/high-performance-mysql-notes-01/">
-        <h2 class="post-title">
-            《高性能 MySQL》学习笔记（1）- 事务与隔离
-        </h2>
-        
-        <div class="post-content-preview">
-            
-  停滞了好久，想着找点东西写。
-
-
-事务
-
-
-  事务是一组原子性的 SQL 查询，或者说一个独立的工作单元。如果数据库引擎能够成功地对数据库应用该组查询的全部语句，那么就执行该组查询；但如果其中有任何一条语句因为崩溃或其他原因无法执行，那么所有的语句都不会执行。简言之，事务内的语句，要么全部执行成功，要么全部执行失败（不执行）。
-
-
-举一个例子，假设一个银行的数据库有张表：支票（che...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Littlesqx on March 9, 2018
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
     <a href="/2017/12/24/the-2018-guide-to-building-secure-php-software/">
         <h2 class="post-title">
             [译]The 2018 Guide to Building Secure PHP Software
@@ -221,132 +195,24 @@
 <div class="post-preview">
     <a href="/2017/12/08/elasticsearch-learn-notes-1/">
         <h2 class="post-title">
-            you know, for search - ElasticSearch 学习笔记(1)
+            you know, for search - ElasticSearch 学习笔记
         </h2>
         
         <div class="post-content-preview">
-            
-  好大的胆子，写了(1)，不知道后面还能不能坚持。。。
-
-
-ElasticSearch 是什么 ?
+            ElasticSearch 是什么 ?
 
 怒抄一波介绍：
 
 
   Elasticsearch是一个基于Apache Lucene(TM)的开源搜索引擎。无论在开源还是专有领域，Lucene可以被认为是迄今为止最先进、性能最好的、功能最全的搜索引擎库。
 
-不过，Elasticsearch不仅仅是Lucene和全文搜索，我们还能这样...
+不过，Elasticsearch不仅仅是Lucene和全文搜索，我们还能这样去描述它：
+  
+    分布式的实时文件存储，每个字段都被索引...
         </div>
     </a>
     <p class="post-meta">
         Posted by Littlesqx on December 8, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/10/24/axios-packaging-notes/">
-        <h2 class="post-title">
-            记一次 axios 封装
-        </h2>
-        
-        <div class="post-content-preview">
-            
-  就祝自己1024快乐吧！
-
-
-前言
-源自于最近在写的一个项目，原因是前期的 axios 封装考虑得不是很好，逐渐出现冗余。趁着还早，就重构一下这部分。
-
-正文
-
-axios
-
-web开发里，axios 是首推的 Ajax 库了，应该说基本上都用它。
-
-官方是这样介绍的：
-
-
-  Make XMLHttpRequests from the browser
-
-  Make http req...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Littlesqx on October 24, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/10/15/lamp-lnmp-lanmp/">
-        <h2 class="post-title">
-            写一篇介绍和对比文章，关于 LAMP LNMP LANMP，还有...
-        </h2>
-        
-        <div class="post-content-preview">
-            
-  LAMP = Linux Apache MySQL PHP
-
-  LNMP = Linux Nginx MySQL PHP
-
-  LANMP = Linux Apache Nginx MySQL PHP
-
-  LNSMP = Linux Nginx Swoole MySQL PHP （这是我乱起的缩写）
-
-
-前言
-在第一篇文章《在CentOS 7 上配置 LNMP 环境
-》提到过，有时...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Littlesqx on October 15, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/10/08/mysql-backup-to-sae-storage/">
-        <h2 class="post-title">
-            MySQL定时备份，要不利用SAE Storage吧
-        </h2>
-        
-        <div class="post-content-preview">
-            
-  这个题目，我挺满意的哈哈。
-
-
-前言
-
-其实是很久以前的一个想法了，为什么一直没有实行，大概离不开懒吧。我两年前帮学校社团（我们是卖旧书的，有一个管理书本售卖情况的需要）开发了一个小站，挂在SAE上，那时候免费，比现在良心多了，现在数据库需要收费。当然了，就是那么巧，腾讯云开始了校园宣传，云+校园学生一元主机。对，没办法，我们穷啊，就发展到SAE上挂代码，腾讯云挂数据库的形式。每月的费...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Littlesqx on October 8, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/09/23/centos7-lnmp/">
-        <h2 class="post-title">
-            在CentOS 7 上配置 LNMP 环境
-        </h2>
-        
-        <div class="post-content-preview">
-            
-  终于开始了第一篇博客，希望自己可以坚持下去。内容是基本的环境配置，但尽量补充必要知识。
-
-
-前言
-
-提到 php 的运行环境，就想起了第一次接触 php，是社团师兄带我们入门 web 开发。师兄推荐的xampp，类似的还有WampServer，都是 windows 下集成好的 php 开发环境（包括 Apache，MySQL，还有 PHP）。很方便，一键式的配置，之后就可以把时间集中在...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Littlesqx on September 23, 2017
     </p>
 </div>
 <hr>
@@ -395,53 +261,21 @@ web开发里，axios 是首推的 Ajax 库了，应该说基本上都用它。
                     <div class="tags">
                         
                             
-                        
-                            
-                        
-                            
-                                <a href="/tags/#LNMP" title="LNMP" rel="2">
-                                    LNMP
+                                <a href="/tags/#ElasticSearch" title="ElasticSearch" rel="1">
+                                    ElasticSearch
                                 </a>
                             
                         
                             
-                        
-                            
-                                <a href="/tags/#PHP" title="PHP" rel="3">
+                                <a href="/tags/#PHP" title="PHP" rel="1">
                                     PHP
                                 </a>
                             
                         
                             
-                        
-                            
-                                <a href="/tags/#MySQL" title="MySQL" rel="2">
-                                    MySQL
+                                <a href="/tags/#翻译" title="翻译" rel="1">
+                                    翻译
                                 </a>
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                                <a href="/tags/#学习笔记" title="学习笔记" rel="2">
-                                    学习笔记
-                                </a>
-                            
-                        
                             
                         
                     </div>
@@ -456,7 +290,7 @@ web开发里，axios 是首推的 Ajax 库了，应该说基本上都用它。
                             <img src="/img/avatar-sqx.jpg" />
                         
                         
-                            <p>癞蛤蟆想吃炖大鹅。</p>
+                            <p>每过一天，叮咛自己再勇敢一点。</p>
                         
                         <!-- SNS Link -->
                         <ul class="list-inline">
@@ -492,8 +326,6 @@ web开发里，axios 是首推的 Ajax 库了，应该说基本上都用它。
                 <hr>
                 <h5>FRIENDS</h5>
                 <ul class="list-inline">
-                    
-                        <li><a href="http://idoubi.cc/">艾逗笔</a></li>
                     
                         <li><a href="http://blog.csdn.net/will4906">will4906</a></li>
                     
@@ -546,7 +378,7 @@ web开发里，axios 是首推的 Ajax 库了，应该说基本上都用它。
                     </li>
                 </ul>
                 <p class="copyright text-muted">
-                    Copyright &copy; Littlesqx Blog 2019
+                    Copyright &copy; Littlesqx Blog 2020
                     <br>
                     Theme by <a href="https://huangxuan.me">Hux</a> |
                     <iframe
