@@ -5,8 +5,8 @@
     <description>littlesqx's blog</description>
     <link>https://littlesqx.github.io/</link>
     <atom:link href="https://littlesqx.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sun, 23 Feb 2020 15:29:09 +0800</pubDate>
-    <lastBuildDate>Sun, 23 Feb 2020 15:29:09 +0800</lastBuildDate>
+    <pubDate>Sun, 23 Feb 2020 16:13:00 +0800</pubDate>
+    <lastBuildDate>Sun, 23 Feb 2020 16:13:00 +0800</lastBuildDate>
     <generator>Jekyll v4.0.0</generator>
     
       <item>
@@ -284,6 +284,8 @@ namespace PhpParser\Node;
 &lt;p&gt;一旦使用了版本，投入用于包范围声明的新机制并不会带来很多好处，所有这些都有其自身的问题。每个文件的声明确实有其自身的优点，特别是它使内容保持独立，并且允许部分升级代码库。每个文件的声明的人机工程学当然会更糟，但是随着人们从本质上将使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;declare(edition=2020)&lt;/code&gt; 替换 &lt;code class=&quot;highlighter-rouge&quot;&gt;declare(strict_types=1)&lt;/code&gt;，这并不比当前情况更糟。（此外，以后仍可以引入某种包范围的声明机制。）&lt;/p&gt;
 
 &lt;p&gt;我认为我们需要尽快优先考虑在 PHP 8 中引入“版本”，因此我们仍有时间利用这一机会。&lt;/p&gt;
+
+&lt;p&gt;原文地址：&lt;a href=&quot;https://github.com/nikic/php-rfcs/blob/language-evolution/rfcs/0000-language-evolution.md&quot;&gt;PHP RFC: language_evolution - Nikita Popov&lt;/a&gt;&lt;/p&gt;
 </description>
         <pubDate>Fri, 21 Feb 2020 17:23:01 +0800</pubDate>
         <link>https://littlesqx.github.io/2020/02/21/language-evolution-overview-proposal/</link>
