@@ -5,8 +5,8 @@
     <description>littlesqx's blog</description>
     <link>https://littlesqx.github.io/</link>
     <atom:link href="https://littlesqx.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sun, 23 Feb 2020 15:18:40 +0800</pubDate>
-    <lastBuildDate>Sun, 23 Feb 2020 15:18:40 +0800</lastBuildDate>
+    <pubDate>Sun, 23 Feb 2020 15:29:09 +0800</pubDate>
+    <lastBuildDate>Sun, 23 Feb 2020 15:29:09 +0800</lastBuildDate>
     <generator>Jekyll v4.0.0</generator>
     
       <item>
@@ -286,8 +286,8 @@ namespace PhpParser\Node;
 &lt;p&gt;我认为我们需要尽快优先考虑在 PHP 8 中引入“版本”，因此我们仍有时间利用这一机会。&lt;/p&gt;
 </description>
         <pubDate>Fri, 21 Feb 2020 17:23:01 +0800</pubDate>
-        <link>https://littlesqx.github.io/2020/02/21/php-anguage-evolution-overview-proposal/</link>
-        <guid isPermaLink="true">https://littlesqx.github.io/2020/02/21/php-anguage-evolution-overview-proposal/</guid>
+        <link>https://littlesqx.github.io/2020/02/21/language-evolution-overview-proposal/</link>
+        <guid isPermaLink="true">https://littlesqx.github.io/2020/02/21/language-evolution-overview-proposal/</guid>
         
         <category>PHP</category>
         
