@@ -5,12 +5,12 @@
     <description>littlesqx's blog</description>
     <link>https://littlesqx.github.io/</link>
     <atom:link href="https://littlesqx.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sun, 23 Feb 2020 16:13:00 +0800</pubDate>
-    <lastBuildDate>Sun, 23 Feb 2020 16:13:00 +0800</lastBuildDate>
+    <pubDate>Sun, 23 Feb 2020 16:18:57 +0800</pubDate>
+    <lastBuildDate>Sun, 23 Feb 2020 16:18:57 +0800</lastBuildDate>
     <generator>Jekyll v4.0.0</generator>
     
       <item>
-        <title>[译]PHP language evolution overview proposal</title>
+        <title>[译] PHP language evolution overview proposal</title>
         <description>&lt;blockquote&gt;
   &lt;p&gt;这是针对处理向后不兼容更改的不同方法的概述提案。这不是一个具体的提案：它只是作为讨论的起点，我们可以决定要遵循的总体方向。—— Nikita Popov&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -301,7 +301,7 @@ namespace PhpParser\Node;
       </item>
     
       <item>
-        <title>[译]The 2018 Guide to Building Secure PHP Software</title>
+        <title>[译] The 2018 Guide to Building Secure PHP Software</title>
         <description>&lt;blockquote&gt;
   &lt;p&gt;2018PHP应用程序安全设计指北！&lt;/p&gt;
 &lt;/blockquote&gt;
