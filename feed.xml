@@ -5,9 +5,298 @@
     <description>littlesqx's blog</description>
     <link>https://littlesqx.github.io/</link>
     <atom:link href="https://littlesqx.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Mon, 17 Feb 2020 15:19:34 +0800</pubDate>
-    <lastBuildDate>Mon, 17 Feb 2020 15:19:34 +0800</lastBuildDate>
+    <pubDate>Sun, 23 Feb 2020 15:18:40 +0800</pubDate>
+    <lastBuildDate>Sun, 23 Feb 2020 15:18:40 +0800</lastBuildDate>
     <generator>Jekyll v4.0.0</generator>
+    
+      <item>
+        <title>[译]PHP language evolution overview proposal</title>
+        <description>&lt;blockquote&gt;
+  &lt;p&gt;这是针对处理向后不兼容更改的不同方法的概述提案。这不是一个具体的提案：它只是作为讨论的起点，我们可以决定要遵循的总体方向。—— Nikita Popov&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;目录&quot;&gt;目录&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;#简介&quot;&gt;简介 Introduction&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#向后不兼容更改的示例&quot;&gt;向后不兼容更改的示例 Examples of possible backwards-incompatible changes&lt;/a&gt;
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#严格类型&quot;&gt;严格类型 Strict types&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#显式引用传递&quot;&gt;显式引用传递 Explicit pass-by-reference&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#禁用动态对象属性&quot;&gt;禁用动态对象属性 Forbidding dynamic object properties&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#严格操作符等&quot;&gt;严格操作符等 Strict operators and friends&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#名称解析更改&quot;&gt;名称解析更改 Name resolution changes&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#字符串插值更改&quot;&gt;字符串插值更改 String interpolation changes&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#方法&quot;&gt;方法 Approaches&lt;/a&gt;
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#通用实现的新语言&quot;&gt;通用实现的新语言（代号 P++）New language with common implementation (codename P++)&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#版本&quot;&gt;版本 Editions&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#细粒度的声明&quot;&gt;细粒度的声明 Fine-grained declares&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#per-package 选项的技术实现&quot;&gt;per-package 选项的技术实现 Technical realization of “per-package” options&lt;/a&gt;
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#现状：在文件顶部声明&quot;&gt;现状：在文件顶部声明 Status quo: Declares at top of file&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#新的开始标签&quot;&gt;新的开始标签 New opening tag&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#命名空间范围的声明&quot;&gt;命名空间范围的声明 Namespace-scoped declares&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#显式包声明&quot;&gt;显式包声明 Explicit package declaration&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#基于文件系统的软件包&quot;&gt;基于文件系统的软件包 Filesystem based packages&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#一般的注意事项&quot;&gt;一般的注意事项 General considerations&lt;/a&gt;
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#维护负担和支持时间表&quot;&gt;维护负担和支持时间表 Maintenance burden and support timeline&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#范围和合格变更&quot;&gt;范围和合格变更 Scope and eligible changes&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#自动升级&quot;&gt;自动升级 Automatic upgrades&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#总结&quot;&gt;总结 Conclusion&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;简介&quot;&gt;简介&lt;/h3&gt;
+
+&lt;p&gt;近年来，PHP 社区在如何处理向后不兼容的语言更改方面上日益紧张。PHP 编程语言在某种程度上是随意发展的，并且表现出许多从现代角度不期望看到的行为。&lt;/p&gt;
+
+&lt;p&gt;解决这些问题可以使行为更一致，更可预测且更不易出错，从而有利于开发。反过来说，对 PHP 语言的每个向后不兼容的更改都可能促使对现有的数亿行代码进行调整。这延迟了向新 PHP 版本的迁移。&lt;/p&gt;
+
+&lt;p&gt;解决此问题的一般思路是允许不同的库和应用程序按照自己的步调跟上语言的变化，同时保持互操作性。有许多方法可以实现此总体目标，下面将对此进行讨论。&lt;/p&gt;
+
+&lt;h3 id=&quot;向后不兼容更改的示例&quot;&gt;向后不兼容更改的示例&lt;/h3&gt;
+
+&lt;p&gt;为使以下讨论以真实的提案为基础，本节提供了一些基于现有 RFC 的可能产生向后不兼容更改的示例。它们仅作为示例，本提案并不都持认可态度。&lt;/p&gt;
+
+&lt;h4 id=&quot;严格类型&quot;&gt;严格类型&lt;/h4&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://wiki.php.net/rfc/scalar_type_hints_v5&quot;&gt;标量类型声明 RFC&lt;/a&gt; 引入了 &lt;code class=&quot;highlighter-rouge&quot;&gt;strict_types&lt;/code&gt; 声明，它允许控制标量类型声明的行为。如果启用，则传递的类型必须与声明的类型完全匹配（取模细节）。如果禁用，则允许某些类型的强制转换。&lt;/p&gt;
+
+&lt;p&gt;尽管这是已经存在的功能，但在这个话题上值得拿来讨论一下，因为这是选择向后不兼容更改的现有示例。提供一些历史背景：当时，内部函数已经接受标量类型并根据强制语义对其进行了验证。为了保持与内部类型检查的一致性，用户区类型必须遵循相同的，通常是不受欢迎的语义。&lt;code class=&quot;highlighter-rouge&quot;&gt;strict_types&lt;/code&gt; 声明允许保持用户态/内部态之间的行为一致，同时仍可以选择加入严格类型检查。&lt;/p&gt;
+
+&lt;p&gt;我认为，总的来说，将标量类型与 &lt;code class=&quot;highlighter-rouge&quot;&gt;strict_types&lt;/code&gt; 指令一起引入效果很好。除了经常有抱怨必须在每个文件中都指定此选项（至少在早期）。人们遇到的主要技术问题还涉及回调的处理：&lt;/p&gt;
+
+&lt;p&gt;由内部函数（例如 &lt;code class=&quot;highlighter-rouge&quot;&gt;array_map&lt;/code&gt;）调用的回调始终具有强制性参数语义，即使从严格类型的文件调用也是如此。相反，在严格类型文件中调用但来自弱类型文件的回调将使用严格参数语义。这是 &lt;code class=&quot;highlighter-rouge&quot;&gt;strict_types&lt;/code&gt; 原始设计的一个缺点：回调应该是特殊情况，以便在声明端（而不是调用端）使用键入模式。在这里提到这个问题，主要是为了说明基于选择性加入使代码无缝互操作的想法在某些情况下可能并不总是完美的。&lt;/p&gt;
+
+&lt;h4 id=&quot;显式引用传递&quot;&gt;显式引用传递&lt;/h4&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://wiki.php.net/rfc/explicit_send_by_ref&quot;&gt;显式调用端引用传递 RFC&lt;/a&gt; 提案允许在调用端使用 ＆ 标记通过引用传递的变量，接近在声明端的现有标记。该提案的动机部分列出了为什么希望这样做的原因。&lt;/p&gt;
+
+&lt;p&gt;但是，仅允许在调用端使用 ＆ 并不能给我们带来很多好处：必须使用调用端标记才能获得可读性、静态分析和性能的全部好处。&lt;/p&gt;
+
+&lt;p&gt;不幸的是，要求使用标记会导致最坏的向后兼容破坏类型：编写与 PHP 8（要求调用端标记）和 PHP 7（禁用调用端标记）兼容的代码变得非常困难。首先通过允许使用可选标记，并且仅在很多很多年后才要求它，才能在很长的时间内推出这种更改。这种改变最受选择机制的影响。&lt;/p&gt;
+
+&lt;h4 id=&quot;禁用动态对象属性&quot;&gt;禁用动态对象属性&lt;/h4&gt;
+
+&lt;p&gt;其他受到激励的案例提到了 &lt;a href=&quot;https://wiki.php.net/rfc/namespace_scoped_declares&quot;&gt;命名空间范围声明 RFC&lt;/a&gt; 和 &lt;a href=&quot;https://wiki.php.net/rfc/locked-classes&quot;&gt;锁定类 RFC&lt;/a&gt;（另一种不同的方式）。如今，大多数代码期望所有属性都在类中声明（除了诸如 &lt;code class=&quot;highlighter-rouge&quot;&gt;stdClass&lt;/code&gt; 之类的特殊情况，当然诸如 &lt;code class=&quot;highlighter-rouge&quot;&gt;__set()&lt;/code&gt; 之类的魔术方法也除外）。设置未声明的属性很可能是错字，而不是故意的行为。不幸的是，PHP 默许了它，并且没有禁用此行为的好方法（一种常见的解决方法是使用带有可检测异常的魔术方法 &lt;code class=&quot;highlighter-rouge&quot;&gt;trait&lt;/code&gt;）。&lt;/p&gt;
+
+&lt;p&gt;拥有进行未声明的属性访问错误异常的选项，对于现代代码将是有益的。但是，还有许多旧的代码没有声明属性，因此需要选择加入。&lt;/p&gt;
+
+&lt;h4 id=&quot;严格操作符等&quot;&gt;严格操作符等&lt;/h4&gt;
+
+&lt;p&gt;尽管 &lt;code class=&quot;highlighter-rouge&quot;&gt;strict_types&lt;/code&gt; 可用于禁用函数参数的类型强制，但目前尚无办法禁用基本语言构造函数（如算术运算符）的类型强制。&lt;a href=&quot;https://wiki.php.net/rfc/strict_operators&quot;&gt;严格运算符 RFC&lt;/a&gt; 提出了 &lt;code class=&quot;highlighter-rouge&quot;&gt;strict_operators&lt;/code&gt; 选项加入声明，以禁止大多数类型的强制转换。&lt;/p&gt;
+
+&lt;p&gt;该 RFC 很有趣，因为它不仅增加了新的错误，而且还在某些地方更改了行为。例如，&lt;code class=&quot;highlighter-rouge&quot;&gt;switch&lt;/code&gt; 语句将使用严格比较（模数详细信息），而当前使用弱比较（==）。这是一个重要的区别：如果声明仅添加错误，则始终可以通过假定启用该选项来生成有效代码（无论该选项实际上是否启用）。如果声明进行了行为更改，那么是否启用该选项就非常重要。&lt;/p&gt;
+
+&lt;h4 id=&quot;名称解析更改&quot;&gt;名称解析更改&lt;/h4&gt;
+
+&lt;p&gt;提出的 &lt;code class=&quot;highlighter-rouge&quot;&gt;fuction_and_const_lookup ='global'&lt;/code&gt; 声明最近被拒绝了。尽管拒绝了该提案，但我们仍希望考虑其他名称解析更改，以使函数/常量和类的规则保持一致。&lt;/p&gt;
+
+&lt;h4 id=&quot;字符串插值更改&quot;&gt;字符串插值更改&lt;/h4&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://wiki.php.net/rfc/arbitrary_expression_interpolation&quot;&gt;任意表达式插值 RFC&lt;/a&gt; 建议引入 &lt;code class=&quot;highlighter-rouge&quot;&gt;foo＃{1 + 1} bar&lt;/code&gt; 语法来插值任意表达式。这造成了较小的向后兼容破坏，因为当前在字符串中允许使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;＃{}&lt;/code&gt;，并且没有特殊含义。可以通过选择语法来避免向后兼容破坏。甚至可以使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;foo {1 + 1} bar&lt;/code&gt; 语法，当然这是另一个问题了。&lt;/p&gt;
+
+&lt;p&gt;这个示例很有趣，因为它涉及到 PHP 词法分析器的更改，而所有前面的示例都涉及到编译器或运行时的更改。&lt;/p&gt;
+
+&lt;h3 id=&quot;方法&quot;&gt;方法&lt;/h3&gt;
+
+&lt;p&gt;过去已经讨论了三种通用方法（相比于技术细节，更多是在理论上），在此进行了总结。&lt;/p&gt;
+
+&lt;h4 id=&quot;通用实现的新语言&quot;&gt;通用实现的新语言&lt;/h4&gt;
+
+&lt;p&gt;Zeev 已经提出了这种方法，&lt;a href=&quot;https://wiki.php.net/pplusplus/faq&quot;&gt;P++ FAQ&lt;/a&gt; 和 &lt;a href=&quot;https://wiki.php.net/pplusplus/concerns&quot;&gt;P++ Concerns&lt;/a&gt; 中对此已有一些讨论。PHP 内部的非正式民意检测一致反对这一想法。&lt;/p&gt;
+
+&lt;p&gt;P++ 的思想是引入一种新语言，该语言共享一个实现，并且可以与 PHP 互操作。 但是，P++ 在语法和行为上可能存在重大差异，并且可能追求不同的设计目标。顾名思义，这类似于 C 和 C++ 的情况，它们通常都由同一编译器支持，并且名义上可以互操作。&lt;/p&gt;
+
+&lt;p&gt;我认为这种方法存在许多问题，并且基本上都归结为 P++ 是 &lt;strong&gt;一个巨大的改动&lt;/strong&gt;：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;仅有一次机会可以引入向后不兼容的更改。P++ 发布后，我们回到第一个问题。假设我们不会在第一次尝试中就创建出完美的语言，那么最好引入一种更具可持续性的机制。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;一次性的重大更改会带来很高的升级负担。根据范围的不同，它可能比切换语言版本更类似于切换语言。这使得旧代码切换到 P++ 的可能性较小。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;如果差异太大，则可能难以确保 PHP 和 P++ 之间的互操作性。例如，尽管 C 和 C++ 在名义上是兼容的，但实际上这需要通过与 C 兼容的 FFI 接口导出 C++ 代码。这使得在 C++ 中集成 C 相当容易，但反之则不然。假设，如果 P++ 引入了泛型但 PHP 没有引入泛型，则不清楚它们将如何互操作。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;坦白说，我们只是没有开发资源来实现这一目标。这需要比现在更大的开发团队进行多年的一致努力。我们的资源最好投入在其他地方。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;从积极的一面来看，P++ 将使我们能够比下面讨论的方法做出更根本的改变。人们有时会提出类似的想法，例如 &lt;em&gt;从变量名中删除 $&lt;/em&gt;，而一般情况下这只是出于疯狂而已，但是 P++ 至少基本上可以进行这样的更改。&lt;/p&gt;
+
+&lt;h4 id=&quot;版本&quot;&gt;版本&lt;/h4&gt;
+
+&lt;p&gt;版本（Editions）是 Rust 编程语言所普及的概念。有关更多信息，请参见 &lt;a href=&quot;https://doc.rust-lang.org/edition-guide/editions/index.html&quot;&gt;版本指南&lt;/a&gt; 和 &lt;a href=&quot;https://github.com/rust-lang/rfcs/blob/master/text/2052-epochs.md&quot;&gt;epoch RFC&lt;/a&gt;。&lt;/p&gt;
+
+&lt;h4 id=&quot;细粒度的声明&quot;&gt;细粒度的声明&lt;/h4&gt;
+
+&lt;p&gt;“版本” 方法的替代方法是为单个更改引入更细粒度的声明指令。这是受现有的 strict_types 指令启发的，并且在前面的示例部分中的许多最新建议中都提到了这一点。&lt;/p&gt;
+
+&lt;p&gt;关于版本和细粒度声明之间差异的一些注意事项：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;“版本”的主要优点是更改是分组和分层的。这将在给定时间可用的语言“方言”的数量减少到了版本数。另一方面，细粒度声明创建 2^N 个不同的方言，其中 N 是布尔声明的数量。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;细粒度声明的主要优点在于，它允许逐步更新代码（通过逐一处理更改），并允许退出部分代码库中的特定更改。例如，如果有一个假设的 &lt;code class=&quot;highlighter-rouge&quot;&gt;no_dynamic_properties&lt;/code&gt; 声明，则可能希望对大多数代码启用它，但是在一个特定文件中将其禁用，在该文件中，该文件与需要使用动态属性的旧式库进行交互。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;与此相关的是，细粒度的声明允许处理这样的情况：我们希望让人们可以选择是否要进行某些更改。“版本”强烈暗示应该使用新版本及其带来的更改。例如，是否将当前的 &lt;code class=&quot;highlighter-rouge&quot;&gt;strict_types&lt;/code&gt; 选项作为新版本的一部分启用？&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;per-package-选项的技术实现&quot;&gt;per-package 选项的技术实现&lt;/h3&gt;
+
+&lt;p&gt;与选择的“精细度”无关，在技术水平上也可以通过多种方式指定它们。这些将在下面讨论。&lt;/p&gt;
+
+&lt;h4 id=&quot;现状在文件顶部声明&quot;&gt;现状：在文件顶部声明&lt;/h4&gt;
+
+&lt;p&gt;我们已经在文件顶部使用了 &lt;code class=&quot;highlighter-rouge&quot;&gt;declare(strict_types = 1)&lt;/code&gt; 来启用严格的类型，因此自然而然地继续依靠这种机制。&lt;/p&gt;
+
+&lt;p&gt;这种方法有两个很大的优点：首先，它已经有效，很熟悉并且不需要引入任何新的语言功能。其次，文件保持独立：无需查看其他文件即可确定使用的语言方言，这对工具尤其有用。&lt;/p&gt;
+
+&lt;p&gt;它还有一些缺点：首先，它无法扩展。此方法仅与“版本”方法兼容（在“版本”方法中，只有一个声明 &lt;code class=&quot;highlighter-rouge&quot;&gt;(edition = 2020)&lt;/code&gt; 是必需的）。不能将其与“细粒度声明”方法一起使用。&lt;/p&gt;
+
+&lt;p&gt;其次，软件包很可能希望对整个软件包使用一种语言方言，而不是在不同文件之间混合使用。虽然名义上每个文件中的声明都更加明确，但实际上程序员会想到的是将其建模为“我正在开发 PHP 2020 项目”，并且每次打开新文件时都不会再次检查版本。如果文件忘记了偶然指定版本，则可能导致意外。&lt;/p&gt;
+
+&lt;h4 id=&quot;新的开始标签&quot;&gt;新的开始标签&lt;/h4&gt;
+
+&lt;p&gt;与前面的变体相比，有一个较小的变体：可以不使用声明，而可以引入新的开始标记。再一次，这仅适用于 P++ &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;?p++&lt;/code&gt; 或版本 &lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?php&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2020&lt;/span&gt;&lt;/code&gt;。这具有与每个文件声明相同的特征。它稍微紧凑一些，但是引入了新的语法。&lt;/p&gt;
+
+&lt;p&gt;在讨论过程中提出的建议是，也可以使用新的文件扩展名。这仅与 P++ 兼容，否则项目的所有文件在每次版本升级时都必须重命名。使用文件扩展名还具有其他缺点：在文件扩展名未知的情况下不起作用，例如，如果脚本通过管道传输到 PHP，从 stdin 读取或来自非文件系统流。一个新的扩展增加了在不知道新配置的服务器上进行代码泄漏的机会。&lt;/p&gt;
+
+&lt;h4 id=&quot;命名空间范围的声明&quot;&gt;命名空间范围的声明&lt;/h4&gt;
+
+&lt;p&gt;在 &lt;a href=&quot;https://wiki.php.net/rfc/namespace_scoped_declares&quot;&gt;命名空间范围的声明 RFC&lt;/a&gt; 中将更详细地探讨了此变体。该提议允许为整个命名空间（包括子命名空间）指定声明：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-PHP&quot;&gt;namespace_declare('Vendor\Lib', [
+    'strict_types' =&amp;gt; 1,
+    'no_dynamic_properties' =&amp;gt; 1,
+    // ...
+]);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;目的是在 &lt;code class=&quot;highlighter-rouge&quot;&gt;composer.json&lt;/code&gt; 中指定这些内容，并且 &lt;code class=&quot;highlighter-rouge&quot;&gt;Composer&lt;/code&gt; 将负责用 &lt;code class=&quot;highlighter-rouge&quot;&gt;PHP&lt;/code&gt; 注册声明。&lt;/p&gt;
+
+&lt;p&gt;这种方法避免了在每个文件中指定声明的弊端：它可以按任意数量的声明进行缩放，并且程序员可以假定声明对于整个项目都成立，除非明确覆盖了它们。&lt;/p&gt;
+
+&lt;p&gt;这种方法（以及下面讨论的所有其他其他“基于包”的方法）的一个缺点是，无法再通过查看单个文件来分辨所使用的语言方言。尽管这对人类来说不是问题（面向软件包的方法更有用），但对于工具来说可能是一个问题，因为在没有更大上下文的情况下可能无法正确处理文件。&lt;/p&gt;
+
+&lt;p&gt;与下面讨论的两种基于包的方法不同，命名空间范围的声明基于现有的，完善的和易于理解的“命名空间”功能。这既是一个优点（它没有引入任何新概念，也不需要其他代码）和也是一个缺点：&lt;/p&gt;
+
+&lt;p&gt;虽然名称空间通常直接映射到包，但并非总是如此。例如，主要的 &lt;code class=&quot;highlighter-rouge&quot;&gt;amphp&lt;/code&gt; 软件包使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;Amp\&lt;/code&gt; 名称空间，而其他 &lt;code class=&quot;highlighter-rouge&quot;&gt;amphp&lt;/code&gt; 软件包使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;Amp\FooBar\&lt;/code&gt;。在这里，&lt;code class=&quot;highlighter-rouge&quot;&gt;Amp\&lt;/code&gt; 名称空间实际上不能被视为单个程序包。还有其他问题（例如，由于可以在单个文件中包含多个名称空间），但是可以解决这些问题，请参阅链接的 RFC，以获取更多详细讨论。&lt;/p&gt;
+
+&lt;h4 id=&quot;显式包声明&quot;&gt;显式包声明&lt;/h4&gt;
+
+&lt;p&gt;没有适用于此变体的 RFC，但是可以使用原型请求。这引入了与名称空间正交的新“包”概念。必须在名称空间旁边的每个文件中声明该包：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-PHP&quot;&gt;&amp;lt;?php
+
+package &quot;nikic/php-parser&quot;;
+
+namespace PhpParser\Node;
+
+// ...
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;然后可以将声明绑定到特定的程序包，而不是特定的名称空间。此外，相同的功能可以重用于其他基于包的功能，例如包专用符号。&lt;/p&gt;
+
+&lt;p&gt;这种方法的优势在于，它解决了为此使用名称空间的情况所带来的歧义。另一方面，它为语言引入了一个全新的概念，并可能导致其与名称空间的关系混乱。除非将此概念也用于其他目的，否则可能不值得引入它。&lt;/p&gt;
+
+&lt;h4 id=&quot;基于文件系统的软件包&quot;&gt;基于文件系统的软件包&lt;/h4&gt;
+
+&lt;p&gt;基于文件系统的软件包是显式软件包声明的替代方法。通过在目录中放置一个特殊文件（例如 &lt;code class=&quot;highlighter-rouge&quot;&gt;_package.php&lt;/code&gt;）来定义软件包，该文件也可以包含每个软件包的配置。&lt;/p&gt;
+
+&lt;p&gt;相对于先前的变体，其优点是不需要在每个文件中都进行显式的包声明。此外，与命名空间范围的声明和显式包声明不同，它提供了一个定义良好的地方来查找与包相关的声明（&lt;code class=&quot;highlighter-rouge&quot;&gt;_package.php&lt;/code&gt; 文件）。前两个变体将按约定将声明放置在 &lt;code class=&quot;highlighter-rouge&quot;&gt;composer.json&lt;/code&gt; 中，但是 &lt;code class=&quot;highlighter-rouge&quot;&gt;namespace_declare()&lt;/code&gt; 或 &lt;code class=&quot;highlighter-rouge&quot;&gt;package_declare()&lt;/code&gt; 也可以从其他位置调用，这使得工具支持更加复杂。&lt;/p&gt;
+
+&lt;p&gt;这种方法的缺点是文件系统耦合，它在 PHP 中引入了许多问题：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;缓存失效：在一个请求中，PHP 大概会缓存哪些目录不包含 &lt;code class=&quot;highlighter-rouge&quot;&gt;_package.php&lt;/code&gt; 文件，以及其中的内容。在请求期间，对其中任何一个的更改都将被忽略。更具问题的情况是它们将如何与 &lt;code class=&quot;highlighter-rouge&quot;&gt;opcache&lt;/code&gt; 交互。如果启用 &lt;code class=&quot;highlighter-rouge&quot;&gt;validate_timestamps&lt;/code&gt;，我们还必须检查所有目录（和父目录）中是否添加，删除或更改了 &lt;code class=&quot;highlighter-rouge&quot;&gt;_package.php&lt;/code&gt; 文件，这可能会带来额外的性能损失。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;路径规范化：为了确定文件是否是包的一部分，规范化路径需要可用。例如，必须解析符号链接，并且必须正确处理文件系统的大小写（不区分大小写）。尽管可以通过 &lt;code class=&quot;highlighter-rouge&quot;&gt;realpath()&lt;/code&gt; 在文件系统层上使用此功能，但是对于一般的 PHP 流，当前不存在此功能（甚至没有phars可以正确地支持此功能）。使用其他流包装钩可以解决此问题。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;目录遍历：为了找到包文件，我们需要在给定路径中“向上”查找包文件。再一次，流包装器不支持此操作。实际上，许多流包装器没有“目录”的有意义的概念。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;通常，很难使此功能与任意流一起使用。我有一个替换文件流包装程序的包，以拦截所有包含的文件，并用存储在临时目录中的预处理文件替换它们。我不知道这将如何与基于目录的包系统交互。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;一般的注意事项&quot;&gt;一般的注意事项&lt;/h3&gt;
+
+&lt;h4 id=&quot;维护负担和支持时间表&quot;&gt;维护负担和支持时间表&lt;/h4&gt;
+
+&lt;p&gt;每个新版本/声明都会增加额外的维护负担，因为它要求在同一实现中支持两种不同的行为。在 Rust 中，版本的概念包括无限期支持它们的承诺（尽管在实践中，向后兼容的破坏有时确实会回溯到较早的版本，只是稍后）。&lt;/p&gt;
+
+&lt;p&gt;我们可能会或可能不想无限期地支持旧版本。即使一个版本只有有限的生存期，它仍然是管理版本迁移的有用工具，因为它消除了项目之间的依赖关系。每个项目都可以独立更新到新版本，而无需先更新其依赖项，也不必强制对其反向依赖项进行升级。&lt;/p&gt;
+
+&lt;p&gt;一个相关的问题是多长时间发布一次新版本。使用细粒度的声明方法，最好将它们添加到任何次要版本中。对于版本，即使更改很少，我们是否还要为每个次要版本创建一个新版本也不清楚。应该只为每个主要版本创建这些文件吗？还是应该在我们积累相关更改时按需创建它们？&lt;/p&gt;
+
+&lt;h4 id=&quot;范围和合格变更&quot;&gt;范围和合格变更&lt;/h4&gt;
+
+&lt;p&gt;应该强调的是，即使我们引入了“版本”之类的机制，也并不意味着所有向后不兼容的更改都将通过版本来处理，也不意味着任何向后兼容的破坏都可以，例如 只要基于版本。&lt;/p&gt;
+
+&lt;p&gt;这里有一些考虑因素：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;技术可行性：无法通过版本/声明进行某些更改，因为更改的影响不能包含在使用该版本的代码中。例如，从 HTTP 查询参数中删除名称修饰会影响所有代码中 &lt;code class=&quot;highlighter-rouge&quot;&gt;$_GET&lt;/code&gt; 的内容，并且不能仅限于一个版本。 这种变化必须在全球范围内发生或根本不发生。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;精神负担：虽然在新版本中引入新的错误条件总会很好，但是我们需要对行为的变化更加谨慎。如果仅引入错误，则程序员始终可以针对最新版本进行编程，即使实际使用的是旧版本，代码也可以正常工作。我不认为应该完全禁止改变行为，但应该为他们提供更高的标准。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;维护开销：如前所述，由于必须支持两种不同的行为（以及它们与其他功能的交互），因此通过版本/声明机制引入的每项更改都会带来额外的维护负担。因此，不应将版本/声明机制用于较小的向后兼容性破坏。该机制应被视为做出我们之前无法进行的更改的手段：如果更改可以通过正常的弃用+删除周期来实现，则应该这样做。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;库更改：在特定情况下，我认为版本/声明机制不适合标准库更改。 可以通过新功能或标志更好地处理这些问题。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;自动升级&quot;&gt;自动升级&lt;/h4&gt;
+
+&lt;p&gt;Rust 提供了大多数用于执行版本升级的自动化工具。由于其动态特性，在 PHP 中并不总是可能进行可靠的自动升级。但是，我们可能仍想为此提供官方的尽力而为工具。&lt;/p&gt;
+
+&lt;h3 id=&quot;总结&quot;&gt;总结&lt;/h3&gt;
+
+&lt;p&gt;我个人的结论是：应按文件进行声明的版本。&lt;/p&gt;
+
+&lt;p&gt;尽管具有细粒度的声明有其优势，并且是我最初提倡的选择，但我认为，对声明的泛滥和语言变体呈指数级增长的担忧非常真实。即使定期推出新版本，版本也可以大大减少语言方言的数量，从而减轻开发人员的心理负担并减少我们这方面的维护负担。&lt;/p&gt;
+
+&lt;p&gt;一旦使用了版本，投入用于包范围声明的新机制并不会带来很多好处，所有这些都有其自身的问题。每个文件的声明确实有其自身的优点，特别是它使内容保持独立，并且允许部分升级代码库。每个文件的声明的人机工程学当然会更糟，但是随着人们从本质上将使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;declare(edition=2020)&lt;/code&gt; 替换 &lt;code class=&quot;highlighter-rouge&quot;&gt;declare(strict_types=1)&lt;/code&gt;，这并不比当前情况更糟。（此外，以后仍可以引入某种包范围的声明机制。）&lt;/p&gt;
+
+&lt;p&gt;我认为我们需要尽快优先考虑在 PHP 8 中引入“版本”，因此我们仍有时间利用这一机会。&lt;/p&gt;
+</description>
+        <pubDate>Fri, 21 Feb 2020 17:23:01 +0800</pubDate>
+        <link>https://littlesqx.github.io/2020/02/21/php-anguage-evolution-overview-proposal/</link>
+        <guid isPermaLink="true">https://littlesqx.github.io/2020/02/21/php-anguage-evolution-overview-proposal/</guid>
+        
+        <category>PHP</category>
+        
+        <category>PHP RFC</category>
+        
+        <category>翻译</category>
+        
+        
+      </item>
     
       <item>
         <title>[译]The 2018 Guide to Building Secure PHP Software</title>

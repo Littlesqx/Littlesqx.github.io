@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="littlesqx's blog">
+    <meta name="keyword"  content="git php mysql laravel littlesqx">
+    <link rel="shortcut icon" href="https://littlesqx.github.io/img/favicon.ico">
+
+    <title>[译]PHP language evolution overview proposal - Littlesqx Blog</title>
+
+    <link rel="canonical" href="https://littlesqx.github.io/2020/02/21/php-anguage-evolution-overview-proposal/">
+
+    <!-- nprogress CSS -->
+    <link href="https://littlesqx.github.io/css/nprogress.min.css" rel="stylesheet">
+    <style media="screen">
+      #nprogress .bar {
+        height: 3px;
+      }
+    </style>
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="https://littlesqx.github.io/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="https://littlesqx.github.io/css/hux-blog.min.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="https://littlesqx.github.io/css/syntax.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="//cdn.staticfile.org/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    
+    <link rel="stylesheet" href="https://littlesqx.github.io/css/gitment.min.css">
+    
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Littlesqx Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/about/">About</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/tags/">Tags</a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Image to hack wechat -->
+<!-- <img src="/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="/img/bg.png" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('https://littlesqx.github.io/img/bg.png')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#PHP" title="PHP">PHP</a>
+                        
+                        <a class="tag" href="/tags/#PHP RFC" title="PHP RFC">PHP RFC</a>
+                        
+                        <a class="tag" href="/tags/#翻译" title="翻译">翻译</a>
+                        
+                    </div>
+                    <h1>[译]PHP language evolution overview proposal</h1>
+                    
+                    
+                    <h2 class="subheading"></h2>
+                    
+                    <span class="meta">Posted by Littlesqx on February 21, 2020</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+				<blockquote>
+  <p>这是针对处理向后不兼容更改的不同方法的概述提案。这不是一个具体的提案：它只是作为讨论的起点，我们可以决定要遵循的总体方向。—— Nikita Popov</p>
+</blockquote>
+
+<h3 id="目录">目录</h3>
+
+<ul>
+  <li><a href="#简介">简介 Introduction</a></li>
+  <li><a href="#向后不兼容更改的示例">向后不兼容更改的示例 Examples of possible backwards-incompatible changes</a>
+    <ul>
+      <li><a href="#严格类型">严格类型 Strict types</a></li>
+      <li><a href="#显式引用传递">显式引用传递 Explicit pass-by-reference</a></li>
+      <li><a href="#禁用动态对象属性">禁用动态对象属性 Forbidding dynamic object properties</a></li>
+      <li><a href="#严格操作符等">严格操作符等 Strict operators and friends</a></li>
+      <li><a href="#名称解析更改">名称解析更改 Name resolution changes</a></li>
+      <li><a href="#字符串插值更改">字符串插值更改 String interpolation changes</a></li>
+    </ul>
+  </li>
+  <li><a href="#方法">方法 Approaches</a>
+    <ul>
+      <li><a href="#通用实现的新语言">通用实现的新语言（代号 P++）New language with common implementation (codename P++)</a></li>
+      <li><a href="#版本">版本 Editions</a></li>
+      <li><a href="#细粒度的声明">细粒度的声明 Fine-grained declares</a></li>
+    </ul>
+  </li>
+  <li><a href="#per-package 选项的技术实现">per-package 选项的技术实现 Technical realization of “per-package” options</a>
+    <ul>
+      <li><a href="#现状：在文件顶部声明">现状：在文件顶部声明 Status quo: Declares at top of file</a></li>
+      <li><a href="#新的开始标签">新的开始标签 New opening tag</a></li>
+      <li><a href="#命名空间范围的声明">命名空间范围的声明 Namespace-scoped declares</a></li>
+      <li><a href="#显式包声明">显式包声明 Explicit package declaration</a></li>
+      <li><a href="#基于文件系统的软件包">基于文件系统的软件包 Filesystem based packages</a></li>
+    </ul>
+  </li>
+  <li><a href="#一般的注意事项">一般的注意事项 General considerations</a>
+    <ul>
+      <li><a href="#维护负担和支持时间表">维护负担和支持时间表 Maintenance burden and support timeline</a></li>
+      <li><a href="#范围和合格变更">范围和合格变更 Scope and eligible changes</a></li>
+      <li><a href="#自动升级">自动升级 Automatic upgrades</a></li>
+    </ul>
+  </li>
+  <li><a href="#总结">总结 Conclusion</a></li>
+</ul>
+
+<h3 id="简介">简介</h3>
+
+<p>近年来，PHP 社区在如何处理向后不兼容的语言更改方面上日益紧张。PHP 编程语言在某种程度上是随意发展的，并且表现出许多从现代角度不期望看到的行为。</p>
+
+<p>解决这些问题可以使行为更一致，更可预测且更不易出错，从而有利于开发。反过来说，对 PHP 语言的每个向后不兼容的更改都可能促使对现有的数亿行代码进行调整。这延迟了向新 PHP 版本的迁移。</p>
+
+<p>解决此问题的一般思路是允许不同的库和应用程序按照自己的步调跟上语言的变化，同时保持互操作性。有许多方法可以实现此总体目标，下面将对此进行讨论。</p>
+
+<h3 id="向后不兼容更改的示例">向后不兼容更改的示例</h3>
+
+<p>为使以下讨论以真实的提案为基础，本节提供了一些基于现有 RFC 的可能产生向后不兼容更改的示例。它们仅作为示例，本提案并不都持认可态度。</p>
+
+<h4 id="严格类型">严格类型</h4>
+
+<p><a href="https://wiki.php.net/rfc/scalar_type_hints_v5">标量类型声明 RFC</a> 引入了 <code class="highlighter-rouge">strict_types</code> 声明，它允许控制标量类型声明的行为。如果启用，则传递的类型必须与声明的类型完全匹配（取模细节）。如果禁用，则允许某些类型的强制转换。</p>
+
+<p>尽管这是已经存在的功能，但在这个话题上值得拿来讨论一下，因为这是选择向后不兼容更改的现有示例。提供一些历史背景：当时，内部函数已经接受标量类型并根据强制语义对其进行了验证。为了保持与内部类型检查的一致性，用户区类型必须遵循相同的，通常是不受欢迎的语义。<code class="highlighter-rouge">strict_types</code> 声明允许保持用户态/内部态之间的行为一致，同时仍可以选择加入严格类型检查。</p>
+
+<p>我认为，总的来说，将标量类型与 <code class="highlighter-rouge">strict_types</code> 指令一起引入效果很好。除了经常有抱怨必须在每个文件中都指定此选项（至少在早期）。人们遇到的主要技术问题还涉及回调的处理：</p>
+
+<p>由内部函数（例如 <code class="highlighter-rouge">array_map</code>）调用的回调始终具有强制性参数语义，即使从严格类型的文件调用也是如此。相反，在严格类型文件中调用但来自弱类型文件的回调将使用严格参数语义。这是 <code class="highlighter-rouge">strict_types</code> 原始设计的一个缺点：回调应该是特殊情况，以便在声明端（而不是调用端）使用键入模式。在这里提到这个问题，主要是为了说明基于选择性加入使代码无缝互操作的想法在某些情况下可能并不总是完美的。</p>
+
+<h4 id="显式引用传递">显式引用传递</h4>
+
+<p><a href="https://wiki.php.net/rfc/explicit_send_by_ref">显式调用端引用传递 RFC</a> 提案允许在调用端使用 ＆ 标记通过引用传递的变量，接近在声明端的现有标记。该提案的动机部分列出了为什么希望这样做的原因。</p>
+
+<p>但是，仅允许在调用端使用 ＆ 并不能给我们带来很多好处：必须使用调用端标记才能获得可读性、静态分析和性能的全部好处。</p>
+
+<p>不幸的是，要求使用标记会导致最坏的向后兼容破坏类型：编写与 PHP 8（要求调用端标记）和 PHP 7（禁用调用端标记）兼容的代码变得非常困难。首先通过允许使用可选标记，并且仅在很多很多年后才要求它，才能在很长的时间内推出这种更改。这种改变最受选择机制的影响。</p>
+
+<h4 id="禁用动态对象属性">禁用动态对象属性</h4>
+
+<p>其他受到激励的案例提到了 <a href="https://wiki.php.net/rfc/namespace_scoped_declares">命名空间范围声明 RFC</a> 和 <a href="https://wiki.php.net/rfc/locked-classes">锁定类 RFC</a>（另一种不同的方式）。如今，大多数代码期望所有属性都在类中声明（除了诸如 <code class="highlighter-rouge">stdClass</code> 之类的特殊情况，当然诸如 <code class="highlighter-rouge">__set()</code> 之类的魔术方法也除外）。设置未声明的属性很可能是错字，而不是故意的行为。不幸的是，PHP 默许了它，并且没有禁用此行为的好方法（一种常见的解决方法是使用带有可检测异常的魔术方法 <code class="highlighter-rouge">trait</code>）。</p>
+
+<p>拥有进行未声明的属性访问错误异常的选项，对于现代代码将是有益的。但是，还有许多旧的代码没有声明属性，因此需要选择加入。</p>
+
+<h4 id="严格操作符等">严格操作符等</h4>
+
+<p>尽管 <code class="highlighter-rouge">strict_types</code> 可用于禁用函数参数的类型强制，但目前尚无办法禁用基本语言构造函数（如算术运算符）的类型强制。<a href="https://wiki.php.net/rfc/strict_operators">严格运算符 RFC</a> 提出了 <code class="highlighter-rouge">strict_operators</code> 选项加入声明，以禁止大多数类型的强制转换。</p>
+
+<p>该 RFC 很有趣，因为它不仅增加了新的错误，而且还在某些地方更改了行为。例如，<code class="highlighter-rouge">switch</code> 语句将使用严格比较（模数详细信息），而当前使用弱比较（==）。这是一个重要的区别：如果声明仅添加错误，则始终可以通过假定启用该选项来生成有效代码（无论该选项实际上是否启用）。如果声明进行了行为更改，那么是否启用该选项就非常重要。</p>
+
+<h4 id="名称解析更改">名称解析更改</h4>
+
+<p>提出的 <code class="highlighter-rouge">fuction_and_const_lookup ='global'</code> 声明最近被拒绝了。尽管拒绝了该提案，但我们仍希望考虑其他名称解析更改，以使函数/常量和类的规则保持一致。</p>
+
+<h4 id="字符串插值更改">字符串插值更改</h4>
+
+<p><a href="https://wiki.php.net/rfc/arbitrary_expression_interpolation">任意表达式插值 RFC</a> 建议引入 <code class="highlighter-rouge">foo＃{1 + 1} bar</code> 语法来插值任意表达式。这造成了较小的向后兼容破坏，因为当前在字符串中允许使用 <code class="highlighter-rouge">＃{}</code>，并且没有特殊含义。可以通过选择语法来避免向后兼容破坏。甚至可以使用 <code class="highlighter-rouge">foo {1 + 1} bar</code> 语法，当然这是另一个问题了。</p>
+
+<p>这个示例很有趣，因为它涉及到 PHP 词法分析器的更改，而所有前面的示例都涉及到编译器或运行时的更改。</p>
+
+<h3 id="方法">方法</h3>
+
+<p>过去已经讨论了三种通用方法（相比于技术细节，更多是在理论上），在此进行了总结。</p>
+
+<h4 id="通用实现的新语言">通用实现的新语言</h4>
+
+<p>Zeev 已经提出了这种方法，<a href="https://wiki.php.net/pplusplus/faq">P++ FAQ</a> 和 <a href="https://wiki.php.net/pplusplus/concerns">P++ Concerns</a> 中对此已有一些讨论。PHP 内部的非正式民意检测一致反对这一想法。</p>
+
+<p>P++ 的思想是引入一种新语言，该语言共享一个实现，并且可以与 PHP 互操作。 但是，P++ 在语法和行为上可能存在重大差异，并且可能追求不同的设计目标。顾名思义，这类似于 C 和 C++ 的情况，它们通常都由同一编译器支持，并且名义上可以互操作。</p>
+
+<p>我认为这种方法存在许多问题，并且基本上都归结为 P++ 是 <strong>一个巨大的改动</strong>：</p>
+
+<ul>
+  <li>
+    <p>仅有一次机会可以引入向后不兼容的更改。P++ 发布后，我们回到第一个问题。假设我们不会在第一次尝试中就创建出完美的语言，那么最好引入一种更具可持续性的机制。</p>
+  </li>
+  <li>
+    <p>一次性的重大更改会带来很高的升级负担。根据范围的不同，它可能比切换语言版本更类似于切换语言。这使得旧代码切换到 P++ 的可能性较小。</p>
+  </li>
+  <li>
+    <p>如果差异太大，则可能难以确保 PHP 和 P++ 之间的互操作性。例如，尽管 C 和 C++ 在名义上是兼容的，但实际上这需要通过与 C 兼容的 FFI 接口导出 C++ 代码。这使得在 C++ 中集成 C 相当容易，但反之则不然。假设，如果 P++ 引入了泛型但 PHP 没有引入泛型，则不清楚它们将如何互操作。</p>
+  </li>
+  <li>
+    <p>坦白说，我们只是没有开发资源来实现这一目标。这需要比现在更大的开发团队进行多年的一致努力。我们的资源最好投入在其他地方。</p>
+  </li>
+</ul>
+
+<p>从积极的一面来看，P++ 将使我们能够比下面讨论的方法做出更根本的改变。人们有时会提出类似的想法，例如 <em>从变量名中删除 $</em>，而一般情况下这只是出于疯狂而已，但是 P++ 至少基本上可以进行这样的更改。</p>
+
+<h4 id="版本">版本</h4>
+
+<p>版本（Editions）是 Rust 编程语言所普及的概念。有关更多信息，请参见 <a href="https://doc.rust-lang.org/edition-guide/editions/index.html">版本指南</a> 和 <a href="https://github.com/rust-lang/rfcs/blob/master/text/2052-epochs.md">epoch RFC</a>。</p>
+
+<h4 id="细粒度的声明">细粒度的声明</h4>
+
+<p>“版本” 方法的替代方法是为单个更改引入更细粒度的声明指令。这是受现有的 strict_types 指令启发的，并且在前面的示例部分中的许多最新建议中都提到了这一点。</p>
+
+<p>关于版本和细粒度声明之间差异的一些注意事项：</p>
+
+<ul>
+  <li>
+    <p>“版本”的主要优点是更改是分组和分层的。这将在给定时间可用的语言“方言”的数量减少到了版本数。另一方面，细粒度声明创建 2^N 个不同的方言，其中 N 是布尔声明的数量。</p>
+  </li>
+  <li>
+    <p>细粒度声明的主要优点在于，它允许逐步更新代码（通过逐一处理更改），并允许退出部分代码库中的特定更改。例如，如果有一个假设的 <code class="highlighter-rouge">no_dynamic_properties</code> 声明，则可能希望对大多数代码启用它，但是在一个特定文件中将其禁用，在该文件中，该文件与需要使用动态属性的旧式库进行交互。</p>
+  </li>
+  <li>
+    <p>与此相关的是，细粒度的声明允许处理这样的情况：我们希望让人们可以选择是否要进行某些更改。“版本”强烈暗示应该使用新版本及其带来的更改。例如，是否将当前的 <code class="highlighter-rouge">strict_types</code> 选项作为新版本的一部分启用？</p>
+  </li>
+</ul>
+
+<h3 id="per-package-选项的技术实现">per-package 选项的技术实现</h3>
+
+<p>与选择的“精细度”无关，在技术水平上也可以通过多种方式指定它们。这些将在下面讨论。</p>
+
+<h4 id="现状在文件顶部声明">现状：在文件顶部声明</h4>
+
+<p>我们已经在文件顶部使用了 <code class="highlighter-rouge">declare(strict_types = 1)</code> 来启用严格的类型，因此自然而然地继续依靠这种机制。</p>
+
+<p>这种方法有两个很大的优点：首先，它已经有效，很熟悉并且不需要引入任何新的语言功能。其次，文件保持独立：无需查看其他文件即可确定使用的语言方言，这对工具尤其有用。</p>
+
+<p>它还有一些缺点：首先，它无法扩展。此方法仅与“版本”方法兼容（在“版本”方法中，只有一个声明 <code class="highlighter-rouge">(edition = 2020)</code> 是必需的）。不能将其与“细粒度声明”方法一起使用。</p>
+
+<p>其次，软件包很可能希望对整个软件包使用一种语言方言，而不是在不同文件之间混合使用。虽然名义上每个文件中的声明都更加明确，但实际上程序员会想到的是将其建模为“我正在开发 PHP 2020 项目”，并且每次打开新文件时都不会再次检查版本。如果文件忘记了偶然指定版本，则可能导致意外。</p>
+
+<h4 id="新的开始标签">新的开始标签</h4>
+
+<p>与前面的变体相比，有一个较小的变体：可以不使用声明，而可以引入新的开始标记。再一次，这仅适用于 P++ <code class="highlighter-rouge">&lt;?p++</code> 或版本 <code class="highlighter-rouge"><span class="cp">&lt;?php</span><span class="mi">2020</span></code>。这具有与每个文件声明相同的特征。它稍微紧凑一些，但是引入了新的语法。</p>
+
+<p>在讨论过程中提出的建议是，也可以使用新的文件扩展名。这仅与 P++ 兼容，否则项目的所有文件在每次版本升级时都必须重命名。使用文件扩展名还具有其他缺点：在文件扩展名未知的情况下不起作用，例如，如果脚本通过管道传输到 PHP，从 stdin 读取或来自非文件系统流。一个新的扩展增加了在不知道新配置的服务器上进行代码泄漏的机会。</p>
+
+<h4 id="命名空间范围的声明">命名空间范围的声明</h4>
+
+<p>在 <a href="https://wiki.php.net/rfc/namespace_scoped_declares">命名空间范围的声明 RFC</a> 中将更详细地探讨了此变体。该提议允许为整个命名空间（包括子命名空间）指定声明：</p>
+
+<pre><code class="language-PHP">namespace_declare('Vendor\Lib', [
+    'strict_types' =&gt; 1,
+    'no_dynamic_properties' =&gt; 1,
+    // ...
+]);
+</code></pre>
+
+<p>目的是在 <code class="highlighter-rouge">composer.json</code> 中指定这些内容，并且 <code class="highlighter-rouge">Composer</code> 将负责用 <code class="highlighter-rouge">PHP</code> 注册声明。</p>
+
+<p>这种方法避免了在每个文件中指定声明的弊端：它可以按任意数量的声明进行缩放，并且程序员可以假定声明对于整个项目都成立，除非明确覆盖了它们。</p>
+
+<p>这种方法（以及下面讨论的所有其他其他“基于包”的方法）的一个缺点是，无法再通过查看单个文件来分辨所使用的语言方言。尽管这对人类来说不是问题（面向软件包的方法更有用），但对于工具来说可能是一个问题，因为在没有更大上下文的情况下可能无法正确处理文件。</p>
+
+<p>与下面讨论的两种基于包的方法不同，命名空间范围的声明基于现有的，完善的和易于理解的“命名空间”功能。这既是一个优点（它没有引入任何新概念，也不需要其他代码）和也是一个缺点：</p>
+
+<p>虽然名称空间通常直接映射到包，但并非总是如此。例如，主要的 <code class="highlighter-rouge">amphp</code> 软件包使用 <code class="highlighter-rouge">Amp\</code> 名称空间，而其他 <code class="highlighter-rouge">amphp</code> 软件包使用 <code class="highlighter-rouge">Amp\FooBar\</code>。在这里，<code class="highlighter-rouge">Amp\</code> 名称空间实际上不能被视为单个程序包。还有其他问题（例如，由于可以在单个文件中包含多个名称空间），但是可以解决这些问题，请参阅链接的 RFC，以获取更多详细讨论。</p>
+
+<h4 id="显式包声明">显式包声明</h4>
+
+<p>没有适用于此变体的 RFC，但是可以使用原型请求。这引入了与名称空间正交的新“包”概念。必须在名称空间旁边的每个文件中声明该包：</p>
+
+<pre><code class="language-PHP">&lt;?php
+
+package "nikic/php-parser";
+
+namespace PhpParser\Node;
+
+// ...
+
+</code></pre>
+
+<p>然后可以将声明绑定到特定的程序包，而不是特定的名称空间。此外，相同的功能可以重用于其他基于包的功能，例如包专用符号。</p>
+
+<p>这种方法的优势在于，它解决了为此使用名称空间的情况所带来的歧义。另一方面，它为语言引入了一个全新的概念，并可能导致其与名称空间的关系混乱。除非将此概念也用于其他目的，否则可能不值得引入它。</p>
+
+<h4 id="基于文件系统的软件包">基于文件系统的软件包</h4>
+
+<p>基于文件系统的软件包是显式软件包声明的替代方法。通过在目录中放置一个特殊文件（例如 <code class="highlighter-rouge">_package.php</code>）来定义软件包，该文件也可以包含每个软件包的配置。</p>
+
+<p>相对于先前的变体，其优点是不需要在每个文件中都进行显式的包声明。此外，与命名空间范围的声明和显式包声明不同，它提供了一个定义良好的地方来查找与包相关的声明（<code class="highlighter-rouge">_package.php</code> 文件）。前两个变体将按约定将声明放置在 <code class="highlighter-rouge">composer.json</code> 中，但是 <code class="highlighter-rouge">namespace_declare()</code> 或 <code class="highlighter-rouge">package_declare()</code> 也可以从其他位置调用，这使得工具支持更加复杂。</p>
+
+<p>这种方法的缺点是文件系统耦合，它在 PHP 中引入了许多问题：</p>
+
+<ul>
+  <li>
+    <p>缓存失效：在一个请求中，PHP 大概会缓存哪些目录不包含 <code class="highlighter-rouge">_package.php</code> 文件，以及其中的内容。在请求期间，对其中任何一个的更改都将被忽略。更具问题的情况是它们将如何与 <code class="highlighter-rouge">opcache</code> 交互。如果启用 <code class="highlighter-rouge">validate_timestamps</code>，我们还必须检查所有目录（和父目录）中是否添加，删除或更改了 <code class="highlighter-rouge">_package.php</code> 文件，这可能会带来额外的性能损失。</p>
+  </li>
+  <li>
+    <p>路径规范化：为了确定文件是否是包的一部分，规范化路径需要可用。例如，必须解析符号链接，并且必须正确处理文件系统的大小写（不区分大小写）。尽管可以通过 <code class="highlighter-rouge">realpath()</code> 在文件系统层上使用此功能，但是对于一般的 PHP 流，当前不存在此功能（甚至没有phars可以正确地支持此功能）。使用其他流包装钩可以解决此问题。</p>
+  </li>
+  <li>
+    <p>目录遍历：为了找到包文件，我们需要在给定路径中“向上”查找包文件。再一次，流包装器不支持此操作。实际上，许多流包装器没有“目录”的有意义的概念。</p>
+  </li>
+  <li>
+    <p>通常，很难使此功能与任意流一起使用。我有一个替换文件流包装程序的包，以拦截所有包含的文件，并用存储在临时目录中的预处理文件替换它们。我不知道这将如何与基于目录的包系统交互。</p>
+  </li>
+</ul>
+
+<h3 id="一般的注意事项">一般的注意事项</h3>
+
+<h4 id="维护负担和支持时间表">维护负担和支持时间表</h4>
+
+<p>每个新版本/声明都会增加额外的维护负担，因为它要求在同一实现中支持两种不同的行为。在 Rust 中，版本的概念包括无限期支持它们的承诺（尽管在实践中，向后兼容的破坏有时确实会回溯到较早的版本，只是稍后）。</p>
+
+<p>我们可能会或可能不想无限期地支持旧版本。即使一个版本只有有限的生存期，它仍然是管理版本迁移的有用工具，因为它消除了项目之间的依赖关系。每个项目都可以独立更新到新版本，而无需先更新其依赖项，也不必强制对其反向依赖项进行升级。</p>
+
+<p>一个相关的问题是多长时间发布一次新版本。使用细粒度的声明方法，最好将它们添加到任何次要版本中。对于版本，即使更改很少，我们是否还要为每个次要版本创建一个新版本也不清楚。应该只为每个主要版本创建这些文件吗？还是应该在我们积累相关更改时按需创建它们？</p>
+
+<h4 id="范围和合格变更">范围和合格变更</h4>
+
+<p>应该强调的是，即使我们引入了“版本”之类的机制，也并不意味着所有向后不兼容的更改都将通过版本来处理，也不意味着任何向后兼容的破坏都可以，例如 只要基于版本。</p>
+
+<p>这里有一些考虑因素：</p>
+
+<ul>
+  <li>
+    <p>技术可行性：无法通过版本/声明进行某些更改，因为更改的影响不能包含在使用该版本的代码中。例如，从 HTTP 查询参数中删除名称修饰会影响所有代码中 <code class="highlighter-rouge">$_GET</code> 的内容，并且不能仅限于一个版本。 这种变化必须在全球范围内发生或根本不发生。</p>
+  </li>
+  <li>
+    <p>精神负担：虽然在新版本中引入新的错误条件总会很好，但是我们需要对行为的变化更加谨慎。如果仅引入错误，则程序员始终可以针对最新版本进行编程，即使实际使用的是旧版本，代码也可以正常工作。我不认为应该完全禁止改变行为，但应该为他们提供更高的标准。</p>
+  </li>
+  <li>
+    <p>维护开销：如前所述，由于必须支持两种不同的行为（以及它们与其他功能的交互），因此通过版本/声明机制引入的每项更改都会带来额外的维护负担。因此，不应将版本/声明机制用于较小的向后兼容性破坏。该机制应被视为做出我们之前无法进行的更改的手段：如果更改可以通过正常的弃用+删除周期来实现，则应该这样做。</p>
+  </li>
+  <li>
+    <p>库更改：在特定情况下，我认为版本/声明机制不适合标准库更改。 可以通过新功能或标志更好地处理这些问题。</p>
+  </li>
+</ul>
+
+<h4 id="自动升级">自动升级</h4>
+
+<p>Rust 提供了大多数用于执行版本升级的自动化工具。由于其动态特性，在 PHP 中并不总是可能进行可靠的自动升级。但是，我们可能仍想为此提供官方的尽力而为工具。</p>
+
+<h3 id="总结">总结</h3>
+
+<p>我个人的结论是：应按文件进行声明的版本。</p>
+
+<p>尽管具有细粒度的声明有其优势，并且是我最初提倡的选择，但我认为，对声明的泛滥和语言变体呈指数级增长的担忧非常真实。即使定期推出新版本，版本也可以大大减少语言方言的数量，从而减轻开发人员的心理负担并减少我们这方面的维护负担。</p>
+
+<p>一旦使用了版本，投入用于包范围声明的新机制并不会带来很多好处，所有这些都有其自身的问题。每个文件的声明确实有其自身的优点，特别是它使内容保持独立，并且允许部分升级代码库。每个文件的声明的人机工程学当然会更糟，但是随着人们从本质上将使用 <code class="highlighter-rouge">declare(edition=2020)</code> 替换 <code class="highlighter-rouge">declare(strict_types=1)</code>，这并不比当前情况更糟。（此外，以后仍可以引入某种包范围的声明机制。）</p>
+
+<p>我认为我们需要尽快优先考虑在 PHP 8 中引入“版本”，因此我们仍有时间利用这一机会。</p>
+
+
+                <hr>
+
+                <div id="gitment"></div>
+
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2017/12/24/the-2018-guide-to-building-secure-php-software/" data-toggle="tooltip" data-placement="top" title="[译]The 2018 Guide to Building Secure PHP Software">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+
+
+                
+
+                
+
+            </div>
+
+     <!-- Side Catalog Container -->
+     
+        
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+        
+
+    <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+        				
+                            
+                				<a href="/tags/#ElasticSearch" title="ElasticSearch" rel="1">
+                                    ElasticSearch
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#PHP" title="PHP" rel="2">
+                                    PHP
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#翻译" title="翻译" rel="2">
+                                    翻译
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#PHP RFC" title="PHP RFC" rel="1">
+                                    PHP RFC
+                                </a>
+                            
+        				
+        			</div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+                    
+                        <li><a href="http://blog.csdn.net/will4906">will4906</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+<!-- gitment start-->
+<script src="/js/gitment.browser.min.js"></script>
+<script type="text/javascript">
+
+  var owner = 'littlesqx'
+  var repo = 'Littlesqx.github.io'
+  var client_id = 'd4026099a50841ea3513'
+  var client_secret = '56b15436e7ce879ba65036524d27bf21f24e02c4'
+
+  var gitment = new Gitment({
+      id: window.location.pathname,
+      owner: owner,
+      repo: repo,
+      oauth: {
+        client_id: client_id,
+        client_secret: client_secret,
+      },
+  })
+  gitment.render('gitment')
+</script>
+<!-- gitment end-->
+
+
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:https://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+                    <li>
+                        <a href="/feed.xml">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+
+                    <!-- add Weibo, Zhihu by Hux, add target = "_blank" to <a> by Hux -->
+                    
+                    
+
+
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/littlesqx">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a target="_blank" href="https://www.upyun.com">
+                            <img src="https://littlesqx.github.io/img/upyun_logo.png" style="width: 140px; cursor: pointer;">
+                        </a>
+                    </li>
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Littlesqx Blog 2020
+                    <br>
+                    Theme by <a href="https://huangxuan.me">Hux</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=huxpro&repo=huxpro.github.io&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="https://littlesqx.github.io/js/jquery.min.js "></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="https://littlesqx.github.io/js/bootstrap.min.js "></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="https://littlesqx.github.io/js/hux-blog.min.js "></script>
+
+<!-- nprogress JavaScript -->
+<script src="https://littlesqx.github.io/js/nprogress.min.js "></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!--
+     Because of the native support for backtick-style fenced code blocks
+     right within the Markdown is landed in Github Pages,
+     From V1.6, There is no need for Highlight.js,
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/
+-->
+<!--
+    <script>
+        async("https://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="https://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://littlesqx.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://littlesqx.github.io/js/fastclick.min.js ", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-111356273-1';
+    var _gaDomain = 'littlesqx.github.io';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+<script type="text/javascript">
+    function generateCatalog (selector) {
+        // interop with multilangual 
+        if (false) {
+            _containerSelector = 'div.post-container.active'
+        } else {
+            _containerSelector = 'div.post-container'
+        }
+        // init
+        var P = $(_containerSelector),a,n,t,l,i,c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+        // clean
+        $(selector).html('')
+        // appending
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#"+$(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="'+i+'" rel="nofollow">'+t+'</a>');
+            l = $('<li class="'+n+'_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+    generateCatalog(".catalog-body");
+    // toggle side catalog
+    $(".catalog-toggle").click((function(e){
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+    /*
+     * Doc: https://github.com/davist11/jQuery-One-Page-Nav
+     * Fork by Hux to support padding
+     */
+    async("/js/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+<!-- Multi-Lingual -->
+
+
+
+<!-- nprogress -->
+<script>
+  $(function(){
+    NProgress.configure({ showSpinner: false, speed: 300 });
+    NProgress.start();
+  })
+  $( window ).load(function() {
+    NProgress.done();
+  });
+</script>
+
+
+
+<!-- Image to hack wechat -->
+<!-- <img src="/img/icon_wechat.png" width="0" height="0" /> -->
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
