@@ -3,11 +3,58 @@
   <channel>
     <title>Littlesqx Blog</title>
     <description>littlesqx's blog</description>
-    <link>https://littlesqx.github.io/</link>
-    <atom:link href="https://littlesqx.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sun, 23 Feb 2020 16:18:57 +0800</pubDate>
-    <lastBuildDate>Sun, 23 Feb 2020 16:18:57 +0800</lastBuildDate>
+    <link>https://littlesqx.com/</link>
+    <atom:link href="https://littlesqx.com/feed.xml" rel="self" type="application/rss+xml" />
+    <pubDate>Mon, 16 Mar 2020 15:59:23 +0800</pubDate>
+    <lastBuildDate>Mon, 16 Mar 2020 15:59:23 +0800</lastBuildDate>
     <generator>Jekyll v4.0.0</generator>
+    
+      <item>
+        <title>[WIP] PHP html 导出（PDF/图片）方案对比</title>
+        <description>&lt;h3 id=&quot;前言&quot;&gt;前言&lt;/h3&gt;
+
+&lt;p&gt;这个话题可以上升到怎么选择一个外部依赖/扩展包（往更大地说就是技术选型了），一般来说我们会考虑它的这些方面：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;质量。编码是否规范，API 设计是否合理（是否可扩展或二次开发）；是否经过测试或验证（单元测试、生产验证）；易用性/使用成本（扩展包本身是否还依赖其他扩展，环境要求等）；安全性（代码是否有漏洞或包含其他有安全漏洞的环境或依赖）；资源占用和性能等等。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;生态和维护。是否形成社区；社区是否活跃；维护者是谁（一般认为官方 &amp;gt; 组织 &amp;gt; 个人）维护积极度（代码更新频率；issue 解答；版本控制是否合理）。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;其他方面。还需要结合团队的技术栈和实际使用业务场景，甚至当时的开发状态。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;根据这个思路，本文会一起对比一下 PHP 社区上的几个比较优秀的 PDF 导出扩展/方案。&lt;/p&gt;
+
+&lt;h3 id=&quot;正文&quot;&gt;正文&lt;/h3&gt;
+
+&lt;h4 id=&quot;入围的扩展方案&quot;&gt;入围的扩展/方案&lt;/h4&gt;
+
+&lt;p&gt;先介绍一下这几个入围的扩展/方案：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;mPDF&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+        <pubDate>Sun, 23 Feb 2020 16:23:01 +0800</pubDate>
+        <link>https://littlesqx.com/2020/02/23/php-html-export/</link>
+        <guid isPermaLink="true">https://littlesqx.com/2020/02/23/php-html-export/</guid>
+        
+        <category>PHP</category>
+        
+        <category>chrome headless</category>
+        
+        <category>PDF</category>
+        
+        
+      </item>
     
       <item>
         <title>[译] PHP language evolution overview proposal</title>
@@ -288,8 +335,8 @@ namespace PhpParser\Node;
 &lt;p&gt;原文地址：&lt;a href=&quot;https://github.com/nikic/php-rfcs/blob/language-evolution/rfcs/0000-language-evolution.md&quot;&gt;PHP RFC: language_evolution - Nikita Popov&lt;/a&gt;&lt;/p&gt;
 </description>
         <pubDate>Fri, 21 Feb 2020 17:23:01 +0800</pubDate>
-        <link>https://littlesqx.github.io/2020/02/21/language-evolution-overview-proposal/</link>
-        <guid isPermaLink="true">https://littlesqx.github.io/2020/02/21/language-evolution-overview-proposal/</guid>
+        <link>https://littlesqx.com/2020/02/21/language-evolution-overview-proposal/</link>
+        <guid isPermaLink="true">https://littlesqx.com/2020/02/21/language-evolution-overview-proposal/</guid>
         
         <category>PHP</category>
         
@@ -1094,8 +1141,8 @@ Certainty通过将CACert捆绑在最新的可预测位置来消除这种激励�
 &lt;p&gt;共勉吧！&lt;/p&gt;
 </description>
         <pubDate>Sun, 24 Dec 2017 19:46:01 +0800</pubDate>
-        <link>https://littlesqx.github.io/2017/12/24/the-2018-guide-to-building-secure-php-software/</link>
-        <guid isPermaLink="true">https://littlesqx.github.io/2017/12/24/the-2018-guide-to-building-secure-php-software/</guid>
+        <link>https://littlesqx.com/2017/12/24/the-2018-guide-to-building-secure-php-software/</link>
+        <guid isPermaLink="true">https://littlesqx.com/2017/12/24/the-2018-guide-to-building-secure-php-software/</guid>
         
         <category>PHP</category>
         
@@ -1287,8 +1334,8 @@ In an Elasticsearch index, fields that have the same name in different mapping t
 &lt;/ul&gt;
 </description>
         <pubDate>Fri, 08 Dec 2017 17:05:01 +0800</pubDate>
-        <link>https://littlesqx.github.io/2017/12/08/elasticsearch-learn-notes-1/</link>
-        <guid isPermaLink="true">https://littlesqx.github.io/2017/12/08/elasticsearch-learn-notes-1/</guid>
+        <link>https://littlesqx.com/2017/12/08/elasticsearch-learn-notes-1/</link>
+        <guid isPermaLink="true">https://littlesqx.com/2017/12/08/elasticsearch-learn-notes-1/</guid>
         
         <category>ElasticSearch</category>
         
@@ -1302,8 +1349,8 @@ In an Elasticsearch index, fields that have the same name in different mapping t
 &lt;/blockquote&gt;
 </description>
         <pubDate>Sat, 16 Sep 2017 18:58:01 +0800</pubDate>
-        <link>https://littlesqx.github.io/2017/09/16/hello-world/</link>
-        <guid isPermaLink="true">https://littlesqx.github.io/2017/09/16/hello-world/</guid>
+        <link>https://littlesqx.com/2017/09/16/hello-world/</link>
+        <guid isPermaLink="true">https://littlesqx.com/2017/09/16/hello-world/</guid>
         
         
       </item>

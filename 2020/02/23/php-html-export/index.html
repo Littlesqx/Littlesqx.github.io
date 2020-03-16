@@ -9,9 +9,9 @@
     <meta name="keyword"  content="git php mysql laravel littlesqx">
     <link rel="shortcut icon" href="https://littlesqx.com/img/favicon.ico">
 
-    <title>Hello World! - Littlesqx Blog</title>
+    <title>[WIP] PHP html 导出（PDF/图片）方案对比 - Littlesqx Blog</title>
 
-    <link rel="canonical" href="https://littlesqx.com/2017/09/16/hello-world/">
+    <link rel="canonical" href="https://littlesqx.com/2020/02/23/php-html-export/">
 
     <!-- nprogress CSS -->
     <link href="https://littlesqx.com/css/nprogress.min.css" rel="stylesheet">
@@ -150,13 +150,19 @@
                 <div class="post-heading">
                     <div class="tags">
                         
+                        <a class="tag" href="/tags/#PHP" title="PHP">PHP</a>
+                        
+                        <a class="tag" href="/tags/#chrome headless" title="chrome headless">chrome headless</a>
+                        
+                        <a class="tag" href="/tags/#PDF" title="PDF">PDF</a>
+                        
                     </div>
-                    <h1>Hello World!</h1>
+                    <h1>[WIP] PHP html 导出（PDF/图片）方案对比</h1>
                     
                     
-                    <h2 class="subheading">it's never too late to start studying anything</h2>
+                    <h2 class="subheading"></h2>
                     
-                    <span class="meta">Posted by Littlesqx on September 16, 2017</span>
+                    <span class="meta">Posted by Littlesqx on February 23, 2020</span>
                 </div>
             </div>
         </div>
@@ -174,9 +180,37 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-				<blockquote>
-  <p>keep!</p>
-</blockquote>
+				<h3 id="前言">前言</h3>
+
+<p>这个话题可以上升到怎么选择一个外部依赖/扩展包（往更大地说就是技术选型了），一般来说我们会考虑它的这些方面：</p>
+
+<ul>
+  <li>
+    <p>质量。编码是否规范，API 设计是否合理（是否可扩展或二次开发）；是否经过测试或验证（单元测试、生产验证）；易用性/使用成本（扩展包本身是否还依赖其他扩展，环境要求等）；安全性（代码是否有漏洞或包含其他有安全漏洞的环境或依赖）；资源占用和性能等等。</p>
+  </li>
+  <li>
+    <p>生态和维护。是否形成社区；社区是否活跃；维护者是谁（一般认为官方 &gt; 组织 &gt; 个人）维护积极度（代码更新频率；issue 解答；版本控制是否合理）。</p>
+  </li>
+  <li>
+    <p>其他方面。还需要结合团队的技术栈和实际使用业务场景，甚至当时的开发状态。</p>
+  </li>
+</ul>
+
+<p>根据这个思路，本文会一起对比一下 PHP 社区上的几个比较优秀的 PDF 导出扩展/方案。</p>
+
+<h3 id="正文">正文</h3>
+
+<h4 id="入围的扩展方案">入围的扩展/方案</h4>
+
+<p>先介绍一下这几个入围的扩展/方案：</p>
+
+<ul>
+  <li>
+    <p>mPDF</p>
+  </li>
+  <li></li>
+</ul>
+
 
 
                 <hr>
@@ -186,10 +220,10 @@
 
                 <ul class="pager">
                     
-                    
-                    <li class="next">
-                        <a href="/2017/12/08/elasticsearch-learn-notes-1/" data-toggle="tooltip" data-placement="top" title="you know, for search - ElasticSearch 学习笔记">Next Post &rarr;</a>
+                    <li class="previous">
+                        <a href="/2020/02/21/language-evolution-overview-proposal/" data-toggle="tooltip" data-placement="top" title="[译] PHP language evolution overview proposal">&larr; Previous Post</a>
                     </li>
+                    
                     
                 </ul>
 
@@ -502,7 +536,7 @@
 <script type="text/javascript">
     function generateCatalog (selector) {
         // interop with multilangual 
-        if (true) {
+        if (false) {
             _containerSelector = 'div.post-container.active'
         } else {
             _containerSelector = 'div.post-container'
@@ -552,51 +586,6 @@
 
 
 <!-- Multi-Lingual -->
-
-<!-- Handle Language Change -->
-<script type="text/javascript">
-    // get nodes
-    var $zh = document.querySelector(".zh");
-    var $en = document.querySelector(".en");
-    var $select = document.querySelector("select");
-    // bind hashchange event
-    // Changes at v1.7.2: change the language flag from hash-basing to in-memory basing
-    // due to its confliction with catalog anchors.
-    // window.addEventListener('hashchange', _render);
-    // handle render
-    function _render(_hash){
-        var _hash = _hash || window.location.hash;
-        // en
-        if(_hash == "#en"){
-            $select.selectedIndex = 1;
-            $en.style.display = "block";
-            $en.classList.add("active");
-            $zh.style.display = "none";
-            $zh.classList.remove("active");
-        // zh by default
-        }else{
-            // not trigger onChange, otherwise cause a loop call.
-            $select.selectedIndex = 0;
-            $zh.style.display = "block";
-            $zh.classList.add("active");
-            $en.style.display = "none";
-            $en.classList.remove("active");
-        }
-        // interop with catalog 
-        if ("true") generateCatalog(".catalog-body");
-    }
-    // handle select change
-    function onLanChange(index){
-        if(index == 0){
-            _hash = "#zh"
-        }else{
-            _hash = "#en"
-        }
-        _render(_hash)
-    }
-    // init
-    _render();
-</script>
 
 
 
